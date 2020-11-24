@@ -13,19 +13,19 @@ namespace SharpGame.Objects.Components
             base.OnUpdate();
             if (Input.GetKeyDown(Util.KeyCode.W))
             {
-                PositionComponent.Translate(0.0f, 0.0f, 0.1f);
+                this.Actor.PositionComponent.Translate(0.0f, 0.0f, 0.1f);
             }
             else if (Input.GetKeyDown(Util.KeyCode.A))
             {
-                PositionComponent.Translate(-0.1f, 0.0f, 0);
+                this.Actor.PositionComponent.Translate(-0.1f, 0.0f, 0);
             }
             else if (Input.GetKeyDown(Util.KeyCode.S))
             {
-                PositionComponent.Translate(0.0f, 0.0f, -0.1f);
+                this.Actor.PositionComponent.Translate(0.0f, 0.0f, -0.1f);
             }
             else if (Input.GetKeyDown(Util.KeyCode.D))
             {
-                PositionComponent.Translate(0.1f, 0.0f, 0.0f);
+                this.Actor.PositionComponent.Translate(0.1f, 0.0f, 0.0f);
             }
         }
     }

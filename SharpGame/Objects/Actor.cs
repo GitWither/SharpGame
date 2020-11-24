@@ -18,6 +18,7 @@ namespace SharpGame.Objects
         public Scene RootScene { get; set; }
 
         private Component[] components = new Component[SharedConstants.MaxComponents];
+        public PositionComponent PositionComponent { get; }
 
         public T GetComponent<T>() where T : Component
         {
