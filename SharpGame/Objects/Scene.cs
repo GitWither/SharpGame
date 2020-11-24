@@ -21,13 +21,11 @@ namespace SharpGame.Objects
         private bool isRunning = false;
 
         private readonly Actor[] actors = new Actor[SharedConstants.MaxActors];
-        private readonly Shader shader;
         private readonly Texture missing;
 
 
         public Scene()
         {
-            shader = new Shader("shader");
             missing = new Texture("missing");
         }
 
@@ -65,32 +63,8 @@ namespace SharpGame.Objects
             actor.OnStart();
         }
 
-        public void AddMesh(Mesh mesh, Vector3 pos = default)
-        {
-            /*
-            VertexArrayObject meshVao = new VertexArrayObject();
-            for (int i = 0; i < mesh.FacePositions.Length; i++)
-            {
-                meshVao.Add(mesh.FacePositions[i] + pos, mesh.FaceTexCoords[i % mesh.FaceTexCoords.Length]);
-            }
-            uint[] indices = new uint[mesh.FaceIndices.Length * mesh.FaceIndices.Length];
-
-            for (var i = 0; i < mesh.FaceIndices.Length; i++)
-            {
-                for (var j = 0; j < mesh.FaceIndices.Length; j++)
-                {
-                    indices[i * mesh.FaceIndices.Length + j] = (uint)(mesh.FaceIndices[j] + i * mesh.FaceTexCoords.Length);
-                }
-            }
-            meshVao.AddIndices(indices);
-            meshVao.Upload();
-            */
-            //vaos.Add(meshVao);
-        }
-
         public void BindShader()
         {
-            shader.Bind();
         }
 
         public void BindTexture()

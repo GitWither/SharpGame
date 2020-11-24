@@ -1,6 +1,7 @@
 ﻿using OpenTK;
 using OpenTK.Graphics.OpenGL4;
 
+using SharpGame.Graphics.Meshes;
 using SharpGame.Objects.Components;
 using SharpGame.Util;
 
@@ -25,6 +26,8 @@ namespace SharpGame.Graphics
         private readonly List<Vector3> normals = new List<Vector3>();
         private readonly List<Vector2> texCoords = new List<Vector2>();
         private readonly List<uint> indices = new List<uint>();
+
+        private readonly Shader shader;
 
         private List<MeshRendererComponent> meshRendererComponents;
 
@@ -71,6 +74,8 @@ namespace SharpGame.Graphics
 
             meshRendererComponents = new List<MeshRendererComponent>();
             HasRoom = true;
+
+            shader = new Shader("shader");
         }
 
         ~VertexArrayObject()
@@ -96,6 +101,22 @@ namespace SharpGame.Graphics
         public void AddIndices(uint[] indices)
         {
             this.indices.AddRange(indices);
+        }
+
+        public void AddMesh(MeshRendererComponent meshRendererComponent)
+        {
+            if (meshCount < SharedConstants.MaxMeshes)
+            {
+                this.AddVertices(meshRendererComponent.Mesh.Vertices);
+                this.AddIndices(meshRendererComponent.Mesh.FaceIndices);
+                this.AddTexCoords(meshRendererComponent.Mesh.FaceTexCoords);
+                this.meshRendererComponents.Add(meshRendererComponent);
+                meshCount++;
+            }
+            else
+            {
+                HasRoom = false;
+            }
         }
 
         public void Upload()
@@ -134,6 +155,9 @@ namespace SharpGame.Graphics
 
         public void Draw()
         {
+
+            shader.Bind();
+
             GL.BindVertexArray(id);
             //GL.DrawArrays(PrimitiveType.Triangles, 0, vertices.Count);
             GL.DrawElements(BeginMode.Triangles, count, DrawElementsType.UnsignedInt, 0);
