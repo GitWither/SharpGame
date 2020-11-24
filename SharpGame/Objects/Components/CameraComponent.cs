@@ -73,7 +73,6 @@ namespace SharpGame.Objects.Components
             if (movementDelta.LengthSquared > 0.0001f)
             {
                 this.View *= Matrix4.CreateTranslation(-movementDelta.Normalized() * 0.1f);
-                Console.WriteLine(this.View);
             }
         }
 
