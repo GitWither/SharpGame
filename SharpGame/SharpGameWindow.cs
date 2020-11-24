@@ -67,7 +67,7 @@ namespace SharpGame
                 activeScene.BindShader();
                 activeScene.BindTexture();
 
-                activeScene.Draw();
+                activeScene.Render();
 
             }
             else

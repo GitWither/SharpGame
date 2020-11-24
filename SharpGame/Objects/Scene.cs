@@ -23,10 +23,13 @@ namespace SharpGame.Objects
         private readonly Actor[] actors = new Actor[SharedConstants.MaxActors];
         private readonly Texture missing;
 
+        private Renderer renderer;
+
 
         public Scene()
         {
             missing = new Texture("missing");
+            renderer = new Renderer();
         }
 
         ~Scene()
@@ -57,10 +60,10 @@ namespace SharpGame.Objects
                     actor.OnAwake();
                     actors[i] = actor;
                     actor.OnStart();
+                    renderer.AddActor(actor);
                     break;
                 }
             }
-            actor.OnStart();
         }
 
         public void BindShader()
@@ -72,12 +75,9 @@ namespace SharpGame.Objects
             missing.Bind(TextureUnit.Texture0);
         }
 
-        public void Draw()
+        public void Render()
         {
-            foreach (Actor actor in actors)
-            {
-                actor?.OnDraw();
-            }
+            renderer.Render();
         }
 
         public void OnUpdate()

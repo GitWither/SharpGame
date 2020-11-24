@@ -21,7 +21,11 @@ namespace SharpGame.Graphics
 
         public void AddActor(Actor actor)
         {
-
+            MeshRendererComponent meshRendererComponent = actor.GetComponent<MeshRendererComponent>();
+            if (meshRendererComponent != null)
+            {
+                Add(meshRendererComponent);
+            }
         }
 
         private void Add(MeshRendererComponent meshRendererComponent)
@@ -52,6 +56,14 @@ namespace SharpGame.Graphics
                 vao.AddMesh(meshRendererComponent);
                 vao.Upload();
                 vertexArrayObjects.Add(vao);
+            }
+        }
+
+        public void Render()
+        {
+            foreach (VertexArrayObject vao in vertexArrayObjects)
+            {
+                vao.Draw();
             }
         }
     }
