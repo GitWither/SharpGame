@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29924.181
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharpGame", "SharpGame\SharpGame.csproj", "{208CD415-465E-4EBE-85B5-873578B718FA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharpGameTest", "SharpGameTest\SharpGameTest.csproj", "{64237C14-86E2-4373-99C8-8C02BBA67EB6}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{208CD415-465E-4EBE-85B5-873578B718FA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{208CD415-465E-4EBE-85B5-873578B718FA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{208CD415-465E-4EBE-85B5-873578B718FA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{208CD415-465E-4EBE-85B5-873578B718FA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{64237C14-86E2-4373-99C8-8C02BBA67EB6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{64237C14-86E2-4373-99C8-8C02BBA67EB6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{64237C14-86E2-4373-99C8-8C02BBA67EB6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{64237C14-86E2-4373-99C8-8C02BBA67EB6}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {9F98A599-2425-44CA-BE87-9B14416B64ED}
+	EndGlobalSection
+EndGlobal
