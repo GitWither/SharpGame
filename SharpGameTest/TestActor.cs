@@ -19,6 +19,7 @@ namespace SharpGameTest
             base.OnAwake();
             Random random = new Random();
             AddComponent(new MeshRendererComponent(Mesh.FromOBJ("test")));
+            AddComponent(new PlayerControlledComponent());
             GetComponent<PositionComponent>().Translate(random.Next(5), random.Next(5), random.Next(5));
         }
         public override void OnUpdate()

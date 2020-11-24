@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace SharpGame.Objects.Components
 {
-    class PlayerControlledComponent : Component
+    public class PlayerControlledComponent : Component
     {
         public override void OnUpdate()
         {

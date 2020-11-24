@@ -57,6 +57,7 @@ namespace SharpGame.Objects
             {
                 if (actors[i] == null)
                 {
+                    actor.RootScene = this;
                     actor.OnAwake();
                     actors[i] = actor;
                     actor.OnStart();
@@ -64,10 +65,6 @@ namespace SharpGame.Objects
                     break;
                 }
             }
-        }
-
-        public void BindShader()
-        {
         }
 
         public void BindTexture()

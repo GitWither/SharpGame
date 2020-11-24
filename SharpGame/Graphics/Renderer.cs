@@ -63,7 +63,7 @@ namespace SharpGame.Graphics
         {
             foreach (VertexArrayObject vao in vertexArrayObjects)
             {
-                vao.Draw();
+                vao.Render();
             }
         }
     }

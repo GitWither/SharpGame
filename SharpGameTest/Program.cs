@@ -20,6 +20,9 @@ namespace SharpGameTest
             SharpGameWindow window = new SharpGameWindow(1270, 720, "SharpGame");
             Scene scene = new Scene();
             scene.AddActor(new TestActor(0.1f));
+            Actor camera = new Actor();
+            camera.AddComponent(new CameraComponent(70f, 0.01f, 100f));
+            scene.AddActor(camera);
             window.LoadScene(scene);
             #if DEBUG
             Point point =  window.Location;

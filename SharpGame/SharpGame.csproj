@@ -60,6 +60,7 @@
     <Compile Include="Objects\Components\CameraComponent.cs" />
     <Compile Include="Objects\Components\Component.cs" />
     <Compile Include="Objects\Components\MeshRendererComponent.cs" />
+    <Compile Include="Objects\Components\PlayerControlledComponent.cs" />
     <Compile Include="Objects\Components\PositionComponent.cs" />
     <Compile Include="Objects\Components\RotationComponent.cs" />
     <Compile Include="Objects\Scene.cs" />

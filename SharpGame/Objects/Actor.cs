@@ -13,7 +13,7 @@ using System.Threading.Tasks;
 
 namespace SharpGame.Objects
 {
-    public abstract class Actor
+    public class Actor
     {
         public Scene RootScene { get; set; }
 
@@ -39,7 +39,7 @@ namespace SharpGame.Objects
                 if (this.components[i] == null)
                 {
                     this.components[i] = component;
-                    component.OnAwake();
+                    component.Actor = this;
                     return component;
                 }
             }

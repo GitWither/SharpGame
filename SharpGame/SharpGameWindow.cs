@@ -61,14 +61,8 @@ namespace SharpGame
 
             if (activeScene != null)
             {
-                Matrix4 mvp = view * projection;
-                GL.UniformMatrix4(0, false, ref mvp);
-
-                activeScene.BindShader();
                 activeScene.BindTexture();
-
                 activeScene.Render();
-
             }
             else
             {
@@ -81,49 +75,6 @@ namespace SharpGame
 
         private void UpdateFrameHandler(object sender, FrameEventArgs e)
         {
-            KeyboardState keyboardState = Keyboard.GetState();
-            Vector3 movementDelta = Vector3.Zero;
-
-
-            if (keyboardState.IsKeyDown(Key.D))
-            {
-                movementDelta.X += 1;
-            }
-            if (keyboardState.IsKeyDown(Key.A))
-            {
-                movementDelta.X -= 1;
-            }
-            if (keyboardState.IsKeyDown(Key.Space))
-            {
-                movementDelta.Y += 1;
-            }
-            if (keyboardState.IsKeyDown(Key.ShiftLeft))
-            {
-                movementDelta.Y -= 1;
-            }
-            if (keyboardState.IsKeyDown(Key.S))
-            {
-                movementDelta.Z += 1;
-            }
-            if (keyboardState.IsKeyDown(Key.W))
-            {
-                movementDelta.Z -= 1;
-            }
-            if (keyboardState.IsKeyDown(Key.Z))
-            {
-                GL.PolygonMode(MaterialFace.FrontAndBack, PolygonMode.Line);
-            }
-            if (keyboardState.IsKeyUp(Key.Z))
-            {
-                GL.PolygonMode(MaterialFace.FrontAndBack, PolygonMode.Fill);
-            }
-
-            if (movementDelta.LengthSquared > 0.0001f) 
-            {
-                view *= Matrix4.CreateTranslation(-movementDelta.Normalized() * 0.1f);
-                Console.WriteLine(view);
-            }
-
             activeScene?.OnUpdate();
         }
     }

@@ -153,9 +153,11 @@ namespace SharpGame.Graphics
             indices.Clear();
         }
 
-        public void Draw()
+        public void Render()
         {
 
+            Matrix4 modelViewProjection = meshRendererComponents[0].Actor.RootScene.Camera.View * meshRendererComponents[0].Actor.RootScene.Camera.Projection;
+            GL.UniformMatrix4(0, false, ref modelViewProjection);
             shader.Bind();
 
             GL.BindVertexArray(id);
