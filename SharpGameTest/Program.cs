@@ -22,6 +22,7 @@ namespace SharpGameTest
             scene.AddActor(new TestActor(0.1f));
             Actor camera = new Actor();
             camera.AddComponent(new CameraComponent(70f, 0.01f, 100f));
+            camera.AddComponent(new PlayerControlledComponent());
             scene.AddActor(camera);
             window.LoadScene(scene);
             #if DEBUG
@@ -29,6 +30,7 @@ namespace SharpGameTest
             point.X -= 1920;
             window.Location = point;
             #endif
+            
             window.Run();
         }
     }

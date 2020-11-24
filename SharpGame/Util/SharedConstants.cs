@@ -32,5 +32,7 @@ namespace SharpGame.Util
         public const string LoggerLevelError = "ERROR";
         public const string LoggerLevelException = "EXCEPTION";
         public const string LoggerLevelWarn = "WARN";
+
+        public const string UniformModelViewProjection = "u_ModelViewProjection";
     }
 }

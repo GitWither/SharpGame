@@ -33,34 +33,7 @@ namespace SharpGame.Objects.Components
 
         public override void OnUpdate()
         {
-            KeyboardState keyboardState = Keyboard.GetState();
-            Vector3 movementDelta = Vector3.Zero;
-
-
-            if (keyboardState.IsKeyDown(Key.D))
-            {
-                movementDelta.X += 1;
-            }
-            if (keyboardState.IsKeyDown(Key.A))
-            {
-                movementDelta.X -= 1;
-            }
-            if (keyboardState.IsKeyDown(Key.Space))
-            {
-                movementDelta.Y += 1;
-            }
-            if (keyboardState.IsKeyDown(Key.ShiftLeft))
-            {
-                movementDelta.Y -= 1;
-            }
-            if (keyboardState.IsKeyDown(Key.S))
-            {
-                movementDelta.Z += 1;
-            }
-            if (keyboardState.IsKeyDown(Key.W))
-            {
-                movementDelta.Z -= 1;
-            }
+            /*
             if (keyboardState.IsKeyDown(Key.Z))
             {
                 GL.PolygonMode(MaterialFace.FrontAndBack, PolygonMode.Line);
@@ -69,11 +42,13 @@ namespace SharpGame.Objects.Components
             {
                 GL.PolygonMode(MaterialFace.FrontAndBack, PolygonMode.Fill);
             }
+            */
 
-            if (movementDelta.LengthSquared > 0.0001f)
-            {
-                this.View *= Matrix4.CreateTranslation(-movementDelta.Normalized() * 0.1f);
-            }
+            this.View = Matrix4.LookAt(
+                this.Actor.PositionComponent.X, this.Actor.PositionComponent.Y, this.Actor.PositionComponent.Z,
+                this.Actor.PositionComponent.X, this.Actor.PositionComponent.Y, this.Actor.PositionComponent.Z + 1,
+                0, 1, 0
+                );
         }
 
         public override void OnShutdown()

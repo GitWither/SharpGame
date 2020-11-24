@@ -17,6 +17,7 @@ namespace SharpGame.Objects.Components
         public MeshRendererComponent(Mesh mesh)
         {
             this.Mesh = mesh;
+            Static = true;
         }
     }
 }

@@ -111,6 +111,16 @@ namespace SharpGame.Graphics
                 this.AddIndices(meshRendererComponent.Mesh.FaceIndices);
                 this.AddTexCoords(meshRendererComponent.Mesh.FaceTexCoords);
                 this.meshRendererComponents.Add(meshRendererComponent);
+
+
+                Matrix4 transformMatrix = Matrix4.CreateTranslation(meshRendererComponent.Actor.PositionComponent.X, meshRendererComponent.Actor.PositionComponent.Y, meshRendererComponent.Actor.PositionComponent.Z);
+                for (int i = 0; i < vertices.Count; i++)
+                {
+                    Vector4 pos = new Vector4(vertices[i], 1);
+                    pos = transformMatrix * pos;
+                    vertices[i] = new Vector3(pos.Xyz);
+                }
+
                 meshCount++;
             }
             else
@@ -157,11 +167,10 @@ namespace SharpGame.Graphics
         {
 
             Matrix4 modelViewProjection = meshRendererComponents[0].Actor.RootScene.Camera.View * meshRendererComponents[0].Actor.RootScene.Camera.Projection;
-            GL.UniformMatrix4(0, false, ref modelViewProjection);
+            shader.UploadMatrix4(SharedConstants.UniformModelViewProjection, ref modelViewProjection);
             shader.Bind();
 
             GL.BindVertexArray(id);
-            //GL.DrawArrays(PrimitiveType.Triangles, 0, vertices.Count);
             GL.DrawElements(BeginMode.Triangles, count, DrawElementsType.UnsignedInt, 0);
         }
 

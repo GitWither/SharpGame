@@ -13,6 +13,9 @@ namespace SharpGame.Util
         W = 105,
         A = 83,
         S = 101,
-        D = 86
+        Z = 108,
+        D = 86,
+        Space = 51,
+        LeftShift = 1
     }
 }
