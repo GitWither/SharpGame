@@ -12,50 +12,16 @@ using System.Threading.Tasks;
 
 namespace SharpGame.Graphics.Meshes
 {
-    public class Mesh : IDisposable
+    public class Mesh
     {
-        private VertexArrayObject vao;
-        public Vector3[] Vertices
-        {
-            get
-            {
-                return this.vao.Vertices;
-            }
-        }
-        public Vector2[] FaceTexCoords
-        {
-            get
-            {
-                return this.vao.TexCoords;
-            }
-        }
-        public uint[] FaceIndices
-        {
-            get
-            {
-                return this.vao.Indices;
-            }
-        }
+        public Vector3[] Vertices { get; set; }
+        public Vector2[] FaceTexCoords { get; set; }
+        public uint[] FaceIndices { get; set; }
         public Mesh(Vector3[] vertices, Vector3[] normals, Vector2[] texCoords, uint[] faceIndices)
         {
-            vao = new VertexArrayObject();
-
-            vao.AddVertices(vertices);
-            vao.AddTexCoords(texCoords);
-            vao.AddNormals(normals);
-            vao.AddIndices(faceIndices);
-
-            vao.Upload();
-        }
-
-        public void Clear()
-        {
-            vao.Clear();
-        }
-
-        public void Draw()
-        {
-            vao.Draw();
+            this.Vertices = vertices;
+            this.FaceTexCoords = texCoords;
+            this.FaceIndices = faceIndices;
         }
 
         //I don't know why, I don't want to know why, I shouldn't have to wonder why, but this piece of code was the most painful thing I ever worked with
@@ -191,11 +157,6 @@ namespace SharpGame.Graphics.Meshes
             }
 
             return false;
-        }
-
-        public void Dispose()
-        {
-            vao.Dispose();
         }
     }
 }
