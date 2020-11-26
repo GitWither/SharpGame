@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace SharpGame.Util
@@ -16,7 +17,7 @@ namespace SharpGame.Util
         private static void Log(ConsoleColor color, string level, object message)
         {
             Console.ForegroundColor = color;
-            Console.WriteLine($"[{DateTime.Now}] [{level}]: {message}");
+            Console.WriteLine($"[{DateTime.Now}] [{level}] [{Thread.CurrentThread.Name}]: {message}");
             Console.ResetColor();
         }
     }

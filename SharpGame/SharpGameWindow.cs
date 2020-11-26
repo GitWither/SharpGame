@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Drawing.Drawing2D;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 using OpenTK;
@@ -22,6 +23,11 @@ namespace SharpGame
 
         public SharpGameWindow(int width, int height, string title) : base(width, height, GraphicsMode.Default, title)
         {
+            if (Thread.CurrentThread.Name != null)
+            {
+                Thread.CurrentThread.Name = SharedConstants.MainThreadName;
+            }
+
             base.UpdateFrame += this.UpdateFrameHandler;
             base.RenderFrame += this.RenderFrameHandler;
         }
