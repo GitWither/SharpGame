@@ -19,16 +19,11 @@ namespace SharpGame
     public class SharpGameWindow : GameWindow
     {
         private Scene activeScene;
-        private Matrix4 projection;
-        private Matrix4 view;
 
         public SharpGameWindow(int width, int height, string title) : base(width, height, GraphicsMode.Default, title)
         {
             base.UpdateFrame += this.UpdateFrameHandler;
             base.RenderFrame += this.RenderFrameHandler;
-
-            this.projection = Matrix4.CreatePerspectiveFieldOfView(MathHelper.PiOver2, 16f / 9, 0.01f, 100f);
-            this.view = Matrix4.Identity;
         }
 
         ~SharpGameWindow()
