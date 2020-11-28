@@ -55,7 +55,7 @@
     <Compile Include="Graphics\Shader.cs" />
     <Compile Include="Graphics\Texture.cs" />
     <Compile Include="Graphics\VertexArrayObject.cs" />
-    <Compile Include="Input.cs" />
+    <Compile Include="Input\Input.cs" />
     <Compile Include="Objects\Actor.cs" />
     <Compile Include="Objects\Components\CameraComponent.cs" />
     <Compile Include="Objects\Components\Component.cs" />
@@ -66,7 +66,7 @@
     <Compile Include="Objects\Scene.cs" />
     <Compile Include="SharpGameWindow.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Util\KeyCode.cs" />
+    <Compile Include="Input\KeyCode.cs" />
     <Compile Include="Util\Logger.cs" />
     <Compile Include="Util\MathUtil.cs" />
     <Compile Include="Util\SharedConstants.cs" />
