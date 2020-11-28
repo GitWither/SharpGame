@@ -36,5 +36,6 @@ namespace SharpGame.Util
         public const string MainThreadName = "MAIN";
 
         public const string UniformModelViewProjection = "u_ModelViewProjection";
+        public const string UniformTranslationMatrix = "u_Translation";
     }
 }
