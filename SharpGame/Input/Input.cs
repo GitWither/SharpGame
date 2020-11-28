@@ -1,7 +1,5 @@
 ﻿using OpenTK.Input;
 
-using SharpGame.Util;
-
 using System;
 using System.Collections.Generic;
 using System.Linq;
