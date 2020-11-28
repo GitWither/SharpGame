@@ -6,42 +6,42 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+
 namespace SharpGame.Objects.Components
 {
     public class PlayerControlledComponent : Component
     {
         public override void OnUpdate()
         {
-            base.OnUpdate();
-            if (Input.GetKeyDown(Util.KeyCode.W))
+            if (Input.GetKeyDown(KeyCode.W))
             {
                 this.Actor.PositionComponent.Translate(0.0f, 0.0f, 0.1f);
             }
-            if (Input.GetKeyDown(Util.KeyCode.A))
+            if (Input.GetKeyDown(KeyCode.A))
             {
                 this.Actor.PositionComponent.Translate(0.1f, 0.0f, 0);
             }
-            if (Input.GetKeyDown(Util.KeyCode.S))
+            if (Input.GetKeyDown(KeyCode.S))
             {
                 this.Actor.PositionComponent.Translate(0.0f, 0.0f, -0.1f);
             }
-            if (Input.GetKeyDown(Util.KeyCode.D))
+            if (Input.GetKeyDown(KeyCode.D))
             {
                 this.Actor.PositionComponent.Translate(-0.1f, 0.0f, 0.0f);
             }
-            if (Input.GetKeyDown(Util.KeyCode.LeftShift))
+            if (Input.GetKeyDown(KeyCode.LeftShift))
             {
                 this.Actor.PositionComponent.Translate(0.0f, -0.1f, 0.0f);
             }
-            if (Input.GetKeyDown(Util.KeyCode.Space))
+            if (Input.GetKeyDown(KeyCode.Space))
             {
                 this.Actor.PositionComponent.Translate(0.0f, 0.1f, 0.0f);
             }
-            if (Input.GetKeyDown(Util.KeyCode.Z))
+            if (Input.GetKeyDown(KeyCode.Z))
             {
                 GL.PolygonMode(MaterialFace.FrontAndBack, PolygonMode.Line);
             }
-            if (Input.GetKeyUp(Util.KeyCode.Z))
+            if (Input.GetKeyUp(KeyCode.Z))
             {
                 GL.PolygonMode(MaterialFace.FrontAndBack, PolygonMode.Fill);
             }
