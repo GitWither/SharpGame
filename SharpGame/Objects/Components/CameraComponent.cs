@@ -2,6 +2,8 @@
 using OpenTK.Graphics.OpenGL4;
 using OpenTK.Input;
 
+using SharpGame.Util;
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -43,10 +45,13 @@ namespace SharpGame.Objects.Components
                 GL.PolygonMode(MaterialFace.FrontAndBack, PolygonMode.Fill);
             }
             */
+            float forwardX = (float)(Math.Sin(this.Actor.RotationComponent.Yaw) * Math.Cos(this.Actor.RotationComponent.Pitch));
+            float forwardY = (float)Math.Sin(this.Actor.RotationComponent.Pitch);
+            float forwardZ = -(float)(Math.Cos(this.Actor.RotationComponent.Yaw) * Math.Cos(this.Actor.RotationComponent.Pitch));
 
             this.View = Matrix4.LookAt(
                 this.Actor.PositionComponent.X, this.Actor.PositionComponent.Y, this.Actor.PositionComponent.Z,
-                this.Actor.PositionComponent.X, this.Actor.PositionComponent.Y, this.Actor.PositionComponent.Z + 1,
+                this.Actor.PositionComponent.X - forwardX, this.Actor.PositionComponent.Y - forwardY, this.Actor.PositionComponent.Z - forwardZ,
                 0, 1, 0
                 );
         }
