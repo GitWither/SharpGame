@@ -21,9 +21,9 @@ namespace SharpGame
     {
         private Scene activeScene;
 
-        public SharpGameWindow(int width, int height, string title) : base(width, height, GraphicsMode.Default, title)
+        public SharpGameWindow(int width, int height, string title) : base(width, height, GraphicsMode.Default, title, GameWindowFlags.Default)
         {
-            if (Thread.CurrentThread.Name != null)
+            if (Thread.CurrentThread.Name == null)
             {
                 Thread.CurrentThread.Name = SharedConstants.MainThreadName;
             }
