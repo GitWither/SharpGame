@@ -1,6 +1,7 @@
 ﻿using SharpGame.Graphics.Meshes;
 using SharpGame.Objects;
 using SharpGame.Objects.Components;
+using SharpGame.Util;
 
 using System;
 using System.Collections.Generic;
@@ -25,6 +26,10 @@ namespace SharpGame.Graphics
             if (meshRendererComponent != null)
             {
                 Add(meshRendererComponent);
+            }
+            else
+            {
+                Logger.Info("Actor does not have mesh renderer component. Not adding to renderer.");
             }
         }
 
