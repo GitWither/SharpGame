@@ -48,5 +48,10 @@ namespace SharpGame.Objects.Components
             this.Y += y;
             this.Z += z;
         }
+
+        public static implicit operator Vector3(PositionComponent positionComponent)
+        {
+            return new Vector3(positionComponent.X, positionComponent.Y, positionComponent.Z);
+        } 
     }
 }
