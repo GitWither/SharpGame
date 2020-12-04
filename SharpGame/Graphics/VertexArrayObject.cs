@@ -168,7 +168,13 @@ namespace SharpGame.Graphics
             //GL.Disable(EnableCap.CullFace);
             shader.Bind();
             Matrix4 modelViewProjection = meshRendererComponents[0].Actor.RootScene.Camera.View * meshRendererComponents[0].Actor.RootScene.Camera.Projection;
-            Matrix4 transformation = Matrix4.CreateScale(meshRendererComponents[0].Actor.ScaleComponent);
+            Matrix4 scale = Matrix4.CreateScale(meshRendererComponents[0].Actor.ScaleComponent);
+            Matrix4 rotation = Matrix4.CreateRotationX(meshRendererComponents[0].Actor.RotationComponent.Pitch) *
+                               Matrix4.CreateRotationY(meshRendererComponents[0].Actor.RotationComponent.Yaw) *
+                               Matrix4.CreateRotationZ(meshRendererComponents[0].Actor.RotationComponent.Roll);
+
+            Vector3 positionDelta = meshRendererComponents[0].Actor.PositionComponent - meshRendererComponents[0].LastPositionComponent;
+            Logger.Info(positionDelta);
             //translation = new Vector4(meshRendererComponents[0].Actor.PositionComponent, 1) * translation;
             //Matrix4 translation = Matrix4.CreateTranslation(meshRendererComponents[0].Actor.PositionComponent);
             //translation *= Matrix4.CreateTranslation(meshRendererComponents[0].Actor.PositionComponent.X, meshRendererComponents[0].Actor.PositionComponent.Y, meshRendererComponents[0].Actor.PositionComponent.Z);
@@ -178,6 +184,8 @@ namespace SharpGame.Graphics
 
             //Matrix4 translation = Matrix4.CreateRotationY(meshRendererComponents[0].Actor.RotationComponent.Yaw);
             //translation *= Matrix4.CreateRotationZ(meshRendererComponents[0].Actor.RotationComponent.Roll);
+            Matrix4 transformation = rotation * scale;
+
             shader.UploadMatrix4(SharedConstants.UniformTranslationMatrix, ref transformation);
             shader.UploadMatrix4(SharedConstants.UniformModelViewProjection, ref modelViewProjection);
 

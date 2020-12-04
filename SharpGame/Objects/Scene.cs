@@ -36,16 +36,6 @@ namespace SharpGame.Objects
         {
         }
 
-        public void UploadVaos()
-        {
-            /*
-            foreach (VertexArrayObject vao in vaos)
-            {
-                vao.Upload();
-            }
-            */
-        }
-
         public void OnAwake()
         {
             this.isRunning = true;
