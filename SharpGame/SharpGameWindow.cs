@@ -56,7 +56,7 @@ namespace SharpGame
 
             GL.DepthFunc(DepthFunction.Less);
 
-            GL.ClearColor(Color4.Bisque);
+            GL.ClearColor(Color4.Black);
             GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit | ClearBufferMask.StencilBufferBit);
 
             if (activeScene != null)

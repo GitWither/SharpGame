@@ -26,8 +26,10 @@ namespace SharpGameTest
         {
             base.OnUpdate();
             speed += 0.01f;
+            float test = (float)Math.Sin(this.speed);
             this.PositionComponent.Set(speed, 0, 0);
             this.RotationComponent.Set(speed, speed, speed);
+            this.ScaleComponent.Set(test, test, test);
         }
     }
 }

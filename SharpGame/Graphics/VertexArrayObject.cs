@@ -168,7 +168,7 @@ namespace SharpGame.Graphics
             //GL.Disable(EnableCap.CullFace);
             shader.Bind();
             Matrix4 modelViewProjection = meshRendererComponents[0].Actor.RootScene.Camera.View * meshRendererComponents[0].Actor.RootScene.Camera.Projection;
-            Matrix4 translation = Matrix4.Identity;
+            Matrix4 transformation = Matrix4.CreateScale(meshRendererComponents[0].Actor.ScaleComponent);
             //translation = new Vector4(meshRendererComponents[0].Actor.PositionComponent, 1) * translation;
             //Matrix4 translation = Matrix4.CreateTranslation(meshRendererComponents[0].Actor.PositionComponent);
             //translation *= Matrix4.CreateTranslation(meshRendererComponents[0].Actor.PositionComponent.X, meshRendererComponents[0].Actor.PositionComponent.Y, meshRendererComponents[0].Actor.PositionComponent.Z);
@@ -178,7 +178,7 @@ namespace SharpGame.Graphics
 
             //Matrix4 translation = Matrix4.CreateRotationY(meshRendererComponents[0].Actor.RotationComponent.Yaw);
             //translation *= Matrix4.CreateRotationZ(meshRendererComponents[0].Actor.RotationComponent.Roll);
-            shader.UploadMatrix4(SharedConstants.UniformTranslationMatrix, ref translation);
+            shader.UploadMatrix4(SharedConstants.UniformTranslationMatrix, ref transformation);
             shader.UploadMatrix4(SharedConstants.UniformModelViewProjection, ref modelViewProjection);
 
             GL.BindVertexArray(id);

@@ -20,6 +20,7 @@ namespace SharpGame.Objects
         private Component[] components = new Component[SharedConstants.MaxComponents];
         public PositionComponent PositionComponent { get; private set; }
         public RotationComponent RotationComponent { get; private set; }
+        public ScaleComponent ScaleComponent { get; private set; }
 
         public T GetComponent<T>() where T : Component
         {
@@ -73,6 +74,7 @@ namespace SharpGame.Objects
         {
             this.PositionComponent = this.AddComponent(new PositionComponent(0, 0, 0));
             this.RotationComponent = this.AddComponent(new RotationComponent(0, 0, 0));
+            this.ScaleComponent = this.AddComponent(new ScaleComponent(1, 1, 1));
 
             for (int i = 0; i < SharedConstants.MaxComponents; i++)
             {

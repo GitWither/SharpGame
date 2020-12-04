@@ -63,6 +63,7 @@
     <Compile Include="Objects\Components\PlayerControlledComponent.cs" />
     <Compile Include="Objects\Components\PositionComponent.cs" />
     <Compile Include="Objects\Components\RotationComponent.cs" />
+    <Compile Include="Objects\Components\ScaleComponent.cs" />
     <Compile Include="Objects\Scene.cs" />
     <Compile Include="SharpGameWindow.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
