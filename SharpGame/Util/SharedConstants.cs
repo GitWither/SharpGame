@@ -33,6 +33,7 @@ namespace SharpGame.Util
         public const string LoggerLevelException = "EXCEPTION";
         public const string LoggerLevelWarn = "WARN";
 
+        public const string RenderThreadName = "RENDER";
         public const string MainThreadName = "MAIN";
 
         public const string UniformModelViewProjection = "u_ModelViewProjection";

@@ -19,7 +19,16 @@ namespace SharpGame
 {
     public class SharpGameWindow : GameWindow
     {
-        private Scene activeScene;
+        private static Scene activeScene;
+        public static bool running;
+
+        private Thread logic = new Thread(() =>
+        {
+            while (running)
+            {
+                activeScene?.OnUpdate();
+            }
+        });
 
         public SharpGameWindow(int width, int height, string title) : base(width, height, GraphicsMode.Default, title, GameWindowFlags.Default)
         {
@@ -27,6 +36,7 @@ namespace SharpGame
             {
                 Thread.CurrentThread.Name = SharedConstants.MainThreadName;
             }
+
 
             base.UpdateFrame += this.UpdateFrameHandler;
             base.RenderFrame += this.RenderFrameHandler;
@@ -75,6 +85,7 @@ namespace SharpGame
 
         private void UpdateFrameHandler(object sender, FrameEventArgs e)
         {
+            e.tim
             activeScene?.OnUpdate();
         }
     }
