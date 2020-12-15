@@ -23,9 +23,9 @@ namespace SharpGameTest
             AddComponent(new PhysicsComponent());
             GetComponent<PositionComponent>().Set(0, 5, 5 );
         }
-        public override void OnUpdate()
+        public override void OnUpdate(float deltaTime)
         {
-            base.OnUpdate();
+            base.OnUpdate(deltaTime);
             if (Input.GetKeyDown(KeyCode.Z))
             {
                 GetComponent<PositionComponent>().Set(0, 50, 5);

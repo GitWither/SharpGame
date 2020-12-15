@@ -14,7 +14,7 @@ namespace SharpGame.Objects.Components
 
         }
 
-        public virtual void OnUpdate()
+        public virtual void OnUpdate(float deltaTime)
         {
 
         }

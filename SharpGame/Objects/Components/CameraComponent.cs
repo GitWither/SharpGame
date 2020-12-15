@@ -33,7 +33,7 @@ namespace SharpGame.Objects.Components
             this.Actor.RootScene.Camera = this;
         }
 
-        public override void OnUpdate()
+        public override void OnUpdate(float deltaTime)
         {
             /*
             if (keyboardState.IsKeyDown(Key.Z))

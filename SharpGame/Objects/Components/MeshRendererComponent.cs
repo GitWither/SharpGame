@@ -15,28 +15,17 @@ namespace SharpGame.Objects.Components
     {
         public Mesh Mesh { get; private set; }
         public bool Static { get; private set; }
-        public bool Dirty { get; set; }
         public PositionComponent LastPositionComponent { get; private set; }
 
         public MeshRendererComponent(Mesh mesh)
         {
             this.Mesh = mesh;
             Static = false;
-            Dirty = false;
         }
 
         public override void OnAwake()
         {
             this.LastPositionComponent = this.Actor.PositionComponent;
-        }
-
-        public override void OnUpdate()
-        {
-            if (this.LastPositionComponent != null && !this.LastPositionComponent.Equals(this.Actor.PositionComponent))
-            {
-                this.LastPositionComponent = this.Actor.PositionComponent;
-                Dirty = true;
-            }
         }
     }
 }

@@ -82,11 +82,11 @@ namespace SharpGame.Objects
             }
         }
 
-        public virtual void OnUpdate()
+        public virtual void OnUpdate(float deltaTime)
         {
             for (int i = 0; i < SharedConstants.MaxComponents; i++)
             {
-                components[i]?.OnUpdate();
+                components[i]?.OnUpdate(deltaTime);
             }
         }
 

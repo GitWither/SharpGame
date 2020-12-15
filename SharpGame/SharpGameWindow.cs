@@ -26,7 +26,7 @@ namespace SharpGame
         {
             while (running)
             {
-                activeScene?.OnUpdate();
+                //activeScene?.OnUpdate();
             }
         });
 
@@ -85,8 +85,7 @@ namespace SharpGame
 
         private void UpdateFrameHandler(object sender, FrameEventArgs e)
         {
-            e.tim
-            activeScene?.OnUpdate();
+            activeScene?.OnUpdate((float)e.Time);
         }
     }
 }

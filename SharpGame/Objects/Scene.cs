@@ -67,12 +67,12 @@ namespace SharpGame.Objects
             renderer.Render();
         }
 
-        public void OnUpdate()
+        public void OnUpdate(float deltaTime)
         {
             foreach (Actor obj in actors)
             {
                 //FIXME: Make this a for loop later
-                obj?.OnUpdate();
+                obj?.OnUpdate(deltaTime);
             }
         }
 

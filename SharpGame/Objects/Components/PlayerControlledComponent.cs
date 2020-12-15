@@ -11,31 +11,31 @@ namespace SharpGame.Objects.Components
 {
     public class PlayerControlledComponent : Component
     {
-        public override void OnUpdate()
+        public override void OnUpdate(float deltaTime)
         {
             if (Input.GetKeyDown(KeyCode.W))
             {
-                this.Actor.PositionComponent.Translate(0.0f, 0.0f, 0.1f);
+                this.Actor.PositionComponent.Translate(0.0f, 0.0f, 5f * deltaTime);
             }
             if (Input.GetKeyDown(KeyCode.A))
             {
-                this.Actor.PositionComponent.Translate(0.1f, 0.0f, 0);
+                this.Actor.PositionComponent.Translate(5f * deltaTime, 0.0f, 0);
             }
             if (Input.GetKeyDown(KeyCode.S))
             {
-                this.Actor.PositionComponent.Translate(0.0f, 0.0f, -0.1f);
+                this.Actor.PositionComponent.Translate(0.0f, 0.0f, -5f * deltaTime);
             }
             if (Input.GetKeyDown(KeyCode.D))
             {
-                this.Actor.PositionComponent.Translate(-0.1f, 0.0f, 0.0f);
+                this.Actor.PositionComponent.Translate(-5f * deltaTime, 0.0f, 0.0f);
             }
             if (Input.GetKeyDown(KeyCode.LeftShift))
             {
-                this.Actor.PositionComponent.Translate(0.0f, -0.1f, 0.0f);
+                this.Actor.PositionComponent.Translate(0.0f, -5f * deltaTime, 0.0f);
             }
             if (Input.GetKeyDown(KeyCode.Space))
             {
-                this.Actor.PositionComponent.Translate(0.0f, 0.1f, 0.0f);
+                this.Actor.PositionComponent.Translate(0.0f, 5f * deltaTime, 0.0f);
             }
             if (Input.GetKeyDown(KeyCode.Z))
             {

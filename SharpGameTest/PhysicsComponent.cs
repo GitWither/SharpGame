@@ -13,7 +13,7 @@ namespace SharpGameTest
     class PhysicsComponent : Component
     {
         float acc = 0;
-        public override void OnUpdate()
+        public override void OnUpdate(float deltaTime)
         {
             if (this.Actor.PositionComponent.Y > 0 && !Input.GetKeyDown(KeyCode.Z)) {
                 this.Actor.PositionComponent.Translate(0, acc, 0);
