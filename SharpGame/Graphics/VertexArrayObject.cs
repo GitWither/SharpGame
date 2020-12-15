@@ -27,6 +27,8 @@ namespace SharpGame.Graphics
         private readonly List<Vector2> texCoords = new List<Vector2>();
         private readonly List<uint> indices = new List<uint>();
 
+        private Vector3 translation;
+
         private readonly Shader shader;
 
         private List<MeshRendererComponent> meshRendererComponents;
@@ -105,6 +107,7 @@ namespace SharpGame.Graphics
 
         public void AddMesh(MeshRendererComponent meshRendererComponent)
         {
+            translation = meshRendererComponent.Actor.PositionComponent;
             if (meshCount < SharedConstants.MaxMeshes)
             {
                 this.AddVertices(meshRendererComponent.Mesh.Vertices);
@@ -167,27 +170,22 @@ namespace SharpGame.Graphics
         {
             //GL.Disable(EnableCap.CullFace);
             shader.Bind();
+            translation = this.meshRendererComponents[0].Actor.PositionComponent;
             Matrix4 modelViewProjection = meshRendererComponents[0].Actor.RootScene.Camera.View * meshRendererComponents[0].Actor.RootScene.Camera.Projection;
             Matrix4 scale = Matrix4.CreateScale(meshRendererComponents[0].Actor.ScaleComponent);
+
             Matrix4 rotation = Matrix4.CreateRotationX(meshRendererComponents[0].Actor.RotationComponent.Pitch) *
                                Matrix4.CreateRotationY(meshRendererComponents[0].Actor.RotationComponent.Yaw) *
                                Matrix4.CreateRotationZ(meshRendererComponents[0].Actor.RotationComponent.Roll);
 
-            Vector3 positionDelta = meshRendererComponents[0].Actor.PositionComponent - meshRendererComponents[0].LastPositionComponent;
-            Logger.Info(positionDelta);
-            //translation = new Vector4(meshRendererComponents[0].Actor.PositionComponent, 1) * translation;
-            //Matrix4 translation = Matrix4.CreateTranslation(meshRendererComponents[0].Actor.PositionComponent);
-            //translation *= Matrix4.CreateTranslation(meshRendererComponents[0].Actor.PositionComponent.X, meshRendererComponents[0].Actor.PositionComponent.Y, meshRendererComponents[0].Actor.PositionComponent.Z);
-            //translation *= Matrix4.CreateRotationX(meshRendererComponents[0].Actor.RotationComponent.Pitch);
-            //translation *= Matrix4.CreateRotationY(meshRendererComponents[0].Actor.RotationComponent.Yaw);
-            //translation *= Matrix4.CreateRotationZ(meshRendererComponents[0].Actor.RotationComponent.Roll);
+            Matrix4 translationMatrix = Matrix4.CreateTranslation(translation);
 
-            //Matrix4 translation = Matrix4.CreateRotationY(meshRendererComponents[0].Actor.RotationComponent.Yaw);
-            //translation *= Matrix4.CreateRotationZ(meshRendererComponents[0].Actor.RotationComponent.Roll);
-            Matrix4 transformation = rotation * scale;
+            Matrix4 transformation = translationMatrix * rotation * scale;
 
             shader.UploadMatrix4(SharedConstants.UniformTranslationMatrix, ref transformation);
             shader.UploadMatrix4(SharedConstants.UniformModelViewProjection, ref modelViewProjection);
+
+            translation = Vector3.Zero;
 
             GL.BindVertexArray(id);
             GL.DrawElements(BeginMode.Triangles, count, DrawElementsType.UnsignedInt, 0);
