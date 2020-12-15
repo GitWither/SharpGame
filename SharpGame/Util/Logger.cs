@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace SharpGame.Util
 {
-    internal static class Logger
+    public static class Logger
     {
         public static void Info(object message) => Log(ConsoleColor.White, SharedConstants.LoggerLevelInfo, message);
         public static void Warn(object message) => Log(ConsoleColor.Yellow, SharedConstants.LoggerLevelWarn, message);
