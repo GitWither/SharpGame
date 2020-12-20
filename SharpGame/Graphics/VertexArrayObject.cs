@@ -1,5 +1,5 @@
 ﻿using OpenTK;
-using OpenTK.Graphics.OpenGL4;
+using OpenTK.Graphics.OpenGL;
 
 using SharpGame.Graphics.Meshes;
 using SharpGame.Objects.Components;
@@ -82,7 +82,6 @@ namespace SharpGame.Graphics
 
         ~VertexArrayObject()
         {
-            //Dispose();
         }
 
         public void AddVertices(Vector3[] vertices)
@@ -148,10 +147,10 @@ namespace SharpGame.Graphics
             GL.VertexAttribPointer(1, 2, VertexAttribPointerType.Float, false, 0, 0);
             GL.EnableVertexArrayAttrib(id, 1);
 
-            //GL.BindBuffer(BufferTarget.ArrayBuffer, bufferIds[2]);
-            //GL.BufferData(BufferTarget.ArrayBuffer, normals.Count * Vector3.SizeInBytes, normals.ToArray(), BufferUsageHint.StaticDraw);
-            //GL.VertexAttribPointer(2, 3, VertexAttribPointerType.Float, false, 0, 0);
-            //GL.EnableVertexArrayAttrib(id, 2);
+            GL.BindBuffer(BufferTarget.ArrayBuffer, bufferIds[2]);
+            GL.BufferData(BufferTarget.ArrayBuffer, normals.Count * Vector3.SizeInBytes, normals.ToArray(), BufferUsageHint.StaticDraw);
+            GL.VertexAttribPointer(2, 3, VertexAttribPointerType.Float, false, 0, 0);
+            GL.EnableVertexArrayAttrib(id, 2);
 
 
             GL.BindBuffer(BufferTarget.ElementArrayBuffer, indicesId);
@@ -189,6 +188,10 @@ namespace SharpGame.Graphics
 
             GL.BindVertexArray(id);
             GL.DrawElements(BeginMode.Triangles, count, DrawElementsType.UnsignedInt, 0);
+
+            //GL.DisableVertexArrayAttrib(id, 0);
+            //GL.DisableVertexArrayAttrib(id, 1);
+            //GL.DisableVertexArrayAttrib(id, 2);
         }
 
         public void Dispose()
