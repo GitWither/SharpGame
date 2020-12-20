@@ -35,19 +35,9 @@ namespace SharpGame.Objects.Components
 
         public override void OnUpdate(float deltaTime)
         {
-            /*
-            if (keyboardState.IsKeyDown(Key.Z))
-            {
-                GL.PolygonMode(MaterialFace.FrontAndBack, PolygonMode.Line);
-            }
-            if (keyboardState.IsKeyUp(Key.Z))
-            {
-                GL.PolygonMode(MaterialFace.FrontAndBack, PolygonMode.Fill);
-            }
-            */
-            float forwardX = (float)(Math.Sin(this.Actor.RotationComponent.Yaw) * Math.Cos(this.Actor.RotationComponent.Pitch));
-            float forwardY = (float)Math.Sin(this.Actor.RotationComponent.Pitch);
-            float forwardZ = -(float)(Math.Cos(this.Actor.RotationComponent.Yaw) * Math.Cos(this.Actor.RotationComponent.Pitch));
+            float forwardX = (float)(Math.Sin(MathHelper.DegreesToRadians(this.Actor.RotationComponent.Yaw)) * Math.Cos(MathHelper.DegreesToRadians(this.Actor.RotationComponent.Pitch)));
+            float forwardY = (float)Math.Sin(MathHelper.DegreesToRadians(this.Actor.RotationComponent.Pitch));
+            float forwardZ = -(float)(Math.Cos(MathHelper.DegreesToRadians(this.Actor.RotationComponent.Yaw)) * Math.Cos(MathHelper.DegreesToRadians(this.Actor.RotationComponent.Pitch)));
 
             this.View = Matrix4.LookAt(
                 this.Actor.PositionComponent.X, this.Actor.PositionComponent.Y, this.Actor.PositionComponent.Z,
