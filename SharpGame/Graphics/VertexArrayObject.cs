@@ -174,9 +174,9 @@ namespace SharpGame.Graphics
             Matrix4 modelViewProjection = meshRendererComponents[0].Actor.RootScene.Camera.View * meshRendererComponents[0].Actor.RootScene.Camera.Projection;
             Matrix4 scale = Matrix4.CreateScale(meshRendererComponents[0].Actor.ScaleComponent);
 
-            Matrix4 rotation = Matrix4.CreateRotationX(meshRendererComponents[0].Actor.RotationComponent.Pitch) *
-                               Matrix4.CreateRotationY(meshRendererComponents[0].Actor.RotationComponent.Yaw) *
-                               Matrix4.CreateRotationZ(meshRendererComponents[0].Actor.RotationComponent.Roll);
+            Matrix4 rotation = Matrix4.CreateRotationX(MathHelper.DegreesToRadians(meshRendererComponents[0].Actor.RotationComponent.Pitch)) *
+                               Matrix4.CreateRotationY(MathHelper.DegreesToRadians(meshRendererComponents[0].Actor.RotationComponent.Yaw)) *
+                               Matrix4.CreateRotationZ(MathHelper.DegreesToRadians(meshRendererComponents[0].Actor.RotationComponent.Roll));
 
             Matrix4 translationMatrix = Matrix4.CreateTranslation(translation);
 
