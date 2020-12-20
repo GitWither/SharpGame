@@ -53,7 +53,7 @@ namespace SharpGame.Graphics.Meshes
                         if (float.TryParse(data[0], out float u) &&
                             float.TryParse(data[1], out float v))
                         {
-                            tempUVs.Add(new Vector2(u, v));
+                            tempUVs.Add(new Vector2(u, -v));
                         }
                         break;
                     case SharedConstants.NormalMeshToken:
@@ -87,9 +87,9 @@ namespace SharpGame.Graphics.Meshes
                 }
             }
 
-            List<Vector3> newVertices = new List<Vector3>();
-            List<Vector2> newUVs = new List<Vector2>();
-            List<Vector3> newNormals = new List<Vector3>();
+            List<Vector3> in_vertices = new List<Vector3>();
+            List<Vector2> in_uvs = new List<Vector2>();
+            List<Vector3> in_normals = new List<Vector3>();
 
             for (int i = 0; i < vertexIndices.Count; i++)
             {
@@ -100,57 +100,60 @@ namespace SharpGame.Graphics.Meshes
                 Vector3 vertex = tempVertices[(int)(vertexIndex - 1)];
                 Vector3 normal = tempNormals[(int)(normalIndex - 1)];
                 Vector2 texCoord = tempUVs[(int)(texIndex - 1)];
-                newVertices.Add(vertex);
-                newNormals.Add(normal);
-                newUVs.Add(texCoord);
+                in_vertices.Add(vertex);
+                in_normals.Add(normal);
+                in_uvs.Add(texCoord);
             }
 
-            List<Vector3> finalVertices = new List<Vector3>();
-            List<Vector2> finalUvs = new List<Vector2>();
-            List<Vector3> finalNormals = new List<Vector3>();
-            List<uint> finalIndices = new List<uint>();
-            for(int i = 0; i < newVertices.Count; i++)
+            List<Vector3> out_vertices = new List<Vector3>();
+            List<Vector2> out_uvs = new List<Vector2>();
+            List<Vector3> out_normals = new List<Vector3>();
+            List<uint> out_indices = new List<uint>();
+            ushort indexX = 0;
+            for (uint i = 0; i < in_vertices.Count; i++)
             {
-                int index = 0;
-                bool yes = test2(newVertices[i], newNormals[i], newUVs[i], ref finalVertices, ref finalNormals, ref finalUvs, ref index);
+                bool yes = getSimilarVertexindex(in_vertices[(int)i], in_normals[(int)i], in_uvs[(int)i], ref out_vertices, ref out_normals, ref out_uvs, ref indexX);
+
+                
                 if (yes)
                 {
-                    finalIndices.Add((uint)index);
+                    out_indices.Add(indexX);
                 }
                 else
                 {
-                    finalVertices.Add(newVertices[i]);
-                    finalUvs.Add(newUVs[i]);
-                    finalNormals.Add(newNormals[i]);
-                    finalIndices.Add((uint)finalVertices.Count - 1);
+                    out_vertices.Add(in_vertices[(int)i]);
+                    out_uvs.Add(in_uvs[(int)i]);
+                    out_normals.Add(in_normals[(int)i]);
+                    out_indices.Add((uint)out_vertices.Count - 1);
                 }
-                Logger.Error(index);
+                //Logger.Error(index);
             }
-            return new Mesh(finalVertices.ToArray(), finalNormals.ToArray(), finalUvs.ToArray(), finalIndices.ToArray());
+            return new Mesh(out_vertices.ToArray(), out_normals.ToArray(), out_uvs.ToArray(), out_indices.ToArray());
         }
 
-        public static bool test(float x, float y)
+        public static bool is_near(float v1, float v2)
         {
             //Logger.Debug(Math.Abs(x - y) < 0.01f);
-            return Math.Abs(x - y) < 0.01f;
+            return Math.Abs(v1 - v2) < 0.01f;
         }
 
-        public static bool test2(Vector3 vertex, Vector3 normal, Vector2 uv, ref List<Vector3> vertices, ref List<Vector3> normals, ref List<Vector2> uvs, ref int index)
+        public static bool getSimilarVertexindex(Vector3 in_vertex, Vector3 in_normal, Vector2 in_uv, ref List<Vector3> out_vertices, ref List<Vector3> out_normals, ref List<Vector2> uvs, ref ushort index)
         {
-            for (int i = 0; i < vertices.Count; i++)
+            for (uint i = 0; i < out_vertices.Count; i++)
             {
                 //Logger.Error(i);
                 //Logger.Debug(test(vertex.X, vertices[i].X) + " " + test(vertex.Y, vertices[i].Y) + " " + test(vertex.Z, vertices[i].Z) + "/ " + test(uv.X, uvs[i].X) + " " + test(uv.Y, uvs[i].Y));
-                if (test(vertex.X, vertices[i].X) &&
-                    test(vertex.Y, vertices[i].Y) &&
-                    test(vertex.Z, vertices[i].Z) &&
-                    test(normal.X, normals[i].X) &&
-                    test(normal.Y, normals[i].Y) &&
-                    test(normal.Z, normals[i].Z) &&
-                    test(uv.X, uvs[i].X) &&
-                    test(uv.Y, uvs[i].Y))
+                if (is_near(in_vertex.X, out_vertices[(ushort)i].X) &&
+                    is_near(in_vertex.Y, out_vertices[(ushort)i].Y) &&
+                    is_near(in_vertex.Z, out_vertices[(ushort)i].Z) &&
+                    is_near(in_normal.X, out_normals[(ushort)i].X) &&
+                    is_near(in_normal.Y, out_normals[(ushort)i].Y) &&
+                    is_near(in_normal.Z, out_normals[(ushort)i].Z) &&
+                    is_near(in_uv.X, uvs[(ushort)i].X) &&
+                    is_near(in_uv.Y, uvs[(ushort)i].Y))
                 {
-                    index = i;
+                    index = (ushort)i;
+                    //Logger.Warn("Similar vertex index: " + index);
                     return true;
                 }
 
