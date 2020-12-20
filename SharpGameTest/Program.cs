@@ -22,19 +22,15 @@ namespace SharpGameTest
             Scene scene = new Scene();
 
             Actor field = new Actor();
-            field.AddComponent(new MeshRendererComponent(Mesh.FromOBJ("test")));
-
-            Actor cannon = new Actor();
-            cannon.AddComponent(new MeshRendererComponent(Mesh.FromOBJ("cannon")));
-            cannon.AddComponent(new EpicComponent());
+            field.AddComponent(new MeshRendererComponent(Mesh.FromOBJ("suzanne")));
 
             Actor camera = new Actor();
-            camera.AddComponent(new CameraComponent(70f, 0.01f, 100f));
+            camera.AddComponent(new CameraComponent(70f, 0.5f, 100f));
             camera.AddComponent(new PlayerControlledComponent());
+            camera.AddComponent(new AnotherComponent());
 
             scene.AddActor(camera);
             scene.AddActor(field);
-            scene.AddActor(cannon);
 
             window.LoadScene(scene);
 

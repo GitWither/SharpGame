@@ -15,12 +15,11 @@ namespace SharpGameTest
         float acc = 0;
         public override void OnUpdate(float deltaTime)
         {
-            if (this.Actor.PositionComponent.Y > 0 && !Input.GetKeyDown(KeyCode.Z)) {
-                this.Actor.PositionComponent.Translate(0, acc, 0);
-                acc -= 0.0981f;
-                Logger.Warn(acc);
+            if (this.Actor.PositionComponent.Y > 1.8) {
+                this.Actor.PositionComponent.Translate(0, acc * deltaTime, 0);
+                acc -= 0.00981f;
             }
-            else if (this.Actor.PositionComponent.Y <= 0)
+            else if (this.Actor.PositionComponent.Y <= 1.8)
             {
                 acc = 0;
             }
