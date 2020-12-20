@@ -15,6 +15,7 @@ namespace SharpGame
         S = 101,
         Z = 108,
         D = 86,
+        C = 85,
         Space = 51,
         LeftShift = 1
     }

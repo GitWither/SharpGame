@@ -1,5 +1,7 @@
 ﻿using OpenTK.Input;
 
+using SharpGame.Util;
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,6 +13,7 @@ namespace SharpGame
     public static class Input
     {
         private static KeyboardState keyboardState;
+        public static MouseState mouseState;
 
         /// <summary>
         /// Checks whether a key is held down
@@ -33,6 +36,18 @@ namespace SharpGame
         {
             keyboardState = Keyboard.GetState();
             return keyboardState.IsKeyUp((Key)key) || keyboardState.IsKeyDown((Key)key);
+        }
+
+        public static float GetAxis(MouseAxis mouseAxis)
+        {
+            MouseState newMouseState = Mouse.GetState();
+            float value = 0;
+            if (mouseState != null)
+            {
+                value = (mouseAxis == MouseAxis.Y) ? (newMouseState.Y - mouseState.Y) : (mouseState.X - newMouseState.X);
+            }
+            mouseState = newMouseState;
+            return value;
         }
     }
 }
