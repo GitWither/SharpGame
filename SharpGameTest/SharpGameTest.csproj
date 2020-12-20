@@ -50,6 +50,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AnotherComponent.cs" />
     <Compile Include="EpicComponent.cs" />
     <Compile Include="PhysicsComponent.cs" />
     <Compile Include="Program.cs" />
