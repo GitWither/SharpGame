@@ -28,7 +28,7 @@ namespace SharpGame.Objects
 
         public Scene()
         {
-            missing = new Texture("missing");
+            missing = new Texture("uvmap");
             renderer = new Renderer();
         }
 
