@@ -63,6 +63,7 @@ namespace SharpGame
             GL.Enable(EnableCap.DepthTest);
             GL.Enable(EnableCap.CullFace);
             GL.Enable(EnableCap.LineSmooth);
+            GL.Enable(EnableCap.PolygonSmooth);
             //GL.PolygonMode(MaterialFace.FrontAndBack, PolygonMode.Line);
 
             GL.DepthFunc(DepthFunction.Less);
