@@ -65,10 +65,9 @@ namespace SharpGame.Objects
 
         public void OnUpdate(float deltaTime)
         {
-            foreach (Actor obj in actors)
+            for (int i = 0; i < SharedConstants.MaxActors; i++)
             {
-                //FIXME: Make this a for loop later
-                obj?.OnUpdate(deltaTime);
+                actors[i]?.OnUpdate(deltaTime);
             }
         }
 
