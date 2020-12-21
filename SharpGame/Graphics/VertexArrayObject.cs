@@ -77,7 +77,7 @@ namespace SharpGame.Graphics
             meshRendererComponents = new List<MeshRendererComponent>();
             HasRoom = true;
 
-            shader = new Shader("shader");
+            shader = Shader.Unlit;
         }
 
         ~VertexArrayObject()

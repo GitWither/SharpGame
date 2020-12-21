@@ -14,6 +14,8 @@ namespace SharpGame.Graphics
 {
     public class Shader : IDisposable
     {
+        public static Shader Unlit = new Shader("shader");
+
         private readonly int programId;
 
         public Shader(string path) 
@@ -88,7 +90,7 @@ namespace SharpGame.Graphics
 
         public void Dispose()
         {
-            
+            GL.DeleteProgram(programId);
         }
     }
 }
