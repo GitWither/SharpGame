@@ -7,10 +7,12 @@ using System.Threading;
 using System.Threading.Tasks;
 
 using OpenTK;
+using OpenTK.Audio.OpenAL;
 using OpenTK.Graphics;
 using OpenTK.Graphics.OpenGL4;
 using OpenTK.Input;
 
+using SharpGame.Graphics;
 using SharpGame.Graphics.Meshes;
 using SharpGame.Objects;
 using SharpGame.Util;
@@ -55,6 +57,10 @@ namespace SharpGame
                 activeScene?.OnShutdown();
                 activeScene = scene;
                 activeScene.OnAwake();
+            }
+            else
+            {
+                Logger.Warn("This scene is already loaded. Skipping.");
             }
         }
 
