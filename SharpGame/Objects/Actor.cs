@@ -101,16 +101,5 @@ namespace SharpGame.Objects
                 components[i]?.OnShutdown();
             }
         }
-
-        public virtual void OnDraw()
-        {
-            /*
-            MeshRendererComponent mesh = this.GetComponent<MeshRendererComponent>();
-            if (mesh != null)
-            {
-                mesh.Mesh.Draw();
-            }
-            */
-        }
     }
 }
