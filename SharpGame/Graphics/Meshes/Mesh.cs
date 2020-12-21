@@ -16,12 +16,14 @@ namespace SharpGame.Graphics.Meshes
     {
         public Vector3[] Vertices { get; set; }
         public Vector2[] FaceTexCoords { get; set; }
+        public Vector3[] Normals { get; set; }
         public uint[] FaceIndices { get; set; }
         public Mesh(Vector3[] vertices, Vector3[] normals, Vector2[] texCoords, uint[] faceIndices)
         {
             this.Vertices = vertices;
             this.FaceTexCoords = texCoords;
             this.FaceIndices = faceIndices;
+            this.Normals = normals;
         }
 
         //I don't know why, I don't want to know why, I shouldn't have to wonder why, but this piece of code was the most painful thing I ever worked with

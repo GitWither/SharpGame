@@ -112,6 +112,7 @@ namespace SharpGame.Graphics
                 this.AddVertices(meshRendererComponent.Mesh.Vertices);
                 this.AddIndices(meshRendererComponent.Mesh.FaceIndices);
                 this.AddTexCoords(meshRendererComponent.Mesh.FaceTexCoords);
+                this.AddNormals(meshRendererComponent.Mesh.Normals);
                 this.meshRendererComponents.Add(meshRendererComponent);
 
 
