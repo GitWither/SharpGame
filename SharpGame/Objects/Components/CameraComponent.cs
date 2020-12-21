@@ -37,11 +37,11 @@ namespace SharpGame.Objects.Components
         {
             float forwardX = (float)(Math.Sin(MathHelper.DegreesToRadians(this.Actor.RotationComponent.Yaw)) * Math.Cos(MathHelper.DegreesToRadians(this.Actor.RotationComponent.Pitch)));
             float forwardY = (float)Math.Sin(MathHelper.DegreesToRadians(this.Actor.RotationComponent.Pitch));
-            float forwardZ = -(float)(Math.Cos(MathHelper.DegreesToRadians(this.Actor.RotationComponent.Yaw)) * Math.Cos(MathHelper.DegreesToRadians(this.Actor.RotationComponent.Pitch)));
+            float forwardZ = (float)(Math.Cos(MathHelper.DegreesToRadians(this.Actor.RotationComponent.Yaw)) * Math.Cos(MathHelper.DegreesToRadians(this.Actor.RotationComponent.Pitch)));
 
             this.View = Matrix4.LookAt(
                 this.Actor.PositionComponent.X, this.Actor.PositionComponent.Y, this.Actor.PositionComponent.Z,
-                this.Actor.PositionComponent.X - forwardX, this.Actor.PositionComponent.Y - forwardY, this.Actor.PositionComponent.Z - forwardZ,
+                this.Actor.PositionComponent.X + forwardX, this.Actor.PositionComponent.Y + forwardY, this.Actor.PositionComponent.Z + forwardZ,
                 0, 1, 0
                 );
         }
