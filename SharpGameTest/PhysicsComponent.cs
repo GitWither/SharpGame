@@ -12,12 +12,12 @@ namespace SharpGameTest
 {
     class PhysicsComponent : Component
     {
-        float acc = 0;
+        float acc = 55;
         public override void OnUpdate(float deltaTime)
         {
-            if (this.Actor.PositionComponent.Y > 1.8) {
+            if (this.Actor.PositionComponent.Y > 0) {
                 this.Actor.PositionComponent.Translate(0, acc * deltaTime, 0);
-                acc -= 0.00981f;
+                acc -= 0.981f;
             }
             else if (this.Actor.PositionComponent.Y <= 1.8)
             {
