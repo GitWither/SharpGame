@@ -17,10 +17,10 @@ namespace SharpGame.Objects.Components
         public bool Static { get; private set; }
         public PositionComponent LastPositionComponent { get; private set; }
 
-        public MeshRendererComponent(Mesh mesh)
+        public MeshRendererComponent(Mesh mesh, bool isStatic = false)
         {
             this.Mesh = mesh;
-            Static = false;
+            Static = isStatic;
         }
 
         public override void OnAwake()
