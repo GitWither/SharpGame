@@ -72,7 +72,6 @@ namespace SharpGame
 
             if (activeScene != null)
             {
-                activeScene.BindTexture();
                 activeScene.Render();
             }
             else

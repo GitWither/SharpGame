@@ -28,7 +28,7 @@ namespace SharpGame.Objects
 
         public Scene()
         {
-            missing = new Texture("uvmap");
+            missing = new Texture("T_Cyclone_Body_D.tga");
             renderer = new Renderer();
         }
 
@@ -57,13 +57,9 @@ namespace SharpGame.Objects
             }
         }
 
-        public void BindTexture()
-        {
-            missing.Bind(TextureUnit.Texture0);
-        }
-
         public void Render()
         {
+            missing.Bind(TextureUnit.Texture0);
             renderer.Render();
         }
 
