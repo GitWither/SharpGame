@@ -2,7 +2,7 @@
 using SharpGame.Graphics.Meshes;
 using SharpGame.Objects;
 using SharpGame.Objects.Components;
-using SharpGame.Util;
+using SharpGame.Input;
 
 using System;
 
@@ -26,7 +26,7 @@ namespace SharpGameTest
         public override void OnUpdate(float deltaTime)
         {
             base.OnUpdate(deltaTime);
-            if (Input.GetKeyDown(KeyCode.Z))
+            if (InputSystem.GetKeyDown(KeyCode.Z))
             {
                 GetComponent<PositionComponent>().Set(0, 50, 5);
             }

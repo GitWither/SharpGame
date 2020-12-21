@@ -22,7 +22,11 @@ namespace SharpGameTest
             Scene scene = new Scene();
 
             Actor field = new Actor();
-            field.AddComponent(new MeshRendererComponent(Mesh.FromOBJ("suzanne")));
+            field.AddComponent(new MeshRendererComponent(Mesh.FromOBJ("scene")));
+
+            Actor rocket = new Actor();
+            rocket.AddComponent(new MeshRendererComponent(Mesh.FromOBJ("cannon")));
+            rocket.AddComponent(new EpicComponent());
 
             Actor camera = new Actor();
             camera.AddComponent(new CameraComponent(70f, 0.5f, 100f));
@@ -31,6 +35,7 @@ namespace SharpGameTest
 
             scene.AddActor(camera);
             scene.AddActor(field);
+            scene.AddActor(rocket);
 
             window.LoadScene(scene);
 
