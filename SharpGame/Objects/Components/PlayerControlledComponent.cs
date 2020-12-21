@@ -5,45 +5,66 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-
+using SharpGame.Input;
+using OpenTK;
+using SharpGame.Util;
 
 namespace SharpGame.Objects.Components
 {
     public class PlayerControlledComponent : Component
     {
+        public float factor = 0.5f;
+        Vector3 Right = Vector3.UnitX;
+        Vector3 Forward = Vector3.UnitZ;
+
         public override void OnUpdate(float deltaTime)
         {
-            if (Input.GetKeyDown(KeyCode.W))
+            float forwardX = (float)(Math.Sin(MathHelper.DegreesToRadians(this.Actor.RotationComponent.Yaw)) * Math.Cos(MathHelper.DegreesToRadians(this.Actor.RotationComponent.Pitch)));
+            float forwardY = (float)Math.Sin(MathHelper.DegreesToRadians(this.Actor.RotationComponent.Pitch));
+            float forwardZ = (float)(Math.Cos(MathHelper.DegreesToRadians(this.Actor.RotationComponent.Yaw)) * Math.Cos(MathHelper.DegreesToRadians(this.Actor.RotationComponent.Pitch)));
+
+            Forward = new Vector3(forwardX, forwardY, forwardZ);
+            Right = Vector3.Cross(Vector3.UnitY, Forward);
+            Right.NormalizeFast();
+
+            Vector3 delta = Vector3.Zero;
+
+            if (InputSystem.GetKeyDown(KeyCode.W))
             {
-                this.Actor.PositionComponent.Translate(0.0f, 0.0f, 5f * deltaTime);
+                delta.Z += factor;
             }
-            if (Input.GetKeyDown(KeyCode.A))
+            if (InputSystem.GetKeyDown(KeyCode.A))
             {
-                this.Actor.PositionComponent.Translate(5f * deltaTime, 0.0f, 0);
+                delta.X += factor;
             }
-            if (Input.GetKeyDown(KeyCode.S))
+            if (InputSystem.GetKeyDown(KeyCode.S))
             {
-                this.Actor.PositionComponent.Translate(0.0f, 0.0f, -5f * deltaTime);
+                delta.Z -= factor;
             }
-            if (Input.GetKeyDown(KeyCode.D))
+            if (InputSystem.GetKeyDown(KeyCode.D))
             {
-                this.Actor.PositionComponent.Translate(-5f * deltaTime, 0.0f, 0.0f);
+                delta.X -= factor;
             }
-            if (Input.GetKeyDown(KeyCode.LeftShift))
+            if (InputSystem.GetKeyDown(KeyCode.LeftShift))
             {
-                this.Actor.PositionComponent.Translate(0.0f, -5f * deltaTime, 0.0f);
+                delta.Y -= factor;
             }
-            if (Input.GetKeyDown(KeyCode.Space))
+            if (InputSystem.GetKeyDown(KeyCode.Space))
             {
-                this.Actor.PositionComponent.Translate(0.0f, 5f * deltaTime, 0.0f);
+                delta.Y += factor;
             }
-            if (Input.GetKeyDown(KeyCode.Z))
+            if (InputSystem.GetKeyDown(KeyCode.Z))
             {
                 GL.PolygonMode(MaterialFace.FrontAndBack, PolygonMode.Line);
             }
-            if (Input.GetKeyUp(KeyCode.Z))
+            if (InputSystem.GetKeyUp(KeyCode.Z))
             {
                 GL.PolygonMode(MaterialFace.FrontAndBack, PolygonMode.Fill);
+            }
+
+            if (delta.LengthSquared > 0.0001f)
+            {
+                this.Actor.PositionComponent.Translate((Right.X * delta.X) + (Forward.X * delta.Z), delta.Y, (Forward.Z * delta.Z) + (Right.Z * delta.X));
             }
         }
     }

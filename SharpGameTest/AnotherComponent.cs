@@ -3,6 +3,7 @@ using OpenTK.Input;
 
 using SharpGame;
 using SharpGame.Objects.Components;
+using SharpGame.Input;
 using SharpGame.Util;
 
 using System;
@@ -17,17 +18,17 @@ namespace SharpGameTest
     {
         public override void OnUpdate(float deltaTime)
         {
-            /*
-            MouseState newMouseState = Mouse.GetState();
-            if (Input.mouseState.HasValue)
+            Vector2 mouseDelta = InputSystem.GetMouseAxis() * 0.05f;
+            this.Actor.RotationComponent.Rotate(-mouseDelta.Y, mouseDelta.X, 0);
+
+            if (this.Actor.RotationComponent.Pitch >= 89)
             {
-                //return (mouseAxis == MouseAxis.X) ? (newMouseState.Y - mouseState.Value.Y) : (mouseState.Value.X - newMouseState.X);
-                Logger.Info(Input.mouseState.Value.X - newMouseState.X);
+                this.Actor.RotationComponent.Set(89, this.Actor.RotationComponent.Yaw, this.Actor.RotationComponent.Roll);
             }
-            Input.mouseState = newMouseState;
-            */
-            //this.Actor.RotationComponent.Rotate(-Input.GetAxis(MouseAxis.Y) * 0.05f, -Input.GetAxis(MouseAxis.X) * 0.05f, 0);
-           // Logger.Info((-Input.GetAxis(MouseAxis.X) * 0.05f) + " " + (-Input.GetAxis(MouseAxis.X) * 0.05f));
+            else if (this.Actor.RotationComponent.Pitch <= -89)
+            {
+                this.Actor.RotationComponent.Set(-89, this.Actor.RotationComponent.Yaw, this.Actor.RotationComponent.Roll);
+            }
         }
     }
 }

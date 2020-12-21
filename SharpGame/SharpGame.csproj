@@ -50,6 +50,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Audio\Sound.cs" />
     <Compile Include="Graphics\Meshes\Mesh.cs" />
     <Compile Include="Graphics\Renderer.cs" />
     <Compile Include="Graphics\Shader.cs" />
@@ -78,5 +79,6 @@
     <None Include="OpenTK.dll.config" />
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
