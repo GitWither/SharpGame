@@ -21,14 +21,12 @@ namespace SharpGame.Objects
         private bool isRunning = false;
 
         private readonly Actor[] actors = new Actor[SharedConstants.MaxActors];
-        private readonly Texture missing;
 
-        private Renderer renderer;
+        private readonly Renderer renderer;
 
 
         public Scene()
         {
-            missing = new Texture("T_Cyclone_Body_D.tga");
             renderer = new Renderer();
         }
 
@@ -59,7 +57,6 @@ namespace SharpGame.Objects
 
         public void Render()
         {
-            missing.Bind(TextureUnit.Texture0);
             renderer.Render();
         }
 
@@ -78,6 +75,33 @@ namespace SharpGame.Objects
                 actors[i]?.OnShutdown();
             }
             this.isRunning = false;
+        }
+
+        public Actor[] GetActorsByComponent<T>() where T: Component
+        {
+            List<Actor> filteredActors = new List<Actor>();
+            for (int i = 0; i < SharedConstants.MaxActors; i++)
+            {
+                if (this.actors[i] != null)
+                {
+                    if (this.actors[i].HasComponent<T>())
+                    {
+                        filteredActors.Add(this.actors[i]);
+                    }
+                }
+            }
+            return filteredActors.ToArray();
+        }
+
+        public void RemoveActor(Actor actor)
+        {
+            for (int i = 0; i < SharedConstants.MaxActors; i++)
+            {
+                if (this.actors[i] != null && this.actors[i] == actor)
+                {
+                    this.actors[i] = null;
+                }
+            }
         }
 
         public void Dispose()
