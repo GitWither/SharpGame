@@ -1,5 +1,6 @@
 ﻿using OpenTK.Audio.OpenAL;
 
+using SharpGame.Graphics;
 using SharpGame.Graphics.Meshes;
 using SharpGame.Util;
 
@@ -14,18 +15,15 @@ namespace SharpGame.Objects.Components
     public class MeshRendererComponent : Component
     {
         public Mesh Mesh { get; private set; }
+        public Texture Texture { get; private set; }
+        public Shader Shader { get; private set; }
         public bool Static { get; private set; }
-        public PositionComponent LastPositionComponent { get; private set; }
 
-        public MeshRendererComponent(Mesh mesh, bool isStatic = false)
+        public MeshRendererComponent(Mesh mesh, Texture texture, Shader shader)
         {
             this.Mesh = mesh;
-            Static = isStatic;
-        }
-
-        public override void OnAwake()
-        {
-            this.LastPositionComponent = this.Actor.PositionComponent;
+            this.Texture = texture;
+            this.Shader = shader;
         }
     }
 }

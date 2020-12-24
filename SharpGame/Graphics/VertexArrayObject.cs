@@ -1,5 +1,5 @@
 ﻿using OpenTK;
-using OpenTK.Graphics.OpenGL;
+using OpenTK.Graphics.OpenGL4;
 
 using SharpGame.Graphics.Meshes;
 using SharpGame.Objects.Components;
@@ -29,43 +29,11 @@ namespace SharpGame.Graphics
 
         private Vector3 translation;
 
-        private readonly Shader shader;
-
-        private List<MeshRendererComponent> meshRendererComponents;
+        private MeshRendererComponent meshRendererComponent;
 
         private int meshCount;
 
         public bool HasRoom { get; private set; }
-
-        public Vector3[] Vertices
-        {
-            get
-            {
-                return vertices.ToArray();
-            }
-        }
-        public Vector2[] TexCoords
-        {
-            get
-            {
-                return texCoords.ToArray();
-            }
-        }
-
-        public Vector3[] Normals
-        {
-            get
-            {
-                return normals.ToArray();
-            }
-        }
-        public uint[] Indices
-        {
-            get
-            {
-                return indices.ToArray();
-            }
-        }
 
 
         public VertexArrayObject()
@@ -74,10 +42,7 @@ namespace SharpGame.Graphics
             GL.GenBuffers(bufferIds.Length, bufferIds);
             indicesId = GL.GenBuffer();
 
-            meshRendererComponents = new List<MeshRendererComponent>();
             HasRoom = true;
-
-            shader = Shader.Unlit;
         }
 
         ~VertexArrayObject()
@@ -106,30 +71,12 @@ namespace SharpGame.Graphics
 
         public void AddMesh(MeshRendererComponent meshRendererComponent)
         {
-            translation = meshRendererComponent.Actor.PositionComponent;
-            if (meshCount < SharedConstants.MaxMeshes)
-            {
-                this.AddVertices(meshRendererComponent.Mesh.Vertices);
-                this.AddIndices(meshRendererComponent.Mesh.FaceIndices);
-                this.AddTexCoords(meshRendererComponent.Mesh.FaceTexCoords);
-                this.AddNormals(meshRendererComponent.Mesh.Normals);
-                this.meshRendererComponents.Add(meshRendererComponent);
+            this.AddVertices(meshRendererComponent.Mesh.Vertices);
+            this.AddIndices(meshRendererComponent.Mesh.FaceIndices);
+            this.AddTexCoords(meshRendererComponent.Mesh.FaceTexCoords);
+            this.AddNormals(meshRendererComponent.Mesh.Normals);
 
-
-                Matrix4 transformMatrix = Matrix4.CreateTranslation(meshRendererComponent.Actor.PositionComponent.X, meshRendererComponent.Actor.PositionComponent.Y, meshRendererComponent.Actor.PositionComponent.Z);
-                for (int i = 0; i < vertices.Count; i++)
-                {
-                    Vector4 pos = new Vector4(vertices[i], 1);
-                    pos = transformMatrix * pos;
-                    vertices[i] = new Vector3(pos.Xyz);
-                }
-
-                meshCount++;
-            }
-            else
-            {
-                HasRoom = false;
-            }
+            this.meshRendererComponent = meshRendererComponent;
         }
 
         public void Upload()
@@ -168,27 +115,32 @@ namespace SharpGame.Graphics
 
         public void Render()
         {
-            //GL.Disable(EnableCap.CullFace);
-            shader.Bind();
-            translation = this.meshRendererComponents[0].Actor.PositionComponent;
-            Matrix4 modelViewProjection = meshRendererComponents[0].Actor.RootScene.Camera.View * meshRendererComponents[0].Actor.RootScene.Camera.Projection;
-            Matrix4 scale = Matrix4.CreateScale(meshRendererComponents[0].Actor.ScaleComponent);
+            meshRendererComponent.Shader.Bind();
+            meshRendererComponent.Texture.Bind(TextureUnit.Texture0);
 
-            Matrix4 rotation = Matrix4.CreateRotationX(MathHelper.DegreesToRadians(meshRendererComponents[0].Actor.RotationComponent.Pitch)) *
-                               Matrix4.CreateRotationY(MathHelper.DegreesToRadians(meshRendererComponents[0].Actor.RotationComponent.Yaw)) *
-                               Matrix4.CreateRotationZ(MathHelper.DegreesToRadians(meshRendererComponents[0].Actor.RotationComponent.Roll));
+            translation = this.meshRendererComponent.Actor.PositionComponent;
+
+            Matrix4 modelViewProjection = meshRendererComponent.Actor.RootScene.Camera.View * meshRendererComponent.Actor.RootScene.Camera.Projection;
+            Matrix4 scale = Matrix4.CreateScale(meshRendererComponent.Actor.ScaleComponent);
+
+            Matrix4 rotation = Matrix4.CreateRotationX(MathHelper.DegreesToRadians(meshRendererComponent.Actor.RotationComponent.Pitch)) *
+                               Matrix4.CreateRotationY(MathHelper.DegreesToRadians(meshRendererComponent.Actor.RotationComponent.Yaw)) *
+                               Matrix4.CreateRotationZ(MathHelper.DegreesToRadians(meshRendererComponent.Actor.RotationComponent.Roll));
 
             Matrix4 translationMatrix = Matrix4.CreateTranslation(translation);
 
             Matrix4 transformation = translationMatrix * rotation * scale;
 
-            shader.UploadMatrix4(SharedConstants.UniformTranslationMatrix, ref transformation);
-            shader.UploadMatrix4(SharedConstants.UniformModelViewProjection, ref modelViewProjection);
+            meshRendererComponent.Shader.UploadMatrix4(SharedConstants.UniformTranslationMatrix, ref transformation);
+            meshRendererComponent.Shader.UploadMatrix4(SharedConstants.UniformModelViewProjection, ref modelViewProjection);
 
             translation = Vector3.Zero;
 
             GL.BindVertexArray(id);
             GL.DrawElements(BeginMode.Triangles, count, DrawElementsType.UnsignedInt, 0);
+
+            meshRendererComponent.Texture.Unbind();
+            meshRendererComponent.Shader.Unbind();
 
             //GL.DisableVertexArrayAttrib(id, 0);
             //GL.DisableVertexArrayAttrib(id, 1);
