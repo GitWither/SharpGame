@@ -10,6 +10,7 @@ using SharpGame.Graphics.Meshes;
 using OpenTK;
 using System.Drawing;
 using SharpGame.Objects.Components;
+using SharpGame.Graphics;
 
 namespace SharpGameTest
 {
@@ -18,14 +19,18 @@ namespace SharpGameTest
         static void Main(string[] args)
         {
             SharpGameWindow window = new SharpGameWindow(1270, 720, "SharpGame");
+            Shader lit = new Shader("lit");
+            Shader unlit = new Shader("unlit");
 
             Scene scene = new Scene();
 
+            Texture missing = new Texture("missing");
+
             Actor field = new Actor();
-            field.AddComponent(new MeshRendererComponent(Mesh.FromOBJ("scene")));
+            field.AddComponent(new MeshRendererComponent(Mesh.FromOBJ("scene"), missing, lit));
 
             Actor rocket = new Actor();
-            rocket.AddComponent(new MeshRendererComponent(Mesh.FromOBJ("cannon")));
+            rocket.AddComponent(new MeshRendererComponent(Mesh.FromOBJ("cannon"), missing, unlit));
             rocket.AddComponent(new EpicComponent());
 
             Actor camera = new Actor();

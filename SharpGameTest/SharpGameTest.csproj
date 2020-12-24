@@ -51,6 +51,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AnotherComponent.cs" />
+    <Compile Include="CoolComponent.cs" />
+    <Compile Include="DeathComponent.cs" />
     <Compile Include="EpicComponent.cs" />
     <Compile Include="PhysicsComponent.cs" />
     <Compile Include="Program.cs" />

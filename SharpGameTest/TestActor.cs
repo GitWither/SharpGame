@@ -19,7 +19,7 @@ namespace SharpGameTest
         public override void OnAwake()
         {
             base.OnAwake();
-            AddComponent(new MeshRendererComponent(Mesh.FromOBJ("test")));
+            //AddComponent(new MeshRendererComponent(Mesh.FromOBJ("test")));
             AddComponent(new PhysicsComponent());
             GetComponent<PositionComponent>().Set(0, 5, 5 );
         }
