@@ -16,6 +16,7 @@ namespace SharpGame.Graphics
 {
     internal class VertexArrayObject : IDisposable
     {
+        private float time;
         private readonly int id;
         private readonly int[] bufferIds = new int[3];
         private readonly int indicesId;
@@ -29,7 +30,7 @@ namespace SharpGame.Graphics
 
         private Vector3 translation;
 
-        private MeshRendererComponent meshRendererComponent;
+        public MeshRendererComponent MeshRenderer { get; private set; }
 
         private int meshCount;
 
@@ -76,7 +77,7 @@ namespace SharpGame.Graphics
             this.AddTexCoords(meshRendererComponent.Mesh.FaceTexCoords);
             this.AddNormals(meshRendererComponent.Mesh.Normals);
 
-            this.meshRendererComponent = meshRendererComponent;
+            this.MeshRenderer = meshRendererComponent;
         }
 
         public void Upload()
@@ -115,32 +116,35 @@ namespace SharpGame.Graphics
 
         public void Render()
         {
-            meshRendererComponent.Shader.Bind();
-            meshRendererComponent.Texture.Bind(TextureUnit.Texture0);
+            time += 0.01f;
+            MeshRenderer.Shader.Bind();
+            MeshRenderer.Texture.Bind(TextureUnit.Texture0);
 
-            translation = this.meshRendererComponent.Actor.PositionComponent;
+            MeshRenderer.Shader.UploadFloat("iTime", time);
 
-            Matrix4 modelViewProjection = meshRendererComponent.Actor.RootScene.Camera.View * meshRendererComponent.Actor.RootScene.Camera.Projection;
-            Matrix4 scale = Matrix4.CreateScale(meshRendererComponent.Actor.ScaleComponent);
+            translation = this.MeshRenderer.Actor.PositionComponent;
 
-            Matrix4 rotation = Matrix4.CreateRotationX(MathHelper.DegreesToRadians(meshRendererComponent.Actor.RotationComponent.Pitch)) *
-                               Matrix4.CreateRotationY(MathHelper.DegreesToRadians(meshRendererComponent.Actor.RotationComponent.Yaw)) *
-                               Matrix4.CreateRotationZ(MathHelper.DegreesToRadians(meshRendererComponent.Actor.RotationComponent.Roll));
+            Matrix4 modelViewProjection = MeshRenderer.Actor.RootScene.Camera.View * MeshRenderer.Actor.RootScene.Camera.Projection;
+            Matrix4 scale = Matrix4.CreateScale(MeshRenderer.Actor.ScaleComponent);
+
+            Matrix4 rotation = Matrix4.CreateRotationX(MathHelper.DegreesToRadians(MeshRenderer.Actor.RotationComponent.Pitch)) *
+                               Matrix4.CreateRotationY(MathHelper.DegreesToRadians(MeshRenderer.Actor.RotationComponent.Yaw)) *
+                               Matrix4.CreateRotationZ(MathHelper.DegreesToRadians(MeshRenderer.Actor.RotationComponent.Roll));
 
             Matrix4 translationMatrix = Matrix4.CreateTranslation(translation);
 
             Matrix4 transformation = translationMatrix * rotation * scale;
 
-            meshRendererComponent.Shader.UploadMatrix4(SharedConstants.UniformTranslationMatrix, ref transformation);
-            meshRendererComponent.Shader.UploadMatrix4(SharedConstants.UniformModelViewProjection, ref modelViewProjection);
+            MeshRenderer.Shader.UploadMatrix4(SharedConstants.UniformTranslationMatrix, ref transformation);
+            MeshRenderer.Shader.UploadMatrix4(SharedConstants.UniformModelViewProjection, ref modelViewProjection);
 
             translation = Vector3.Zero;
 
             GL.BindVertexArray(id);
             GL.DrawElements(BeginMode.Triangles, count, DrawElementsType.UnsignedInt, 0);
 
-            meshRendererComponent.Texture.Unbind();
-            meshRendererComponent.Shader.Unbind();
+            MeshRenderer.Texture.Unbind();
+            MeshRenderer.Shader.Unbind();
 
             //GL.DisableVertexArrayAttrib(id, 0);
             //GL.DisableVertexArrayAttrib(id, 1);

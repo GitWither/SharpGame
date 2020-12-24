@@ -1,4 +1,7 @@
-﻿using SharpGame.Graphics.Meshes;
+﻿using OpenTK.Audio.OpenAL;
+using OpenTK.Graphics.OpenGL4;
+
+using SharpGame.Graphics.Meshes;
 using SharpGame.Objects;
 using SharpGame.Objects.Components;
 using SharpGame.Util;
@@ -68,7 +71,19 @@ namespace SharpGame.Graphics
         {
             foreach (VertexArrayObject vao in vertexArrayObjects)
             {
+                bool isGui = vao.MeshRenderer is GuiTextureComponent;
+                if (isGui)
+                {
+                    GL.Enable(EnableCap.Blend);
+                    GL.Disable(EnableCap.DepthTest);
+                    GL.BlendFunc(BlendingFactor.SrcAlpha, BlendingFactor.OneMinusSrcAlpha);
+                }
                 vao.Render();
+                if (isGui)
+                {
+                    GL.Enable(EnableCap.DepthTest);
+                    GL.Disable(EnableCap.Blend);
+                }
             }
         }
     }

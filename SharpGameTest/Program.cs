@@ -19,19 +19,25 @@ namespace SharpGameTest
         static void Main(string[] args)
         {
             SharpGameWindow window = new SharpGameWindow(1270, 720, "SharpGame");
-            Shader lit = new Shader("lit");
-            Shader unlit = new Shader("unlit");
+            //Shader lit = new Shader("lit");
+            //Shader unlit = new Shader("unlit");
+            //Shader fun = new Shader("baby_yoda");
 
             Scene scene = new Scene();
 
             Texture missing = new Texture("missing");
+            Texture main = new Texture("download");
 
             Actor field = new Actor();
-            field.AddComponent(new MeshRendererComponent(Mesh.FromOBJ("scene"), missing, lit));
+            field.AddComponent(new MeshRendererComponent(Mesh.FromOBJ("scene"), missing, Shader.Lit));
 
             Actor rocket = new Actor();
-            rocket.AddComponent(new MeshRendererComponent(Mesh.FromOBJ("cannon"), missing, unlit));
+            rocket.AddComponent(new MeshRendererComponent(Mesh.FromOBJ("cannon"), missing, Shader.Unlit));
             rocket.AddComponent(new EpicComponent());
+
+            Actor testLol = new Actor();
+            testLol.AddComponent(new GuiTextureComponent(main));
+            //testLol.ScaleComponent.Set(0.5f, 0.5f, 1);
 
             Actor camera = new Actor();
             camera.AddComponent(new CameraComponent(70f, 0.5f, 100f));
@@ -41,6 +47,7 @@ namespace SharpGameTest
             scene.AddActor(camera);
             scene.AddActor(field);
             scene.AddActor(rocket);
+            scene.AddActor(testLol);
 
             window.LoadScene(scene);
 

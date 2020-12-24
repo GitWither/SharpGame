@@ -14,9 +14,18 @@ namespace SharpGame.Graphics
 {
     public class Shader : IDisposable
     {
-        //public static Shader Unlit = new Shader("shader");
+        public static Shader Unlit;
+        public static Shader Lit;
+        public static Shader Gui;
 
         private readonly int programId;
+
+        static Shader()
+        {
+            Unlit = new Shader("unlit");
+            Lit = new Shader("lit");
+            Gui = new Shader("gui");
+        }
 
         public Shader(string path) 
             : this(path, File.ReadAllText(SharedConstants.ShaderPath + path + SharedConstants.FragmentShaderExtension), File.ReadAllText(SharedConstants.ShaderPath + path + SharedConstants.VertexShaderExtension))

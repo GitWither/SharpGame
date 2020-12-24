@@ -22,6 +22,13 @@ namespace SharpGame.Objects
         public RotationComponent RotationComponent { get; private set; }
         public ScaleComponent ScaleComponent { get; private set; }
 
+        public Actor()
+        {
+            this.PositionComponent = new PositionComponent(0, 0, 0);
+            this.RotationComponent = new RotationComponent(0, 0, 0);
+            this.ScaleComponent = new ScaleComponent(1, 1, 1);
+        }
+
         public T GetComponent<T>() where T : Component
         {
             for (int i = 0; i < SharedConstants.MaxComponents; i++)
@@ -72,9 +79,9 @@ namespace SharpGame.Objects
         }
         public virtual void OnAwake()
         {
-            this.PositionComponent = this.AddComponent(new PositionComponent(0, 0, 0));
-            this.RotationComponent = this.AddComponent(new RotationComponent(0, 0, 0));
-            this.ScaleComponent = this.AddComponent(new ScaleComponent(1, 1, 1));
+            this.AddComponent(this.PositionComponent);
+            this.AddComponent(this.RotationComponent);
+            this.AddComponent(this.ScaleComponent);
 
             for (int i = 0; i < SharedConstants.MaxComponents; i++)
             {
