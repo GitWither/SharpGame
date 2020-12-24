@@ -14,7 +14,7 @@ using System.Threading.Tasks;
 
 namespace SharpGame.Graphics
 {
-    public class Texture
+    public class Texture : IDisposable
     {
         private readonly int id;
 
@@ -26,7 +26,7 @@ namespace SharpGame.Graphics
             Bitmap bitmap;
             try
             {
-                bitmap = (Bitmap)Image.FromFile(file + SharedConstants.TextureExtension);
+                bitmap = (Bitmap)Image.FromFile(SharedConstants.TextureFolder + file + SharedConstants.TextureExtension);
             }
             catch (IOException e)
             {
@@ -57,6 +57,16 @@ namespace SharpGame.Graphics
         {
             GL.ActiveTexture(unit);
             GL.BindTexture(TextureTarget.Texture2D, id);
+        }
+
+        public void Dispose()
+        {
+
+        }
+
+        public void Unbind()
+        {
+            GL.BindTexture(TextureTarget.Texture2D, 0);
         }
     }
 }

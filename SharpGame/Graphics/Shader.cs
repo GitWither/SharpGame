@@ -14,12 +14,12 @@ namespace SharpGame.Graphics
 {
     public class Shader : IDisposable
     {
-        public static Shader Unlit = new Shader("shader");
+        //public static Shader Unlit = new Shader("shader");
 
         private readonly int programId;
 
         public Shader(string path) 
-            : this(path, File.ReadAllText(path + SharedConstants.FragmentShaderExtension), File.ReadAllText(path + SharedConstants.VertexShaderExtension))
+            : this(path, File.ReadAllText(SharedConstants.ShaderPath + path + SharedConstants.FragmentShaderExtension), File.ReadAllText(SharedConstants.ShaderPath + path + SharedConstants.VertexShaderExtension))
         {
             Logger.Info("Successfully loaded shader " + path);
         }
@@ -91,6 +91,11 @@ namespace SharpGame.Graphics
         public void Dispose()
         {
             GL.DeleteProgram(programId);
+        }
+
+        public void Unbind()
+        {
+            GL.UseProgram(0);
         }
     }
 }

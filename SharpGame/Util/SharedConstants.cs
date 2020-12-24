@@ -38,5 +38,9 @@ namespace SharpGame.Util
 
         public const string UniformModelViewProjection = "u_ModelViewProjection";
         public const string UniformTranslationMatrix = "u_Translation";
+
+        public const string ShaderPath = "Shaders/";
+        public const string TextureFolder = "Textures/";
+        public const string MeshFolder = "Meshes/";
     }
 }

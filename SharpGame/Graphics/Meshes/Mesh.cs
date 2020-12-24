@@ -37,7 +37,7 @@ namespace SharpGame.Graphics.Meshes
             List<uint> uvIndices = new List<uint>();
             List<uint> normalIndices = new List<uint>();
 
-            foreach (string line in File.ReadLines(file + SharedConstants.MeshExtension))
+            foreach (string line in File.ReadLines(SharedConstants.MeshFolder + file + SharedConstants.MeshExtension))
             {
                 string type = line.Substring(0, line.IndexOf(' '));
                 string[] data = line.Substring(line.IndexOf(' ') + 1).Split(' ');
@@ -133,29 +133,16 @@ namespace SharpGame.Graphics.Meshes
             return new Mesh(out_vertices.ToArray(), out_normals.ToArray(), out_uvs.ToArray(), out_indices.ToArray());
         }
 
-        public static bool is_near(float v1, float v2)
-        {
-            //Logger.Debug(Math.Abs(x - y) < 0.01f);
-            return Math.Abs(v1 - v2) < 0.01f;
-        }
 
         public static bool getSimilarVertexindex(Vector3 in_vertex, Vector3 in_normal, Vector2 in_uv, ref List<Vector3> out_vertices, ref List<Vector3> out_normals, ref List<Vector2> uvs, ref ushort index)
         {
             for (uint i = 0; i < out_vertices.Count; i++)
             {
-                //Logger.Error(i);
-                //Logger.Debug(test(vertex.X, vertices[i].X) + " " + test(vertex.Y, vertices[i].Y) + " " + test(vertex.Z, vertices[i].Z) + "/ " + test(uv.X, uvs[i].X) + " " + test(uv.Y, uvs[i].Y));
-                if (is_near(in_vertex.X, out_vertices[(ushort)i].X) &&
-                    is_near(in_vertex.Y, out_vertices[(ushort)i].Y) &&
-                    is_near(in_vertex.Z, out_vertices[(ushort)i].Z) &&
-                    is_near(in_normal.X, out_normals[(ushort)i].X) &&
-                    is_near(in_normal.Y, out_normals[(ushort)i].Y) &&
-                    is_near(in_normal.Z, out_normals[(ushort)i].Z) &&
-                    is_near(in_uv.X, uvs[(ushort)i].X) &&
-                    is_near(in_uv.Y, uvs[(ushort)i].Y))
+                if (MathUtil.Vector3ApproximatelyEqual(in_vertex, out_vertices[(ushort)i]) &&
+                    MathUtil.Vector3ApproximatelyEqual(in_normal, out_normals[(ushort)i]) &&
+                    MathUtil.Vector2ApproximatelyEqual(in_uv, uvs[(ushort)i]))
                 {
                     index = (ushort)i;
-                    //Logger.Warn("Similar vertex index: " + index);
                     return true;
                 }
 
