@@ -32,7 +32,6 @@ namespace SharpGame.Graphics
 
         public MeshRendererComponent MeshRenderer { get; private set; }
 
-        private int meshCount;
 
         public bool HasRoom { get; private set; }
 

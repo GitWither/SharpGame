@@ -72,6 +72,7 @@ namespace SharpGame.Graphics
             foreach (VertexArrayObject vao in vertexArrayObjects)
             {
                 bool isGui = vao.MeshRenderer is GuiTextureComponent;
+
                 if (isGui)
                 {
                     GL.Enable(EnableCap.Blend);

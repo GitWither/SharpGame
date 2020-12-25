@@ -67,7 +67,6 @@ namespace SharpGame
 
         private void RenderFrameHandler(object sender, FrameEventArgs e)
         {
-            GL.Enable(EnableCap.DepthTest);
             GL.Enable(EnableCap.CullFace);
             GL.Enable(EnableCap.LineSmooth);
             GL.Enable(EnableCap.PolygonSmooth);

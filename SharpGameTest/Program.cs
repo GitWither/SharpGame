@@ -11,6 +11,7 @@ using OpenTK;
 using System.Drawing;
 using SharpGame.Objects.Components;
 using SharpGame.Graphics;
+using OpenTK.Graphics.OpenGL4;
 
 namespace SharpGameTest
 {
@@ -19,9 +20,6 @@ namespace SharpGameTest
         static void Main(string[] args)
         {
             SharpGameWindow window = new SharpGameWindow(1270, 720, "SharpGame");
-            //Shader lit = new Shader("lit");
-            //Shader unlit = new Shader("unlit");
-            //Shader fun = new Shader("baby_yoda");
 
             Scene scene = new Scene();
 
