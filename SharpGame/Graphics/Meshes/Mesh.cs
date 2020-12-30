@@ -28,17 +28,19 @@ namespace SharpGame.Graphics.Meshes
                 new Vector2(1, 0),
                 new Vector2(1, 1)
             }, 
-            new uint[] {0, 1, 2, 2, 1, 3 }
+            new int[] {0, 1, 2, 2, 1, 3 }
             );
+
+
         public Vector3[] Vertices { get; set; }
         public Vector2[] FaceTexCoords { get; set; }
         public Vector3[] Normals { get; set; }
-        public uint[] FaceIndices { get; set; }
-        public Mesh(Vector3[] vertices, Vector3[] normals, Vector2[] texCoords, uint[] faceIndices)
+        public int[] Indices { get; set; }
+        public Mesh(Vector3[] vertices, Vector3[] normals, Vector2[] texCoords, int[] faceIndices)
         {
             this.Vertices = vertices;
             this.FaceTexCoords = texCoords;
-            this.FaceIndices = faceIndices;
+            this.Indices = faceIndices;
             this.Normals = normals;
         }
 
@@ -49,9 +51,9 @@ namespace SharpGame.Graphics.Meshes
             List<Vector2> tempUVs = new List<Vector2>();
             List<Vector3> tempNormals = new List<Vector3>();
 
-            List<uint> vertexIndices = new List<uint>();
-            List<uint> uvIndices = new List<uint>();
-            List<uint> normalIndices = new List<uint>();
+            List<int> vertexIndices = new List<int>();
+            List<int> uvIndices = new List<int>();
+            List<int> normalIndices = new List<int>();
 
             foreach (string line in File.ReadLines(SharedConstants.MeshFolder + file + SharedConstants.MeshExtension))
             {
@@ -89,9 +91,9 @@ namespace SharpGame.Graphics.Meshes
                         {
                             string[] vertexValues = data[i].Split('/');
 
-                            if (uint.TryParse(vertexValues[0], out uint index) && 
-                                uint.TryParse(vertexValues[1], out uint texIndex) &&
-                                uint.TryParse(vertexValues[2], out uint normalIndex))
+                            if (int.TryParse(vertexValues[0], out int index) && 
+                                int.TryParse(vertexValues[1], out int texIndex) &&
+                                int.TryParse(vertexValues[2], out int normalIndex))
                             {
                                 vertexIndices.Add(index);
                                 uvIndices.Add(texIndex);
@@ -111,13 +113,14 @@ namespace SharpGame.Graphics.Meshes
 
             for (int i = 0; i < vertexIndices.Count; i++)
             {
-                uint vertexIndex = vertexIndices[i];
-                uint texIndex = uvIndices[i];
-                uint normalIndex = normalIndices[i];
+                int vertexIndex = vertexIndices[i];
+                int texIndex = uvIndices[i];
+                int normalIndex = normalIndices[i];
 
-                Vector3 vertex = tempVertices[(int)(vertexIndex - 1)];
-                Vector3 normal = tempNormals[(int)(normalIndex - 1)];
-                Vector2 texCoord = tempUVs[(int)(texIndex - 1)];
+                Vector3 vertex = tempVertices[vertexIndex - 1];
+                Vector3 normal = tempNormals[normalIndex - 1];
+                Vector2 texCoord = tempUVs[texIndex - 1];
+
                 in_vertices.Add(vertex);
                 in_normals.Add(normal);
                 in_uvs.Add(texCoord);
@@ -126,45 +129,82 @@ namespace SharpGame.Graphics.Meshes
             List<Vector3> out_vertices = new List<Vector3>();
             List<Vector2> out_uvs = new List<Vector2>();
             List<Vector3> out_normals = new List<Vector3>();
-            List<uint> out_indices = new List<uint>();
-            ushort indexX = 0;
-            for (uint i = 0; i < in_vertices.Count; i++)
+            List<int> out_indices = new List<int>();
+            int indexX = 0;
+            for (int i = 0; i < in_vertices.Count; i++)
             {
-                bool yes = getSimilarVertexindex(in_vertices[(int)i], in_normals[(int)i], in_uvs[(int)i], ref out_vertices, ref out_normals, ref out_uvs, ref indexX);
+                bool found = false;
+                for (int p = 0; p < out_vertices.Count; p++)
+                {
+                    if (MathUtil.Vector3ApproximatelyEqual(in_vertices[i], out_vertices[p]) &&
+                        MathUtil.Vector3ApproximatelyEqual(in_normals[i], out_normals[p]) &&
+                        MathUtil.Vector2ApproximatelyEqual(in_uvs[i], out_uvs[p]))
+                    {
+                        indexX = p;
+                        found = true;
+                        break;
+                    }
 
-                
-                if (yes)
+                }
+
+                if (found)
                 {
                     out_indices.Add(indexX);
                 }
                 else
                 {
-                    out_vertices.Add(in_vertices[(int)i]);
-                    out_uvs.Add(in_uvs[(int)i]);
-                    out_normals.Add(in_normals[(int)i]);
-                    out_indices.Add((uint)out_vertices.Count - 1);
+                    out_vertices.Add(in_vertices[i]);
+                    out_uvs.Add(in_uvs[i]);
+                    out_normals.Add(in_normals[i]);
+                    out_indices.Add(out_vertices.Count - 1); 
                 }
-                //Logger.Error(index);
             }
             return new Mesh(out_vertices.ToArray(), out_normals.ToArray(), out_uvs.ToArray(), out_indices.ToArray());
         }
 
-
-        public static bool getSimilarVertexindex(Vector3 in_vertex, Vector3 in_normal, Vector2 in_uv, ref List<Vector3> out_vertices, ref List<Vector3> out_normals, ref List<Vector2> uvs, ref ushort index)
+        public static Mesh FromText(string text)
         {
-            for (uint i = 0; i < out_vertices.Count; i++)
-            {
-                if (MathUtil.Vector3ApproximatelyEqual(in_vertex, out_vertices[(ushort)i]) &&
-                    MathUtil.Vector3ApproximatelyEqual(in_normal, out_normals[(ushort)i]) &&
-                    MathUtil.Vector2ApproximatelyEqual(in_uv, uvs[(ushort)i]))
-                {
-                    index = (ushort)i;
-                    return true;
-                }
+            Vector3[] vertices = new Vector3[text.Length * 4];
+            Vector2[] uvs = new Vector2[text.Length * 4];
+            int[] indices = new int[text.Length * 6];
 
+            float size = 0.01f;
+            int x = 0;
+            int y = 0;
+            int[] faceIndices = new int[] { 2, 1, 0, 2, 3, 1};
+            for (int i = 0; i < text.Length * 4; i += 4)
+            {
+                Vector3 vertexUpLeft = new Vector3(x + i * size, y + size, 0);
+                Vector3 vertexUpRight = new Vector3(x + i * size + size, y +size, 0);
+                Vector3 vertexDownRight = new Vector3(x + i * size + size, y, 0);
+                Vector3 vertexDownLeft = new Vector3(x +i * size, y, 0);
+
+                vertices[i] = vertexUpLeft;
+                vertices[i + 1] = vertexDownLeft;
+                vertices[i + 2] = vertexUpRight;
+                vertices[i + 3] = vertexDownRight;
+
+                char character = text[i / 4];
+                float uvX = (character % 16) / 16.0f;
+                float uvY = (character / 16) / 16.0f;
+
+                Vector2 uvUpLeft = new Vector2(uvX, uvY);
+                Vector2 uvUpRight = new Vector2(uvX + 1.0f / 16.0f, uvY);
+                Vector2 uvDownRight = new Vector2(uvX + 1.0f / 16.0f, uvY + 1.0f / 16.0f);
+                Vector2 uvDownLeft = new Vector2(uvX, uvY + 1.0f / 16.0f);
+
+                uvs[i] = uvUpLeft;
+                uvs[i + 1] = uvDownLeft;
+                uvs[i + 2] = uvUpRight;
+                uvs[i + 3] = uvDownRight;
+
+                for (int j = 0; j < 6; j++)
+                {
+                    indices[i / 4 * 6 + j] = faceIndices[j] + i;
+                }
             }
 
-            return false;
+            return new Mesh(vertices, new Vector3[] { }, uvs, indices);
         }
     }
 }
