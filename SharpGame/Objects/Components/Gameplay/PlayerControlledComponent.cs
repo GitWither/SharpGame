@@ -13,7 +13,7 @@ namespace SharpGame.Objects.Components
 {
     public class PlayerControlledComponent : Component
     {
-        public float factor = 0.5f;
+        public float factor = 0.2f;
         Vector3 Right = Vector3.UnitX;
         Vector3 Forward = Vector3.UnitZ;
 
@@ -65,6 +65,18 @@ namespace SharpGame.Objects.Components
             if (delta.LengthSquared > 0.0001f)
             {
                 this.Actor.PositionComponent.Translate((Right.X * delta.X) + (Forward.X * delta.Z), delta.Y, (Forward.Z * delta.Z) + (Right.Z * delta.X));
+            }
+
+            Vector2 mouseDelta = InputSystem.GetMouseAxis() * 0.05f;
+            this.Actor.RotationComponent.Rotate(-mouseDelta.Y, mouseDelta.X, 0);
+
+            if (this.Actor.RotationComponent.Pitch >= 89)
+            {
+                this.Actor.RotationComponent.Set(89, this.Actor.RotationComponent.Yaw, this.Actor.RotationComponent.Roll);
+            }
+            else if (this.Actor.RotationComponent.Pitch <= -89)
+            {
+                this.Actor.RotationComponent.Set(-89, this.Actor.RotationComponent.Yaw, this.Actor.RotationComponent.Roll);
             }
         }
     }
