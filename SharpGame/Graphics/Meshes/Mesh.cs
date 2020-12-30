@@ -174,17 +174,18 @@ namespace SharpGame.Graphics.Meshes
             int[] faceIndices = new int[] { 0, 1, 2, 2, 1, 3};
             for (int i = 0; i < text.Length * 4; i += 4)
             {
-                Vector3 vertexUpLeft =    new Vector3(x + i * size,        y + size, 0);
-                Vector3 vertexUpRight =   new Vector3(x + i * size + size, y + size, 0);
-                Vector3 vertexDownRight = new Vector3(x + i * size + size, y, 0);
-                Vector3 vertexDownLeft =  new Vector3(x + i * size,        y, 0);
+                float spacingFactor = i * 0.25f;
+                Vector3 vertexUpLeft =    new Vector3(x + spacingFactor * size,        y + size, 0);
+                Vector3 vertexUpRight =   new Vector3(x + spacingFactor * size + size, y + size, 0);
+                Vector3 vertexDownRight = new Vector3(x + spacingFactor * size + size, y, 0);
+                Vector3 vertexDownLeft =  new Vector3(x + spacingFactor * size,        y, 0);
 
                 vertices[i] = vertexUpLeft;
                 vertices[i + 1] = vertexDownLeft;
                 vertices[i + 2] = vertexUpRight;
                 vertices[i + 3] = vertexDownRight;
 
-                char character = text[i / 4];
+                char character = text[(int)(i * 0.25)];
                 float uvX = (character % 16) / 16.0f;
                 float uvY = (character / 16) / 16.0f;
 
