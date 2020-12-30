@@ -13,7 +13,7 @@ namespace SharpGame.Util
         public static void Warn(object message) => Log(ConsoleColor.Yellow, SharedConstants.LoggerLevelWarn, message);
         public static void Debug(object message) => Log(ConsoleColor.Gray, SharedConstants.LoggerLevelDebug, message);
         public static void Error(object message) => Log(ConsoleColor.Red, SharedConstants.LoggerLevelError, message);
-        public static void Exception(Exception ex) => Log(ConsoleColor.Yellow, SharedConstants.LoggerLevelException, $"An unhandled exception has been thrown: {ex.Message}\n\n{ex.StackTrace}\n");
+        public static void Exception(Exception ex) => Log(ConsoleColor.DarkRed, SharedConstants.LoggerLevelException, $"An unhandled exception has been thrown: {ex.Message}\n\n{ex.StackTrace}\n");
         private static void Log(ConsoleColor color, string level, object message)
         {
             Console.ForegroundColor = color;
