@@ -17,14 +17,16 @@ namespace SharpGame.Objects.Components
         public float FieldOfView { get; private set; }
         public float NearClipPlane { get; private set; }
         public float FarClipPlane { get; private set; }
+        public float AspectRatio { get; private set; }
         public Matrix4 View { get; private set; }
         public Matrix4 Projection { get; private set; }
-        public CameraComponent(float fieldOfView, float nearClipPlane, float farClipPlane)
+        public CameraComponent(float fieldOfView, float aspectRatio, float nearClipPlane, float farClipPlane)
         {
             this.FieldOfView = MathHelper.DegreesToRadians(fieldOfView);
             this.NearClipPlane = nearClipPlane;
             this.FarClipPlane = farClipPlane;
-            this.Projection = Matrix4.CreatePerspectiveFieldOfView(this.FieldOfView, 4 / 3f, this.NearClipPlane, this.FarClipPlane);
+            this.AspectRatio = aspectRatio;
+            this.Projection = Matrix4.CreatePerspectiveFieldOfView(this.FieldOfView, AspectRatio, this.NearClipPlane, this.FarClipPlane);
             this.View = Matrix4.Identity;
         }
 
@@ -54,7 +56,13 @@ namespace SharpGame.Objects.Components
         public void SetFieldOfView(float fieldOfView)
         {
             this.FieldOfView = MathHelper.DegreesToRadians(fieldOfView);
-            this.Projection = Matrix4.CreatePerspectiveFieldOfView(this.FieldOfView, 16 / 9f, this.NearClipPlane, this.FarClipPlane);
+            this.Projection = Matrix4.CreatePerspectiveFieldOfView(this.FieldOfView, AspectRatio, this.NearClipPlane, this.FarClipPlane);
+        }
+
+        public void SetAspectRatio(float ratio)
+        {
+            this.AspectRatio = ratio;
+            this.Projection = Matrix4.CreatePerspectiveFieldOfView(this.FieldOfView, AspectRatio, this.NearClipPlane, this.FarClipPlane);
         }
     }
 }

@@ -47,6 +47,13 @@ namespace SharpGame
 
             base.UpdateFrame += this.UpdateFrameHandler;
             base.RenderFrame += this.RenderFrameHandler;
+            base.Resize += this.ResizeHandler;
+        }
+
+        private void ResizeHandler(object sender, EventArgs e)
+        {
+            ActiveScene?.Camera.SetAspectRatio((float)this.Width / this.Height);
+            GL.Viewport(this.ClientSize);
         }
 
         ~SharpGameWindow()
