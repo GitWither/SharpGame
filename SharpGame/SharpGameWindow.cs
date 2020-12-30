@@ -42,7 +42,7 @@ namespace SharpGame
             }
 
             this.Title += " - " + GL.GetString(StringName.Renderer);
-            this.VSync = VSyncMode.On;
+            this.VSync = VSyncMode.Off;
             //this.TargetRenderFrequency = 60;
 
             base.UpdateFrame += this.UpdateFrameHandler;

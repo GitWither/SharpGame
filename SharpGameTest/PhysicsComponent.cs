@@ -17,7 +17,7 @@ namespace SharpGameTest
         {
             if (this.Actor.PositionComponent.Y > 0) {
                 this.Actor.PositionComponent.Translate(0, acc * deltaTime, 0);
-                acc -= 0.981f;
+                acc -= 98.1f * deltaTime;
             }
             else if (this.Actor.PositionComponent.Y <= 1.8)
             {

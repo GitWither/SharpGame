@@ -1,4 +1,5 @@
 ﻿using SharpGame.Objects.Components;
+using SharpGame.Util;
 
 using System;
 using System.Collections.Generic;
@@ -21,8 +22,9 @@ namespace SharpGameTest
         }
         public override void OnUpdate(float deltaTime)
         {
-            hey += 0.1f;
-            this.Actor.PositionComponent.Set(dirX * (float)Math.Cos(hey / 15) * 25, 15, dirZ * (float)Math.Cos(hey / 15) * 25);
+            hey += 1f * deltaTime;
+            //Logger.Info(hey * deltaTime);
+            this.Actor.PositionComponent.Set(dirX * (float)Math.Sin(hey) * 15, 15, dirZ * (float)Math.Cos(hey) * 15);
         }
     }
 }
