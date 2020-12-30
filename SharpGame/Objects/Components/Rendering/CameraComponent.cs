@@ -24,7 +24,7 @@ namespace SharpGame.Objects.Components
             this.FieldOfView = MathHelper.DegreesToRadians(fieldOfView);
             this.NearClipPlane = nearClipPlane;
             this.FarClipPlane = farClipPlane;
-            this.Projection = Matrix4.CreatePerspectiveFieldOfView(this.FieldOfView, 16 / 9f, this.NearClipPlane, this.FarClipPlane);
+            this.Projection = Matrix4.CreatePerspectiveFieldOfView(this.FieldOfView, 4 / 3f, this.NearClipPlane, this.FarClipPlane);
             this.View = Matrix4.Identity;
         }
 
