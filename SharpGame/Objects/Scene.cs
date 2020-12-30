@@ -4,6 +4,7 @@ using OpenTK.Graphics.OpenGL4;
 using SharpGame.Graphics;
 using SharpGame.Graphics.Meshes;
 using SharpGame.Objects.Components;
+using SharpGame.Physics;
 using SharpGame.Util;
 
 using System;
@@ -18,16 +19,23 @@ namespace SharpGame.Objects
     public class Scene : IDisposable
     {
         public CameraComponent Camera { get; set; }
+        public PointLightComponent[] PointLights { get; set; }
         private bool isRunning = false;
 
-        private readonly Actor[] actors = new Actor[SharedConstants.MaxActors];
+        private readonly List<Actor> actors;
 
         private readonly Renderer renderer;
+        private readonly PhysicsSolver physicsSolver;
 
 
         public Scene()
         {
+            actors = new List<Actor>(SharedConstants.MaxActors);
+
+            PointLights = new PointLightComponent[SharedConstants.MaxLights];
+
             renderer = new Renderer();
+            physicsSolver = new PhysicsSolver();
         }
 
         ~Scene()
@@ -41,18 +49,11 @@ namespace SharpGame.Objects
 
         public void AddActor(Actor actor)
         {
-            for (int i = 0; i < SharedConstants.MaxActors; i++)
-            {
-                if (actors[i] == null)
-                {
-                    actor.RootScene = this;
-                    actor.OnAwake();
-                    actors[i] = actor;
-                    actor.OnStart();
-                    renderer.AddActor(actor);
-                    break;
-                }
-            }
+            actor.RootScene = this;
+            actor.OnAwake();
+            actors.Add(actor);
+            actor.OnStart();
+            renderer.AddActor(actor);
         }
 
         public void Render()
@@ -62,50 +63,36 @@ namespace SharpGame.Objects
 
         public void OnUpdate(float deltaTime)
         {
-            for (int i = 0; i < SharedConstants.MaxActors; i++)
+            physicsSolver.OnUpdate(deltaTime);
+            for (int i = 0; i < actors.Count; i++)
             {
-                actors[i]?.OnUpdate(deltaTime);
+                actors[i].OnUpdate(deltaTime);
             }
         }
 
         public void OnShutdown()
         {
-            for (int i = 0; i < SharedConstants.MaxActors; i++)
+            physicsSolver.OnShutdown();
+            foreach (Actor actor in actors)
             {
-                actors[i]?.OnShutdown();
+                actor.OnShutdown();
             }
             this.isRunning = false;
         }
 
         public Actor[] GetActorsByComponent<T>() where T: Component
         {
-            List<Actor> filteredActors = new List<Actor>();
-            for (int i = 0; i < SharedConstants.MaxActors; i++)
-            {
-                if (this.actors[i] != null)
-                {
-                    if (this.actors[i].HasComponent<T>())
-                    {
-                        filteredActors.Add(this.actors[i]);
-                    }
-                }
-            }
-            return filteredActors.ToArray();
+            return actors.FindAll(actor => actor.HasComponent<T>()).ToArray();
         }
 
         public void RemoveActor(Actor actor)
         {
-            for (int i = 0; i < SharedConstants.MaxActors; i++)
-            {
-                if (this.actors[i] != null && this.actors[i] == actor)
-                {
-                    this.actors[i] = null;
-                }
-            }
+            actors.Remove(actor);
         }
 
         public void Dispose()
         {
+            actors.Clear();
         }
     }
 }
