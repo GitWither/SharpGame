@@ -10,13 +10,27 @@ namespace SharpGameTest
 {
     class CoolTestComponent : Component
     {
+        float frameTime;
+        float fps;
+        GuiTextComponent text;
+        public override void OnAwake()
+        {
+            text = this.Actor.GetComponent<GuiTextComponent>();
+        }
         public override void OnUpdate(float deltaTime)
         {
-            GuiTextComponent text = this.Actor.GetComponent<GuiTextComponent>();
+            frameTime += deltaTime;
+            fps++;
+            if (frameTime >= 1)
+            {
+                frameTime = 0;
+                text.Text = "FPS: " + fps.ToString();
+                fps = 0;
+            }
 
-            text.Text = deltaTime.ToString();
+            //text.Text = deltaTime.ToString();
 
-            this.Actor.RotationComponent.Rotate(0, 1, 0);
+            //this.Actor.RotationComponent.Rotate(0, 1, 0);
         }
     }
 }

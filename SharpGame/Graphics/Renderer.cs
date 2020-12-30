@@ -52,7 +52,7 @@ namespace SharpGame.Graphics
 
         public void Render()
         {
-            Logger.Info(vertexArrayObjects.Count);
+            //Logger.Info(vertexArrayObjects.Count);
             foreach (VertexArrayObject vao in vertexArrayObjects)
             {
                 GL.Enable(EnableCap.CullFace);

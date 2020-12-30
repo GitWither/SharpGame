@@ -12,7 +12,7 @@ namespace SharpGame.Objects.Components
     public class GuiTextComponent : MeshRendererComponent
     {
         public string Text { get; set; }
-        public GuiTextComponent(string text, Texture font) : base(Mesh.FromText(text), new Material(Shader.Unlit, font))
+        public GuiTextComponent(string text, Texture font) : base(Mesh.FromText(text), new Material(Shader.Text, font))
         {
             this.Text = text;
         }

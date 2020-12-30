@@ -60,6 +60,7 @@ namespace SharpGame
         {
             base.UpdateFrame -= this.UpdateFrameHandler;
             base.RenderFrame -= this.RenderFrameHandler;
+            base.Resize -= this.ResizeHandler;
         }
 
         public void LoadScene(Scene scene)

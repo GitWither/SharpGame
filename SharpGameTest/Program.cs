@@ -26,7 +26,7 @@ namespace SharpGameTest
             Texture missing = new Texture("missing");
             Texture main = new Texture("download");
             Texture buffaloTxt = new Texture("buffalo");
-            Texture font = new Texture("ExportedFont");
+            Texture font = new Texture("holstein");
 
             Material rocks = new Material(Shader.Lit, new Texture("rock"), new Texture("rock_normals"));
 
@@ -59,19 +59,21 @@ namespace SharpGameTest
             //testLol.ScaleComponent.Set(0.5f, 0.5f, 1);
 
             Actor text = new Actor();
-            text.AddComponent(new GuiTextComponent("LOLLLLOOL", font));
-            //text.AddComponent(new CoolTestComponent());
+            text.AddComponent(new GuiTextComponent("penis", font));
+            text.AddComponent(new CoolTestComponent());
+            text.ScaleComponent.Set(0.05f, 0.07f, 1);
+            text.PositionComponent.Set(-20, 13, 0);
 
             Actor camera = new Actor();
-            camera.AddComponent(new CameraComponent(45f, 0.1f, 100f));
+            camera.AddComponent(new CameraComponent(45f, 4/3f, 0.1f, 100f));
             camera.AddComponent(new PlayerControlledComponent());
             camera.PositionComponent.Set(0, 10, -15);
 
-            scene.AddActor(buffalo);
+            //scene.AddActor(buffalo);
             scene.AddActor(camera);
             scene.AddActor(field);
-            scene.AddActor(light2);
-            scene.AddActor(rocket);
+            //scene.AddActor(light2);
+            //scene.AddActor(rocket);
             scene.AddActor(text);
             //scene.AddActor(testLol);
             scene.AddActor(light);

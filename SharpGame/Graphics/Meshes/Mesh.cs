@@ -168,16 +168,16 @@ namespace SharpGame.Graphics.Meshes
             Vector2[] uvs = new Vector2[text.Length * 4];
             int[] indices = new int[text.Length * 6];
 
-            float size = 0.01f;
+            float size = 1f;
             int x = 0;
             int y = 0;
-            int[] faceIndices = new int[] { 2, 1, 0, 2, 3, 1};
+            int[] faceIndices = new int[] { 0, 1, 2, 2, 1, 3};
             for (int i = 0; i < text.Length * 4; i += 4)
             {
-                Vector3 vertexUpLeft = new Vector3(x + i * size, y + size, 0);
-                Vector3 vertexUpRight = new Vector3(x + i * size + size, y +size, 0);
+                Vector3 vertexUpLeft =    new Vector3(x + i * size,        y + size, 0);
+                Vector3 vertexUpRight =   new Vector3(x + i * size + size, y + size, 0);
                 Vector3 vertexDownRight = new Vector3(x + i * size + size, y, 0);
-                Vector3 vertexDownLeft = new Vector3(x +i * size, y, 0);
+                Vector3 vertexDownLeft =  new Vector3(x + i * size,        y, 0);
 
                 vertices[i] = vertexUpLeft;
                 vertices[i + 1] = vertexDownLeft;
@@ -188,10 +188,11 @@ namespace SharpGame.Graphics.Meshes
                 float uvX = (character % 16) / 16.0f;
                 float uvY = (character / 16) / 16.0f;
 
-                Vector2 uvUpLeft = new Vector2(uvX, uvY);
-                Vector2 uvUpRight = new Vector2(uvX + 1.0f / 16.0f, uvY);
-                Vector2 uvDownRight = new Vector2(uvX + 1.0f / 16.0f, uvY + 1.0f / 16.0f);
-                Vector2 uvDownLeft = new Vector2(uvX, uvY + 1.0f / 16.0f);
+
+                Vector2 uvUpLeft =    new Vector2(uvX,                uvY);
+                Vector2 uvUpRight =   new Vector2(uvX + 1.0f / 16.0f, uvY);
+                Vector2 uvDownRight = new Vector2(uvX + 1.0f / 16.0f, (uvY + 1.0f / 16.0f));
+                Vector2 uvDownLeft =  new Vector2(uvX,                (uvY + 1.0f / 16.0f));
 
                 uvs[i] = uvUpLeft;
                 uvs[i + 1] = uvDownLeft;

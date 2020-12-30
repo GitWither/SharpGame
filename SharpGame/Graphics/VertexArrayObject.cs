@@ -106,6 +106,7 @@ namespace SharpGame.Graphics
 
             GL.BindVertexArray(id);
             GL.DrawElements(BeginMode.Triangles, count, DrawElementsType.UnsignedInt, 0);
+            //GL.DrawArrays(PrimitiveType.Triangles, 0, MeshRenderer.Mesh.Vertices.Length);
             GL.BindVertexArray(0);
 
             MeshRenderer.Material.NormalMap?.Unbind();
