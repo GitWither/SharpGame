@@ -17,7 +17,7 @@ namespace SharpGame.Objects
     {
         public Scene RootScene { get; set; }
 
-        private Component[] components = new Component[SharedConstants.MaxComponents];
+        private readonly Component[] components = new Component[SharedConstants.MaxComponents];
         public PositionComponent PositionComponent { get; private set; }
         public RotationComponent RotationComponent { get; private set; }
         public ScaleComponent ScaleComponent { get; private set; }
@@ -33,9 +33,9 @@ namespace SharpGame.Objects
         {
             for (int i = 0; i < SharedConstants.MaxComponents; i++)
             {
-                if (this.components[i] is T)
+                if (this.components[i] is T t)
                 {
-                    return (T)this.components[i];
+                    return t;
                 }
             }
             return default;
