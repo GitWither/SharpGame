@@ -17,11 +17,13 @@ using SharpGame.Graphics.Meshes;
 using SharpGame.Objects;
 using SharpGame.Util;
 
+using BulletSharp;
+
 namespace SharpGame
 {
     public class SharpGameWindow : GameWindow
     {
-        private static Scene activeScene;
+        public static Scene ActiveScene;
         public static bool running;
 
         private Thread logic = new Thread(() =>
@@ -40,6 +42,8 @@ namespace SharpGame
             }
 
             this.Title += " - " + GL.GetString(StringName.Renderer);
+            this.VSync = VSyncMode.On;
+            //this.TargetRenderFrequency = 60;
 
             base.UpdateFrame += this.UpdateFrameHandler;
             base.RenderFrame += this.RenderFrameHandler;
@@ -53,11 +57,11 @@ namespace SharpGame
 
         public void LoadScene(Scene scene)
         {
-            if (activeScene != scene)
+            if (ActiveScene != scene)
             {
-                activeScene?.OnShutdown();
-                activeScene = scene;
-                activeScene.OnAwake();
+                ActiveScene?.OnShutdown();
+                ActiveScene = scene;
+                ActiveScene.OnAwake();
             }
             else
             {
@@ -67,19 +71,12 @@ namespace SharpGame
 
         private void RenderFrameHandler(object sender, FrameEventArgs e)
         {
-            GL.Enable(EnableCap.CullFace);
-            GL.Enable(EnableCap.LineSmooth);
-            GL.Enable(EnableCap.PolygonSmooth);
-
-
-            GL.DepthFunc(DepthFunction.Less);
-
             GL.ClearColor(Color4.Black);
             GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit | ClearBufferMask.StencilBufferBit);
 
-            if (activeScene != null)
+            if (ActiveScene != null)
             {
-                activeScene.Render();
+                ActiveScene.Render();
             }
             else
             {
@@ -92,7 +89,7 @@ namespace SharpGame
 
         private void UpdateFrameHandler(object sender, FrameEventArgs e)
         {
-            activeScene?.OnUpdate((float)e.Time);
+            ActiveScene?.OnUpdate((float)e.Time);
         }
     }
 }

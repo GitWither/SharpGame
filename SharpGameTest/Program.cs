@@ -19,33 +19,62 @@ namespace SharpGameTest
     {
         static void Main(string[] args)
         {
-            SharpGameWindow window = new SharpGameWindow(1270, 720, "SharpGame");
+            SharpGameWindow window = new SharpGameWindow(1024, 768, "SharpGame");
 
             Scene scene = new Scene();
 
             Texture missing = new Texture("missing");
             Texture main = new Texture("download");
+            Texture buffaloTxt = new Texture("buffalo");
+            Texture font = new Texture("ExportedFont");
+
+            Material rocks = new Material(Shader.Lit, new Texture("rock"), new Texture("rock_normals"));
 
             Actor field = new Actor();
-            field.AddComponent(new MeshRendererComponent(Mesh.FromOBJ("scene"), missing, Shader.Lit));
+            field.AddComponent(new MeshRendererComponent(Mesh.FromOBJ("scene"), rocks));
 
             Actor rocket = new Actor();
-            rocket.AddComponent(new MeshRendererComponent(Mesh.FromOBJ("cannon"), missing, Shader.Unlit));
+            rocket.AddComponent(new MeshRendererComponent(Mesh.FromOBJ("cannon"), new Material(Shader.Unlit, missing)));
             rocket.AddComponent(new EpicComponent());
+
+            Actor buffalo = new Actor();
+            buffalo.ScaleComponent.Set(5f, 5f, 5f);
+            buffalo.AddComponent(new MeshRendererComponent(Mesh.FromOBJ("buffalo"), new Material(Shader.Unlit, buffaloTxt)));
+            //buffalo.AddComponent(new PointLightComponent(new Vector3(1f, 1f, 1f)));
+
+            Actor light = new Actor();
+            light.PositionComponent.Set(0, 15, 0);
+            light.AddComponent(new PointLightComponent(new Vector3(0f, 1f, 0)));
+            light.AddComponent(new MeshRendererComponent(Mesh.FromOBJ("cube"), new Material(Shader.Unlit, missing)));
+            light.AddComponent(new CoolComponent(1, 0));
+
+            Actor light2 = new Actor();
+            light2.PositionComponent.Set(0, 15, 0);
+            light2.AddComponent(new PointLightComponent(new Vector3(1f, 0.0f, 0)));
+            light2.AddComponent(new MeshRendererComponent(Mesh.FromOBJ("cube"), new Material(Shader.Unlit, missing)));
+            light2.AddComponent(new CoolComponent(0, 1));
 
             Actor testLol = new Actor();
             testLol.AddComponent(new GuiTextureComponent(main));
             //testLol.ScaleComponent.Set(0.5f, 0.5f, 1);
 
-            Actor camera = new Actor();
-            camera.AddComponent(new CameraComponent(70f, 0.5f, 100f));
-            camera.AddComponent(new PlayerControlledComponent());
-            camera.AddComponent(new AnotherComponent());
+            Actor text = new Actor();
+            text.AddComponent(new GuiTextComponent("LOLLLLOOL", font));
+            //text.AddComponent(new CoolTestComponent());
 
+            Actor camera = new Actor();
+            camera.AddComponent(new CameraComponent(45f, 0.1f, 100f));
+            camera.AddComponent(new PlayerControlledComponent());
+            camera.PositionComponent.Set(0, 10, -15);
+
+            scene.AddActor(buffalo);
             scene.AddActor(camera);
             scene.AddActor(field);
+            scene.AddActor(light2);
             scene.AddActor(rocket);
-            scene.AddActor(testLol);
+            scene.AddActor(text);
+            //scene.AddActor(testLol);
+            scene.AddActor(light);
 
             window.LoadScene(scene);
 

@@ -11,8 +11,9 @@ namespace SharpGame.Util
     internal static class SharedConstants
     {
         public const uint MaxComponents = 128;
-        public const uint MaxActors = 5000;
+        public const int MaxActors = 5000;
         public const uint MaxMeshes = 120;
+        public const uint MaxLights = 4;
 
         public const float VectorMargin = 0.01f;
 

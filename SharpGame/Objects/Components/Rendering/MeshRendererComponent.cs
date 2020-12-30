@@ -14,16 +14,14 @@ namespace SharpGame.Objects.Components
 {
     public class MeshRendererComponent : Component
     {
-        public Mesh Mesh { get; private set; }
-        public Texture Texture { get; private set; }
-        public Shader Shader { get; private set; }
-        public bool Static { get; private set; }
+        public Mesh Mesh { get; set; }
+        public Material Material { get; set; }
+        public bool Static { get; set; }
 
-        public MeshRendererComponent(Mesh mesh, Texture texture, Shader shader)
+        public MeshRendererComponent(Mesh mesh, Material material)
         {
             this.Mesh = mesh;
-            this.Texture = texture;
-            this.Shader = shader;
+            this.Material = material;
         }
     }
 }

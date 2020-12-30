@@ -1,4 +1,5 @@
 ﻿using OpenTK.Audio.OpenAL;
+using OpenTK.Graphics;
 using OpenTK.Graphics.OpenGL4;
 
 using SharpGame.Graphics.Meshes;
@@ -14,13 +15,18 @@ using System.Threading.Tasks;
 
 namespace SharpGame.Graphics
 {
-    public class Renderer
+    public class Renderer : IDisposable
     {
         private List<VertexArrayObject> vertexArrayObjects;
 
         public Renderer()
         {
             vertexArrayObjects = new List<VertexArrayObject>();
+        }
+
+        ~Renderer()
+        {
+            this.Dispose();
         }
 
         public void AddActor(Actor actor)
@@ -38,54 +44,48 @@ namespace SharpGame.Graphics
 
         private void Add(MeshRendererComponent meshRendererComponent)
         {
-            if (meshRendererComponent.Static)
-            {
-                bool isAdded = false;
-                for (int i = 0; i < vertexArrayObjects.Count; i++)
-                {
-                    if (vertexArrayObjects[i].HasRoom)
-                    {
-                        vertexArrayObjects[i].AddMesh(meshRendererComponent);
-                        isAdded = true;
-                        break;
-                    }
-                }
-                if (!isAdded)
-                {
-                    VertexArrayObject vao = new VertexArrayObject();
-                    vao.AddMesh(meshRendererComponent);
-                    vao.Upload();
-                    vertexArrayObjects.Add(vao);
-                }
-            }
-            else
-            {
-                VertexArrayObject vao = new VertexArrayObject();
-                vao.AddMesh(meshRendererComponent);
-                vao.Upload();
-                vertexArrayObjects.Add(vao);
-            }
+            VertexArrayObject vao = new VertexArrayObject();
+            vao.AddMesh(meshRendererComponent);
+            vao.Upload();
+            vertexArrayObjects.Add(vao);
         }
 
         public void Render()
         {
+            Logger.Info(vertexArrayObjects.Count);
             foreach (VertexArrayObject vao in vertexArrayObjects)
             {
-                bool isGui = vao.MeshRenderer is GuiTextureComponent;
+                GL.Enable(EnableCap.CullFace);
+                GL.Enable(EnableCap.LineSmooth);
+                GL.Enable(EnableCap.PolygonSmooth);
+                GL.Enable(EnableCap.StencilTest);
 
-                if (isGui)
+                if (vao.MeshRenderer is GuiTextComponent component)
                 {
-                    GL.Enable(EnableCap.Blend);
+                    vao.MeshRenderer.Mesh = Mesh.FromText(component.Text);
+                    vao.Upload();
+
                     GL.Disable(EnableCap.DepthTest);
+                    GL.Enable(EnableCap.Blend);
                     GL.BlendFunc(BlendingFactor.SrcAlpha, BlendingFactor.OneMinusSrcAlpha);
                 }
-                vao.Render();
-                if (isGui)
+
+                if (vao.MeshRenderer is GuiTextureComponent)
                 {
-                    GL.Enable(EnableCap.DepthTest);
-                    GL.Disable(EnableCap.Blend);
+                    GL.Disable(EnableCap.DepthTest);
+                    GL.Enable(EnableCap.Blend);
+                    GL.BlendFunc(BlendingFactor.SrcAlpha, BlendingFactor.OneMinusSrcAlpha);
                 }
+
+                vao.Render();
+
+                GL.Enable(EnableCap.DepthTest);
+                GL.Disable(EnableCap.Blend);
             }
+        }
+
+        public void Dispose()
+        {
         }
     }
 }
