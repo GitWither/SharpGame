@@ -85,6 +85,11 @@ namespace SharpGame.Objects
             return actors.FindAll(actor => actor.HasComponent<T>()).ToArray();
         }
 
+        public int GetActorAmount()
+        {
+            return actors.Count;
+        }
+
         public void RemoveActor(Actor actor)
         {
             actors.Remove(actor);
