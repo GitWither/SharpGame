@@ -1,4 +1,5 @@
-﻿using SharpGame.Objects.Components;
+﻿using SharpGame;
+using SharpGame.Objects.Components;
 
 using System;
 using System.Collections.Generic;
@@ -23,8 +24,8 @@ namespace SharpGameTest
             fps++;
             if (frameTime >= 1)
             {
+                text.Text = "FPS: " + fps.ToString() + "\n Actors: " + SharpGameWindow.ActiveScene.GetActorAmount();
                 frameTime = 0;
-                text.Text = "FPS: " + fps.ToString();
                 fps = 0;
             }
 
