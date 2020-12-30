@@ -17,6 +17,7 @@ namespace SharpGame.Graphics
         public static Shader Unlit;
         public static Shader Lit;
         public static Shader Gui;
+        public static Shader Text;
 
         private readonly int programId;
 
@@ -25,6 +26,7 @@ namespace SharpGame.Graphics
             Unlit = new Shader("unlit");
             Lit = new Shader("lit");
             Gui = new Shader("gui");
+            Text = new Shader("text");
         }
 
         public Shader(string path) 
@@ -90,6 +92,23 @@ namespace SharpGame.Graphics
         public void UploadInt(string name, int value)
         {
             GL.Uniform1(GetUniformLocation(name), value);
+        }
+
+        public void UploadIntArray(string name, int[] value)
+        {
+            GL.Uniform1(GetUniformLocation(name), value.Length, value);
+        }
+
+        public void UploadVector3Array(string name, Vector3[] value)
+        {
+            float[] values = new float[value.Length * 3];
+            for (int i = 0; i < values.Length; i += 3)
+            {
+                values[i] = value[i].X;
+                values[i + 1] = value[i].Y;
+                values[i + 2] = value[i].Z;
+            }
+            GL.Uniform3(GetUniformLocation(name), value.Length, values);
         }
 
         private int GetUniformLocation(string name)
