@@ -21,7 +21,7 @@ namespace SharpGameTest
         public override void OnAwake()
         {
             this.Actor.PositionComponent.Set(0, 15, 0);
-            this.Actor.RotationComponent.Set(15, 0, 0);
+            this.Actor.RotationComponent.Set(2.5f, 0, 0);
         }
         public override void OnUpdate(float deltaTime)
         {
@@ -31,8 +31,8 @@ namespace SharpGameTest
             {
                 Actor cube = new Actor();
                 cube.AddComponent(new PhysicsComponent());
-                cube.AddComponent(new MeshRendererComponent(travis, new Material(Shader.Unlit, travisTxt)));
-                cube.AddComponent(new DeathComponent());
+                cube.AddComponent(new MeshRendererComponent(travis, new Material(Shader.Lit, travisTxt)));
+                //cube.AddComponent(new DeathComponent());
 
                 //MeshRendererComponent mrc = this.Actor.GetComponent<MeshRendererComponent>();
 
