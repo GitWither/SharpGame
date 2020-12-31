@@ -19,7 +19,7 @@ namespace SharpGameTest
     {
         static void Main(string[] args)
         {
-            SharpGameWindow window = new SharpGameWindow(1024, 768, "SharpGame");
+            SharpGameWindow window = new SharpGameWindow(1270, 780, "SharpGame");
 
             Scene scene = new Scene();
 
@@ -59,13 +59,13 @@ namespace SharpGameTest
             testLol.AddComponent(new GuiTextureComponent(main));
 
             Actor text = new Actor();
-            text.AddComponent(new GuiTextComponent("penis", font));
-            text.AddComponent(new CoolTestComponent());
+            //text.AddComponent(new GuiTextComponent("penis", font));
+            //text.AddComponent(new CoolTestComponent());
             text.ScaleComponent.Set(0.05f, 0.07f, 1);
             text.PositionComponent.Set(-20, 13, 0);
 
             Actor camera = new Actor();
-            camera.AddComponent(new CameraComponent(45f, 4/3f, 0.1f, 100f));
+            camera.AddComponent(new CameraComponent(70f, 16/9f, 0.1f, 100f));
             camera.AddComponent(new PlayerControlledComponent());
             camera.PositionComponent.Set(0, 10, -15);
 
@@ -75,7 +75,7 @@ namespace SharpGameTest
             scene.AddActor(light2);
             scene.AddActor(rocket);
             scene.AddActor(text);
-            //scene.AddActor(testLol);
+            scene.AddActor(testLol);
             scene.AddActor(light);
 
             window.LoadScene(scene);
