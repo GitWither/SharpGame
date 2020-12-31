@@ -24,7 +24,7 @@ namespace SharpGameTest
         {
             hey += 1f * deltaTime;
             //Logger.Info(hey * deltaTime);
-            this.Actor.PositionComponent.Set(dirX * (float)Math.Sin(hey) * 15, 15, dirZ * (float)Math.Cos(hey) * 15);
+            this.Actor.PositionComponent.Set(dirX * (float)Math.Sin(hey) * 15, 5, dirZ * (float)Math.Cos(hey) * 15);
         }
     }
 }

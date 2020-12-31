@@ -33,7 +33,7 @@ namespace SharpGameTest
                 frameTime = 0;
                 fps = 0;
             }
-            text.Text = fpstext + " Actors: " + SharpGameWindow.ActiveScene.GetActorAmount() + " " + gpu;
+            text.Text = fpstext + " Actors: " + SharpGameWindow.ActiveScene.GetActorAmount();
 
             //text.Text = deltaTime.ToString();
 

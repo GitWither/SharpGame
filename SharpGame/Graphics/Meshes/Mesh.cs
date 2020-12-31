@@ -102,8 +102,7 @@ namespace SharpGame.Graphics.Meshes
                         }
                         break;
                     default:
-                        Logger.Warn($"Object of type {type} is not yet supported!");
-                        break;
+                        continue;
                 }
             }
 

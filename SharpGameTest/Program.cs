@@ -29,7 +29,7 @@ namespace SharpGameTest
             Texture font = new Texture("ExportedFont");
             Texture rocketTxt = new Texture("rocket");
 
-            Material rocks = new Material(Shader.Lit, new Texture("rock"), new Texture("rock_normals"));
+            Material rocks = new Material(Shader.Lit, new Texture("rock"), new Texture("rock_normals"), 0.5f);
 
             Actor field = new Actor();
             field.AddComponent(new MeshRendererComponent(Mesh.FromOBJ("scene"), rocks));
@@ -39,8 +39,8 @@ namespace SharpGameTest
             rocket.AddComponent(new EpicComponent());
 
             Actor buffalo = new Actor();
-            buffalo.ScaleComponent.Set(5f, 5f, 5f);
-            buffalo.AddComponent(new MeshRendererComponent(Mesh.FromOBJ("buffalo"), new Material(Shader.Unlit, buffaloTxt)));
+            //buffalo.ScaleComponent.Set(1f, 0.01f, 0.01f);
+            buffalo.AddComponent(new MeshRendererComponent(Mesh.FromOBJ("dragon"), new Material(Shader.Lit, missing, 2.0f)));
             //buffalo.AddComponent(new PointLightComponent(new Vector3(1f, 1f, 1f)));
 
             Actor light = new Actor();
@@ -59,8 +59,8 @@ namespace SharpGameTest
             testLol.AddComponent(new GuiTextureComponent(main));
 
             Actor text = new Actor();
-            //text.AddComponent(new GuiTextComponent("penis", font));
-            //text.AddComponent(new CoolTestComponent());
+            text.AddComponent(new GuiTextComponent("no", font));
+            text.AddComponent(new CoolTestComponent());
             text.ScaleComponent.Set(0.05f, 0.07f, 1);
             text.PositionComponent.Set(-20, 13, 0);
 
@@ -75,7 +75,7 @@ namespace SharpGameTest
             scene.AddActor(light2);
             scene.AddActor(rocket);
             scene.AddActor(text);
-            scene.AddActor(testLol);
+            //scene.AddActor(testLol);
             scene.AddActor(light);
 
             window.LoadScene(scene);
