@@ -1,4 +1,6 @@
-﻿using SharpGame;
+﻿using OpenTK.Graphics.OpenGL4;
+
+using SharpGame;
 using SharpGame.Objects.Components;
 
 using System;
@@ -13,10 +15,13 @@ namespace SharpGameTest
     {
         float frameTime;
         float fps;
+        string fpstext = "FPS: 0";
         GuiTextComponent text;
+        string gpu;
         public override void OnAwake()
         {
             text = this.Actor.GetComponent<GuiTextComponent>();
+            gpu = GL.GetString(StringName.Renderer);
         }
         public override void OnUpdate(float deltaTime)
         {
@@ -24,10 +29,11 @@ namespace SharpGameTest
             fps++;
             if (frameTime >= 1)
             {
-                text.Text = "FPS: " + fps.ToString() + "\n Actors: " + SharpGameWindow.ActiveScene.GetActorAmount();
+                fpstext = "FPS: " + fps.ToString();
                 frameTime = 0;
                 fps = 0;
             }
+            text.Text = fpstext + " Actors: " + SharpGameWindow.ActiveScene.GetActorAmount() + " " + gpu;
 
             //text.Text = deltaTime.ToString();
 
