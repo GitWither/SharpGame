@@ -16,11 +16,10 @@ namespace SharpGame.Graphics
 {
     internal class VertexArrayObject : IDisposable
     {
+        private float time;
         private readonly int id;
         private readonly int[] bufferIds = new int[3];
         private readonly int indicesId;
-
-        private int count;
 
         public MeshRendererComponent MeshRenderer { get; private set; }
 
@@ -44,34 +43,22 @@ namespace SharpGame.Graphics
 
         public void Upload()
         {
-            count = MeshRenderer.Mesh.Indices.Length;
 
             GL.BindVertexArray(id);
 
-            GL.BindBuffer(BufferTarget.ArrayBuffer, bufferIds[0]);
-            GL.BufferData(BufferTarget.ArrayBuffer, MeshRenderer.Mesh.Vertices.Length * Vector3.SizeInBytes, MeshRenderer.Mesh.Vertices, BufferUsageHint.StaticDraw);
-            GL.VertexAttribPointer(0, 3, VertexAttribPointerType.Float, false, 0, 0);
+            BindVectorArrayToBuffer(bufferIds[0], 0, MeshRenderer.Mesh.Vertices);
+            BindVectorArrayToBuffer(bufferIds[1], 1, MeshRenderer.Mesh.FaceTexCoords);
+            BindVectorArrayToBuffer(bufferIds[2], 2, MeshRenderer.Mesh.Normals);
 
-            GL.BindBuffer(BufferTarget.ArrayBuffer, bufferIds[1]);
-            GL.BufferData(BufferTarget.ArrayBuffer, MeshRenderer.Mesh.FaceTexCoords.Length * Vector2.SizeInBytes, MeshRenderer.Mesh.FaceTexCoords, BufferUsageHint.StaticDraw);
-            GL.VertexAttribPointer(1, 2, VertexAttribPointerType.Float, false, 0, 0);
+            BindIndices(MeshRenderer.Mesh.Indices);
 
-            GL.BindBuffer(BufferTarget.ArrayBuffer, bufferIds[2]);
-            GL.BufferData(BufferTarget.ArrayBuffer, MeshRenderer.Mesh.Normals.Length * Vector3.SizeInBytes, MeshRenderer.Mesh.Normals, BufferUsageHint.StaticDraw);
-            GL.VertexAttribPointer(2, 3, VertexAttribPointerType.Float, false, 0, 0);
-
-
-            GL.BindBuffer(BufferTarget.ElementArrayBuffer, indicesId);
-            GL.BufferData(BufferTarget.ElementArrayBuffer, MeshRenderer.Mesh.Indices.Length * sizeof(uint), MeshRenderer.Mesh.Indices, BufferUsageHint.StaticDraw);
-
-            GL.EnableVertexArrayAttrib(id, 0);
-            GL.EnableVertexArrayAttrib(id, 1);
-            GL.EnableVertexArrayAttrib(id, 2);
+            GL.BindVertexArray(0);
         }
 
         public void Render()
         {
-
+            time += 0.1f;
+            MeshRenderer.Material.Shader.UploadFloat("iTime", time);
             MeshRenderer.Material.Shader.Bind();
             MeshRenderer.Material.BaseMap.Bind(TextureUnit.Texture0);
             MeshRenderer.Material.NormalMap?.Bind(TextureUnit.Texture1);
@@ -79,15 +66,15 @@ namespace SharpGame.Graphics
             Matrix4 modelViewProjection = SharpGameWindow.ActiveScene.Camera.View * SharpGameWindow.ActiveScene.Camera.Projection;
             Matrix4 scale = Matrix4.CreateScale(MeshRenderer.Actor.ScaleComponent);
 
-            Matrix4 rotation = Matrix4.CreateRotationX(MathHelper.DegreesToRadians(MeshRenderer.Actor.RotationComponent.Pitch)) *
+            Matrix4 rotation = Matrix4.CreateRotationZ(MathHelper.DegreesToRadians(MeshRenderer.Actor.RotationComponent.Roll)) *
                                Matrix4.CreateRotationY(MathHelper.DegreesToRadians(MeshRenderer.Actor.RotationComponent.Yaw)) *
-                               Matrix4.CreateRotationZ(MathHelper.DegreesToRadians(MeshRenderer.Actor.RotationComponent.Roll));
+                               Matrix4.CreateRotationX(MathHelper.DegreesToRadians(MeshRenderer.Actor.RotationComponent.Pitch));
 
             Matrix4 translation = Matrix4.CreateTranslation(this.MeshRenderer.Actor.PositionComponent);
 
             Matrix4 transformation = translation * rotation * scale;
 
-            MeshRenderer.Material.Shader.UploadMatrix4(SharedConstants.UniformTranslationMatrix, ref transformation);
+            MeshRenderer.Material.Shader.UploadMatrix4(SharedConstants.UniformTransformationMatrix, ref transformation);
             MeshRenderer.Material.Shader.UploadMatrix4(SharedConstants.UniformModelViewProjection, ref modelViewProjection);
 
             MeshRenderer.Material.Shader.UploadFloat("u_Specularity", MeshRenderer.Material.Specularity);
@@ -107,13 +94,34 @@ namespace SharpGame.Graphics
 
 
             GL.BindVertexArray(id);
-            GL.DrawElements(BeginMode.Triangles, count, DrawElementsType.UnsignedInt, 0);
-            //GL.DrawArrays(PrimitiveType.Triangles, 0, MeshRenderer.Mesh.Vertices.Length);
+            GL.DrawElements(BeginMode.Triangles, MeshRenderer.Mesh.Indices.Length, DrawElementsType.UnsignedInt, 0);
             GL.BindVertexArray(0);
 
             MeshRenderer.Material.NormalMap?.Unbind();
             MeshRenderer.Material.BaseMap.Unbind();
             MeshRenderer.Material.Shader.Unbind();
+        }
+
+        private void BindVectorArrayToBuffer(int bufferId, int attributeId, Vector3[] vectors)
+        {
+            GL.BindBuffer(BufferTarget.ArrayBuffer, bufferId);
+            GL.BufferData(BufferTarget.ArrayBuffer, vectors.Length * Vector3.SizeInBytes, vectors, BufferUsageHint.StaticDraw);
+            GL.VertexAttribPointer(attributeId, 3, VertexAttribPointerType.Float, false, 0, 0);
+            GL.EnableVertexArrayAttrib(id, attributeId);
+        }
+
+        private void BindVectorArrayToBuffer(int bufferId, int attributeId, Vector2[] vectors)
+        {
+            GL.BindBuffer(BufferTarget.ArrayBuffer, bufferId);
+            GL.BufferData(BufferTarget.ArrayBuffer, vectors.Length * Vector2.SizeInBytes, vectors, BufferUsageHint.StaticDraw);
+            GL.VertexAttribPointer(attributeId, 2, VertexAttribPointerType.Float, false, 0, 0);
+            GL.EnableVertexArrayAttrib(id, attributeId);
+        }
+
+        private void BindIndices(int[] indices)
+        {
+            GL.BindBuffer(BufferTarget.ElementArrayBuffer, indicesId);
+            GL.BufferData(BufferTarget.ElementArrayBuffer, indices.Length * sizeof(uint), indices, BufferUsageHint.StaticDraw);
         }
 
         public void Dispose()
