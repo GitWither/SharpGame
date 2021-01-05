@@ -55,54 +55,58 @@ namespace SharpGame.Graphics.Meshes
             List<int> uvIndices = new List<int>();
             List<int> normalIndices = new List<int>();
 
-            foreach (string line in File.ReadLines(SharedConstants.MeshFolder + file + SharedConstants.MeshExtension))
+            using (StreamReader sr = new StreamReader(SharedConstants.MeshFolder + file + SharedConstants.MeshExtension))
             {
-                string type = line.Substring(0, line.IndexOf(' '));
-                string[] data = line.Substring(line.IndexOf(' ') + 1).Split(' ');
-                switch (type)
+                while (sr.Peek() >= 0)
                 {
-                    case SharedConstants.VertexMeshToken:
-                        if (float.TryParse(data[0], out float vertexX) &&
-                            float.TryParse(data[1], out float vertexY) &&
-                            float.TryParse(data[2], out float vertexZ))
-                        {
-                            tempVertices.Add(new Vector3(vertexX, vertexY, vertexZ));
-                        }
-                        break;
-                    case SharedConstants.TextureMeshToken:
-                        if (float.TryParse(data[0], out float u) &&
-                            float.TryParse(data[1], out float v))
-                        {
-                            tempUVs.Add(new Vector2(u, -v));
-                        }
-                        break;
-                    case SharedConstants.NormalMeshToken:
-                        if (float.TryParse(data[0], out float normalX) &&
-                            float.TryParse(data[1], out float normalY) &&
-                            float.TryParse(data[2], out float normalZ))
-                        {
-                            tempNormals.Add(new Vector3(normalX, normalY, normalZ));
-                        }
-                        break;
-                    case SharedConstants.FaceMeshToken:
-                        if (data.Length < 3) Logger.Exception(new Exception("Detected face with less than 3 vertices"));
-
-                        for (byte i = 0; i < data.Length; i++)
-                        {
-                            string[] vertexValues = data[i].Split('/');
-
-                            if (int.TryParse(vertexValues[0], out int index) && 
-                                int.TryParse(vertexValues[1], out int texIndex) &&
-                                int.TryParse(vertexValues[2], out int normalIndex))
+                    string line = sr.ReadLine();
+                    string type = line.Substring(0, line.IndexOf(' '));
+                    string[] data = line.Substring(line.IndexOf(' ') + 1).Split(' ');
+                    switch (type)
+                    {
+                        case SharedConstants.VertexMeshToken:
+                            if (float.TryParse(data[0], out float vertexX) &&
+                                float.TryParse(data[1], out float vertexY) &&
+                                float.TryParse(data[2], out float vertexZ))
                             {
-                                vertexIndices.Add(index);
-                                uvIndices.Add(texIndex);
-                                normalIndices.Add(normalIndex);
+                                tempVertices.Add(new Vector3(vertexX, vertexY, vertexZ));
                             }
-                        }
-                        break;
-                    default:
-                        continue;
+                            break;
+                        case SharedConstants.TextureMeshToken:
+                            if (float.TryParse(data[0], out float u) &&
+                                float.TryParse(data[1], out float v))
+                            {
+                                tempUVs.Add(new Vector2(u, -v));
+                            }
+                            break;
+                        case SharedConstants.NormalMeshToken:
+                            if (float.TryParse(data[0], out float normalX) &&
+                                float.TryParse(data[1], out float normalY) &&
+                                float.TryParse(data[2], out float normalZ))
+                            {
+                                tempNormals.Add(new Vector3(normalX, normalY, normalZ));
+                            }
+                            break;
+                        case SharedConstants.FaceMeshToken:
+                            if (data.Length < 3) Logger.Exception(new Exception("Detected face with less than 3 vertices"));
+
+                            for (byte i = 0; i < data.Length; i++)
+                            {
+                                string[] vertexValues = data[i].Split('/');
+
+                                if (int.TryParse(vertexValues[0], out int index) &&
+                                    int.TryParse(vertexValues[1], out int texIndex) &&
+                                    int.TryParse(vertexValues[2], out int normalIndex))
+                                {
+                                    vertexIndices.Add(index);
+                                    uvIndices.Add(texIndex);
+                                    normalIndices.Add(normalIndex);
+                                }
+                            }
+                            break;
+                        default:
+                            continue;
+                    }
                 }
             }
 
@@ -158,6 +162,9 @@ namespace SharpGame.Graphics.Meshes
                     out_indices.Add(out_vertices.Count - 1); 
                 }
             }
+            Logger.Info(out_vertices.Count + " " + in_vertices.Count + " " + tempVertices.Count);
+            Logger.Info(out_uvs.Count + " " + in_uvs.Count + " " + tempUVs.Count);
+            Logger.Info(out_normals.Count + " " + in_normals.Count + " " + tempNormals.Count);
             return new Mesh(out_vertices.ToArray(), out_normals.ToArray(), out_uvs.ToArray(), out_indices.ToArray());
         }
 
@@ -171,22 +178,31 @@ namespace SharpGame.Graphics.Meshes
             int x = 0;
             int y = 0;
             int[] faceIndices = new int[] { 0, 1, 2, 2, 1, 3};
+            float likeBreakFactor = 0;
+            float spacingFactor = 0;
             for (int i = 0; i < text.Length * 4; i += 4)
             {
-                float spacingFactor = i * 0.25f;
-                Vector3 vertexUpLeft =    new Vector3(x + spacingFactor * size,        y + size, 0);
-                Vector3 vertexUpRight =   new Vector3(x + spacingFactor * size + size, y + size, 0);
-                Vector3 vertexDownRight = new Vector3(x + spacingFactor * size + size, y, 0);
-                Vector3 vertexDownLeft =  new Vector3(x + spacingFactor * size,        y, 0);
+                char character = text[(int)(i * 0.25)];
+
+                float uvX = (character % 16) / 16.0f;
+                float uvY = (character / 16) / 16.0f;
+
+                if (character == '\n')
+                {
+                    likeBreakFactor += y + size + 0.5f;
+                    spacingFactor = -1f;
+                }
+
+
+                Vector3 vertexUpLeft =    new Vector3(x + spacingFactor * size,        y + size - likeBreakFactor, 0);
+                Vector3 vertexUpRight =   new Vector3(x + spacingFactor * size + size, y + size - likeBreakFactor, 0);
+                Vector3 vertexDownRight = new Vector3(x + spacingFactor * size + size, y - likeBreakFactor, 0);
+                Vector3 vertexDownLeft =  new Vector3(x + spacingFactor * size,        y - likeBreakFactor, 0);
 
                 vertices[i] = vertexUpLeft;
                 vertices[i + 1] = vertexDownLeft;
                 vertices[i + 2] = vertexUpRight;
                 vertices[i + 3] = vertexDownRight;
-
-                char character = text[(int)(i * 0.25)];
-                float uvX = (character % 16) / 16.0f;
-                float uvY = (character / 16) / 16.0f;
 
 
                 Vector2 uvUpLeft =    new Vector2(uvX,                uvY);
@@ -203,6 +219,8 @@ namespace SharpGame.Graphics.Meshes
                 {
                     indices[i / 4 * 6 + j] = faceIndices[j] + i;
                 }
+
+                spacingFactor += 1f;
             }
 
             return new Mesh(vertices, new Vector3[] { }, uvs, indices);
