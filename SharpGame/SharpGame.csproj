@@ -65,6 +65,7 @@
     <Compile Include="Input\InputSystem.cs" />
     <Compile Include="Input\MouseAxis.cs" />
     <Compile Include="Objects\Actor.cs" />
+    <Compile Include="Objects\Components\Audio\AudioSourceComponent.cs" />
     <Compile Include="Objects\Components\GUI\GuiTextureComponent.cs" />
     <Compile Include="Objects\Components\Lighting\PointLightComponent.cs" />
     <Compile Include="Objects\Components\Particles\ParticleEmitterComponent.cs" />
