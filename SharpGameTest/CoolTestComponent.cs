@@ -35,10 +35,6 @@ namespace SharpGameTest
                 fps = 0;
             }
             text.Text = $"{ fpstext} Actors: {SharpGameWindow.ActiveScene.GetActorAmount()}\nGPU: {gpu}\nXYZ: {(Vector3)SharpGameWindow.ActiveScene.Camera.Actor.PositionComponent}";
-
-            //text.Text = deltaTime.ToString();
-
-            //this.Actor.RotationComponent.Rotate(0, 1, 0);
         }
     }
 }
