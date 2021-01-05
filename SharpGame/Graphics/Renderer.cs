@@ -52,13 +52,13 @@ namespace SharpGame.Graphics
 
         public void Render()
         {
+            GL.Enable(EnableCap.CullFace);
+            GL.Enable(EnableCap.LineSmooth);
+            GL.Enable(EnableCap.PolygonSmooth);
+            GL.Enable(EnableCap.StencilTest);
             //Logger.Info(vertexArrayObjects.Count);
             foreach (VertexArrayObject vao in vertexArrayObjects)
             {
-                GL.Enable(EnableCap.CullFace);
-                GL.Enable(EnableCap.LineSmooth);
-                GL.Enable(EnableCap.PolygonSmooth);
-                GL.Enable(EnableCap.StencilTest);
 
                 if (vao.MeshRenderer is GuiTextComponent component)
                 {
