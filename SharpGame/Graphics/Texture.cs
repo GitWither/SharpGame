@@ -41,6 +41,7 @@ namespace SharpGame.Graphics
             width = bitmapData.Width;
 
             Bind(TextureUnit.Texture0);
+
             GL.TexImage2D(TextureTarget.Texture2D, 0, PixelInternalFormat.Rgba, width, height, 0, OpenTK.Graphics.OpenGL4.PixelFormat.Bgra, PixelType.UnsignedByte, bitmapData.Scan0);
 
             GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapS, (float)TextureWrapMode.Repeat);
@@ -48,6 +49,8 @@ namespace SharpGame.Graphics
             GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, (float)TextureMinFilter.NearestMipmapLinear);
             GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter, (float)TextureMagFilter.Nearest);
             GL.GenerateMipmap(GenerateMipmapTarget.Texture2D);
+
+            Unbind();
 
 
             bitmap.UnlockBits(bitmapData);
