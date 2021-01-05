@@ -21,7 +21,7 @@ namespace SharpGameTest
         public override void OnAwake()
         {
             this.Actor.PositionComponent.Set(0, 15, 0);
-            this.Actor.RotationComponent.Set(2.5f, 0, 0);
+            this.Actor.RotationComponent.Set(25, 0, 0);
         }
         public override void OnUpdate(float deltaTime)
         {

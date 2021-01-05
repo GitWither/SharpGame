@@ -11,7 +11,10 @@ using OpenTK;
 using System.Drawing;
 using SharpGame.Objects.Components;
 using SharpGame.Graphics;
-using OpenTK.Graphics.OpenGL4;
+using OpenTK.Audio;
+using SharpGame.Audio;
+using OpenTK.Audio.OpenAL;
+using SharpGame.Util;
 
 namespace SharpGameTest
 {
@@ -22,7 +25,7 @@ namespace SharpGameTest
             SharpGameWindow window = new SharpGameWindow(1270, 780, "SharpGame");
 
             Scene scene = new Scene();
-
+            Sound sound = new Sound(@"C:\Users\Daniel\Desktop\vanilla server\Howard-The-Alien-ORIGINAL-VIDEO.wav");
             Texture missing = new Texture("missing");
             Texture main = new Texture("download");
             Texture buffaloTxt = new Texture("buffalo");
@@ -40,7 +43,8 @@ namespace SharpGameTest
 
             Actor buffalo = new Actor();
             //buffalo.ScaleComponent.Set(1f, 0.01f, 0.01f);
-            buffalo.AddComponent(new MeshRendererComponent(Mesh.FromOBJ("dragon"), new Material(Shader.Lit, missing, 2.0f)));
+            buffalo.AddComponent(new MeshRendererComponent(Mesh.FromOBJ("dragon"), new Material(Shader.Lit, missing, 1f)));
+            buffalo.AddComponent(new AudioSourceComponent(sound, 1, 1, 15, true));
             //buffalo.AddComponent(new PointLightComponent(new Vector3(1f, 1f, 1f)));
 
             Actor light = new Actor();
@@ -84,8 +88,8 @@ namespace SharpGameTest
             Point point =  window.Location;
             point.X -= 1920;
             window.Location = point;
-            #endif
-            
+#endif
+
             window.Run();
         }
     }
