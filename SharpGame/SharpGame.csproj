@@ -67,6 +67,7 @@
     <Compile Include="Objects\Actor.cs" />
     <Compile Include="Objects\Components\GUI\GuiTextureComponent.cs" />
     <Compile Include="Objects\Components\Lighting\PointLightComponent.cs" />
+    <Compile Include="Objects\Components\Particles\ParticleEmitterComponent.cs" />
     <Compile Include="Objects\Components\Physics\BoxColliderComponent.cs" />
     <Compile Include="Objects\Components\Physics\RigidbodyComponent.cs" />
     <Compile Include="Objects\Components\Rendering\CameraComponent.cs" />
