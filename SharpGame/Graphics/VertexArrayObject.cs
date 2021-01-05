@@ -77,7 +77,7 @@ namespace SharpGame.Graphics
             MeshRenderer.Material.Shader.UploadMatrix4(SharedConstants.UniformTransformationMatrix, ref transformation);
             MeshRenderer.Material.Shader.UploadMatrix4(SharedConstants.UniformModelViewProjection, ref modelViewProjection);
 
-            MeshRenderer.Material.Shader.UploadFloat("u_Specularity", MeshRenderer.Material.Specularity);
+            MeshRenderer.Material.Shader.UploadFloat(SharedConstants.UniformSpecularity, MeshRenderer.Material.Specularity);
 
             PointLightComponent[] lights = MeshRenderer.Actor.RootScene.PointLights;
 
