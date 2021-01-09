@@ -51,21 +51,31 @@ namespace SharpGame.Graphics
             if (meshRendererComponent is GuiTextComponent)
             {
                 vao = new TextVertexArrayObject();
-                vao.AddMesh(meshRendererComponent);
+                vao.SetRenderer(meshRendererComponent);
                 vao.Upload();
                 guiObjects.Add(vao);
             }
             else if (meshRendererComponent is GuiTextureComponent)
             {
                 vao = new GuiVertexArrayObject();
-                vao.AddMesh(meshRendererComponent);
+                vao.SetRenderer(meshRendererComponent);
                 vao.Upload();
                 guiObjects.Add(vao);
             }
+<<<<<<< Updated upstream
+=======
+            else if (meshRendererComponent is ParticleEmitterComponent)
+            {
+                vao = new ParticleVertexArrayObject();
+                vao.SetRenderer(meshRendererComponent);
+                vao.Upload();
+                worldObjects.Add(vao);
+            }
+>>>>>>> Stashed changes
             else
             { 
-                vao = new VertexArrayObject();
-                vao.AddMesh(meshRendererComponent);
+                vao = new MeshVertexArrayObject();
+                vao.SetRenderer(meshRendererComponent);
                 vao.Upload();
                 worldObjects.Add(vao);
             }
@@ -90,12 +100,6 @@ namespace SharpGame.Graphics
                 GL.Disable(EnableCap.DepthTest);
                 GL.Enable(EnableCap.Blend);
                 GL.BlendFunc(BlendingFactor.SrcAlpha, BlendingFactor.OneMinusSrcAlpha);
-
-                if (vao.MeshRenderer is GuiTextComponent component)
-                {
-                    vao.MeshRenderer.Mesh = Mesh.FromText(component.Text);
-                    vao.Upload();
-                }
 
                 vao.Render();
             }
