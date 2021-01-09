@@ -3,6 +3,7 @@ using OpenTK.Graphics;
 using OpenTK.Graphics.OpenGL4;
 
 using SharpGame.Graphics.Meshes;
+using SharpGame.Graphics.Vaos;
 using SharpGame.Objects;
 using SharpGame.Objects.Components;
 using SharpGame.Util;
@@ -46,15 +47,26 @@ namespace SharpGame.Graphics
 
         private void Add(MeshRendererComponent meshRendererComponent)
         {
-            VertexArrayObject vao = new VertexArrayObject();
-            vao.AddMesh(meshRendererComponent);
-            vao.Upload();
-            if (meshRendererComponent is GuiTextureComponent || meshRendererComponent is GuiTextComponent)
+            VertexArrayObject vao;
+            if (meshRendererComponent is GuiTextComponent)
             {
+                vao = new TextVertexArrayObject();
+                vao.AddMesh(meshRendererComponent);
+                vao.Upload();
+                guiObjects.Add(vao);
+            }
+            else if (meshRendererComponent is GuiTextureComponent)
+            {
+                vao = new GuiVertexArrayObject();
+                vao.AddMesh(meshRendererComponent);
+                vao.Upload();
                 guiObjects.Add(vao);
             }
             else
-            {
+            { 
+                vao = new VertexArrayObject();
+                vao.AddMesh(meshRendererComponent);
+                vao.Upload();
                 worldObjects.Add(vao);
             }
         }
@@ -75,14 +87,14 @@ namespace SharpGame.Graphics
             //Iterate through all GUI objects. This is so they render on top of everything.
             foreach (VertexArrayObject vao in guiObjects)
             {
+                GL.Disable(EnableCap.DepthTest);
+                GL.Enable(EnableCap.Blend);
+                GL.BlendFunc(BlendingFactor.SrcAlpha, BlendingFactor.OneMinusSrcAlpha);
+
                 if (vao.MeshRenderer is GuiTextComponent component)
                 {
                     vao.MeshRenderer.Mesh = Mesh.FromText(component.Text);
                     vao.Upload();
-
-                    GL.Disable(EnableCap.DepthTest);
-                    GL.Enable(EnableCap.Blend);
-                    GL.BlendFunc(BlendingFactor.SrcAlpha, BlendingFactor.OneMinusSrcAlpha);
                 }
 
                 vao.Render();

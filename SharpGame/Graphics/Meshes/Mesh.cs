@@ -21,7 +21,7 @@ namespace SharpGame.Graphics.Meshes
                 new Vector3(1, 1, 0),
                 new Vector3(1, -1, 0)
             }, 
-            new Vector3[] { },
+            null,
             new Vector2[] {
                 new Vector2(0, 0),
                 new Vector2(0, 1),
@@ -162,9 +162,7 @@ namespace SharpGame.Graphics.Meshes
                     out_indices.Add(out_vertices.Count - 1); 
                 }
             }
-            Logger.Info(out_vertices.Count + " " + in_vertices.Count + " " + tempVertices.Count);
-            Logger.Info(out_uvs.Count + " " + in_uvs.Count + " " + tempUVs.Count);
-            Logger.Info(out_normals.Count + " " + in_normals.Count + " " + tempNormals.Count);
+
             return new Mesh(out_vertices.ToArray(), out_normals.ToArray(), out_uvs.ToArray(), out_indices.ToArray());
         }
 

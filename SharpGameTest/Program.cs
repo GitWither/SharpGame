@@ -49,7 +49,7 @@ namespace SharpGameTest
             Actor buffalo = new Actor();
             //buffalo.ScaleComponent.Set(1f, 0.01f, 0.01f);
             buffalo.AddComponent(new MeshRendererComponent(Mesh.FromOBJ("dragon"), new Material(Shader.Lit, missing, 1f)));
-            buffalo.AddComponent(new AudioSourceComponent(sound, 1, 1, 15, true));
+            //buffalo.AddComponent(new AudioSourceComponent(sound, 1, 1, 15, true));
             //buffalo.AddComponent(new PointLightComponent(new Vector3(1f, 1f, 1f)));
 
             Actor light = new Actor();
@@ -83,8 +83,8 @@ namespace SharpGameTest
             scene.AddActor(field);
             scene.AddActor(light2);
             scene.AddActor(rocket);
+            scene.AddActor(testLol);
             scene.AddActor(text);
-            //scene.AddActor(testLol);
             scene.AddActor(light);
 
             window.LoadScene(scene);

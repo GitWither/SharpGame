@@ -1,7 +1,6 @@
 ﻿using OpenTK;
 using OpenTK.Graphics.OpenGL4;
 
-using SharpGame.Objects.Components;
 using SharpGame.Util;
 
 using System;
@@ -12,14 +11,14 @@ using System.Threading.Tasks;
 
 namespace SharpGame.Graphics.Vaos
 {
-    internal class TextVertexArrayObject : VertexArrayObject
+    class GuiVertexArrayObject : VertexArrayObject
     {
         public override void Upload()
         {
             this.Bind();
 
-            this.BindVectorArrayToBuffer(this.bufferIds[0], 0, this.MeshRenderer.Mesh.Vertices, true);
-            this.BindVectorArrayToBuffer(this.bufferIds[1], 1, this.MeshRenderer.Mesh.FaceTexCoords, true);
+            this.BindVectorArrayToBuffer(this.bufferIds[0], 0, this.MeshRenderer.Mesh.Vertices, false);
+            this.BindVectorArrayToBuffer(this.bufferIds[1], 1, this.MeshRenderer.Mesh.FaceTexCoords, false);
 
             this.BindIndices(this.MeshRenderer.Mesh.Indices);
 

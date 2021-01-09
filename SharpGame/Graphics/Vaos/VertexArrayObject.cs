@@ -12,7 +12,7 @@ using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SharpGame.Graphics
+namespace SharpGame.Graphics.Vaos
 {
     internal class VertexArrayObject : IDisposable
     {
@@ -62,15 +62,7 @@ namespace SharpGame.Graphics
             MeshRenderer.Material.NormalMap?.Bind(TextureUnit.Texture1);
 
             Matrix4 modelViewProjection = SharpGameWindow.ActiveScene.Camera.View * SharpGameWindow.ActiveScene.Camera.Projection;
-            Matrix4 scale = Matrix4.CreateScale(MeshRenderer.Actor.ScaleComponent);
-
-            Matrix4 rotation = Matrix4.CreateRotationZ(MathHelper.DegreesToRadians(MeshRenderer.Actor.RotationComponent.Roll)) *
-                               Matrix4.CreateRotationY(MathHelper.DegreesToRadians(MeshRenderer.Actor.RotationComponent.Yaw)) *
-                               Matrix4.CreateRotationX(MathHelper.DegreesToRadians(MeshRenderer.Actor.RotationComponent.Pitch));
-
-            Matrix4 translation = Matrix4.CreateTranslation(this.MeshRenderer.Actor.PositionComponent);
-
-            Matrix4 transformation = translation * rotation * scale;
+            Matrix4 transformation = MathUtil.CreateTransformationMatrix(this.MeshRenderer.Actor.PositionComponent, this.MeshRenderer.Actor.RotationComponent, this.MeshRenderer.Actor.ScaleComponent);
 
             MeshRenderer.Material.Shader.UploadMatrix4(SharedConstants.UniformTransformationMatrix, ref transformation);
             MeshRenderer.Material.Shader.UploadMatrix4(SharedConstants.UniformModelViewProjection, ref modelViewProjection);
