@@ -84,6 +84,11 @@ namespace SharpGame.Graphics
             GL.Uniform4(GetUniformLocation(name), value);
         }
 
+        public void UploadBool(string name, bool value)
+        {
+            GL.Uniform1(GetUniformLocation(name), value ? 0.5f : 0);
+        }
+
         public void UploadFloat(string name, float value)
         {
             GL.Uniform1(GetUniformLocation(name), value);

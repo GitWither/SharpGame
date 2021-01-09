@@ -36,8 +36,9 @@ namespace SharpGameTest
             Texture buffaloTxt = new Texture("buffalo");
             Texture font = new Texture("ExportedFont");
             Texture rocketTxt = new Texture("rocket");
+            Texture greenRing = new Texture("BaseMap");
 
-            Material rocks = new Material(Shader.Lit, new Texture("rock"), new Texture("rock_normals"), 0.5f);
+            Material rocks = new Material(Shader.Lit, new Texture("rock"), new Texture("rock_normals"), null, 0.5f);
 
             Actor field = new Actor();
             field.AddComponent(new MeshRendererComponent(Mesh.FromOBJ("scene"), rocks));
@@ -48,7 +49,7 @@ namespace SharpGameTest
 
             Actor buffalo = new Actor();
             //buffalo.ScaleComponent.Set(1f, 0.01f, 0.01f);
-            buffalo.AddComponent(new MeshRendererComponent(Mesh.FromOBJ("dragon"), new Material(Shader.Lit, missing, 1f)));
+            buffalo.AddComponent(new MeshRendererComponent(Mesh.FromOBJ("dragon"), new Material(Shader.Lit, missing, 0.5f)));
             //buffalo.AddComponent(new AudioSourceComponent(sound, 1, 1, 15, true));
             //buffalo.AddComponent(new PointLightComponent(new Vector3(1f, 1f, 1f)));
 
@@ -73,6 +74,11 @@ namespace SharpGameTest
             text.ScaleComponent.Set(0.05f, 0.07f, 1);
             text.PositionComponent.Set(-20, 13, 0);
 
+            Actor ring = new Actor();
+            ring.AddComponent(new MeshRendererComponent(Mesh.FromOBJ("ring"), new Material(Shader.Lit, greenRing, null, new Texture("EmmissionMap"))));
+            ring.ScaleComponent.Set(4, 4, 4);
+            ring.PositionComponent.Set(0, 10, 0);
+
             Actor camera = new Actor();
             camera.AddComponent(new CameraComponent(70f, 16/9f, 0.1f, 1000f));
             camera.AddComponent(new PlayerControlledComponent());
@@ -86,6 +92,7 @@ namespace SharpGameTest
             scene.AddActor(testLol);
             scene.AddActor(text);
             scene.AddActor(light);
+            scene.AddActor(ring);
 
             window.LoadScene(scene);
 
