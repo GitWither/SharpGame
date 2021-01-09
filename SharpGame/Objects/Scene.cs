@@ -24,8 +24,8 @@ namespace SharpGame.Objects
 
         private readonly List<Actor> actors;
 
-        private readonly PhysicsSolver physicsSolver;
         private readonly RenderSystem renderer;
+        private readonly PhysicsSystem physicsSolver;
 
 
         public Scene()
@@ -34,8 +34,8 @@ namespace SharpGame.Objects
 
             PointLights = new PointLightComponent[SharedConstants.MaxLights];
 
-            physicsSolver = new PhysicsSolver();
             renderer = new RenderSystem();
+            physicsSolver = new PhysicsSystem();
         }
 
         ~Scene()

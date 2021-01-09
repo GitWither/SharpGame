@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace SharpGame.Physics
 {
-    class PhysicsSolver
+    public class PhysicsSystem
     {
         public DiscreteDynamicsWorld World { get; set; }
         CollisionDispatcher dispatcher;
