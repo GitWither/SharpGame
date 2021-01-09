@@ -77,7 +77,7 @@
     <Compile Include="Audio\Sound.cs" />
     <Compile Include="Graphics\Material.cs" />
     <Compile Include="Graphics\Meshes\Mesh.cs" />
-    <Compile Include="Graphics\Renderer.cs" />
+    <Compile Include="Graphics\RenderSystem.cs" />
     <Compile Include="Graphics\Shader.cs" />
     <Compile Include="Graphics\Texture.cs" />
     <Compile Include="Graphics\VertexArrayObject.cs" />

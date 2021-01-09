@@ -15,6 +15,7 @@ using OpenTK.Audio;
 using SharpGame.Audio;
 using OpenTK.Audio.OpenAL;
 using SharpGame.Util;
+using SharpGame.Physics;
 
 namespace SharpGameTest
 {
@@ -25,6 +26,10 @@ namespace SharpGameTest
             SharpGameWindow window = new SharpGameWindow(1270, 780, "SharpGame");
 
             Scene scene = new Scene();
+
+            scene.RegisterPhysicsSystem(new PhysicsSystem());
+            scene.RegisterRenderSystem(new RenderSystem());
+
             Sound sound = new Sound(@"C:\Users\Daniel\Desktop\Minecraft Bedrock Launcher\Minecraft-1.16.210.50\data\resource_packs\vanilla_music\sounds\music\game\creative\creative1.ogg");
             Texture missing = new Texture("missing");
             Texture main = new Texture("download");

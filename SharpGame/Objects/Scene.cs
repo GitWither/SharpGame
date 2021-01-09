@@ -24,8 +24,8 @@ namespace SharpGame.Objects
 
         private readonly List<Actor> actors;
 
-        private readonly RenderSystem renderer;
-        private readonly PhysicsSystem physicsSolver;
+        private RenderSystem renderSystem;
+        private PhysicsSystem physicsSystem;
 
 
         public Scene()
@@ -33,18 +33,45 @@ namespace SharpGame.Objects
             actors = new List<Actor>(SharedConstants.MaxActors);
 
             PointLights = new PointLightComponent[SharedConstants.MaxLights];
-
-            renderer = new RenderSystem();
-            physicsSolver = new PhysicsSystem();
         }
 
         ~Scene()
         {
+            actors.Clear();
         }
 
         public void OnAwake()
         {
+            if (physicsSystem == null && renderSystem == null)
+            {
+                Logger.Error("Render and physics systems have not been initialized. A register is required before using them!");
+                return;
+            }
             this.isRunning = true;
+        }
+
+        public void RegisterRenderSystem(RenderSystem renderSystem)
+        {
+            if (!this.isRunning)
+            {
+                this.renderSystem = renderSystem;
+            }
+            else
+            {
+                Logger.Error("Cannot register system while scene is running");
+            }
+        }
+
+        public void RegisterPhysicsSystem(PhysicsSystem physicsSystem)
+        {
+            if (!this.isRunning)
+            {
+                this.physicsSystem = physicsSystem;
+            }
+            else
+            {
+                Logger.Error("Cannot register system while scene is running");
+            }
         }
 
         public void AddActor(Actor actor)
@@ -53,17 +80,17 @@ namespace SharpGame.Objects
             actor.OnAwake();
             actors.Add(actor);
             actor.OnStart();
-            renderer.AddActor(actor);
+            renderSystem.AddActor(actor);
         }
 
         public void Render()
         {
-            renderer.Render();
+            renderSystem.Render();
         }
 
         public void OnUpdate(float deltaTime)
         {
-            physicsSolver.OnUpdate(deltaTime);
+            physicsSystem.OnUpdate(deltaTime);
             for (int i = 0; i < actors.Count; i++)
             {
                 actors[i].OnUpdate(deltaTime);
@@ -72,7 +99,7 @@ namespace SharpGame.Objects
 
         public void OnShutdown()
         {
-            physicsSolver.OnShutdown();
+            physicsSystem.OnShutdown();
             foreach (Actor actor in actors)
             {
                 actor.OnShutdown();
