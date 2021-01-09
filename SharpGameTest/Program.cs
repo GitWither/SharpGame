@@ -25,7 +25,7 @@ namespace SharpGameTest
             SharpGameWindow window = new SharpGameWindow(1270, 780, "SharpGame");
 
             Scene scene = new Scene();
-            Sound sound = new Sound(@"C:\Users\Daniel\Desktop\vanilla server\Howard-The-Alien-ORIGINAL-VIDEO.wav");
+            Sound sound = new Sound(@"C:\Users\Daniel\Desktop\Minecraft Bedrock Launcher\Minecraft-1.16.210.50\data\resource_packs\vanilla_music\sounds\music\game\creative\creative1.ogg");
             Texture missing = new Texture("missing");
             Texture main = new Texture("download");
             Texture buffaloTxt = new Texture("buffalo");
@@ -69,7 +69,7 @@ namespace SharpGameTest
             text.PositionComponent.Set(-20, 13, 0);
 
             Actor camera = new Actor();
-            camera.AddComponent(new CameraComponent(70f, 16/9f, 0.1f, 100f));
+            camera.AddComponent(new CameraComponent(70f, 16/9f, 0.1f, 1000f));
             camera.AddComponent(new PlayerControlledComponent());
             camera.PositionComponent.Set(0, 10, -15);
 
