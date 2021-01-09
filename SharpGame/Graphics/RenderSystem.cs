@@ -15,16 +15,18 @@ using System.Threading.Tasks;
 
 namespace SharpGame.Graphics
 {
-    public class Renderer : IDisposable
+    public class RenderSystem : IDisposable
     {
-        private List<VertexArrayObject> vertexArrayObjects;
+        private readonly List<VertexArrayObject> worldObjects;
+        private readonly List<VertexArrayObject> guiObjects;
 
-        public Renderer()
+        public RenderSystem()
         {
-            vertexArrayObjects = new List<VertexArrayObject>();
+            worldObjects = new List<VertexArrayObject>();
+            guiObjects = new List<VertexArrayObject>();
         }
 
-        ~Renderer()
+        ~RenderSystem()
         {
             this.Dispose();
         }
@@ -47,7 +49,14 @@ namespace SharpGame.Graphics
             VertexArrayObject vao = new VertexArrayObject();
             vao.AddMesh(meshRendererComponent);
             vao.Upload();
-            vertexArrayObjects.Add(vao);
+            if (meshRendererComponent is GuiTextureComponent || meshRendererComponent is GuiTextComponent)
+            {
+                guiObjects.Add(vao);
+            }
+            else
+            {
+                worldObjects.Add(vao);
+            }
         }
 
         public void Render()
@@ -56,10 +65,16 @@ namespace SharpGame.Graphics
             GL.Enable(EnableCap.LineSmooth);
             GL.Enable(EnableCap.PolygonSmooth);
             GL.Enable(EnableCap.StencilTest);
-            //Logger.Info(vertexArrayObjects.Count);
-            foreach (VertexArrayObject vao in vertexArrayObjects)
-            {
 
+            //Iterate through all world-placed objects. 
+            foreach (VertexArrayObject vao in worldObjects)
+            {
+                vao.Render();
+            }
+            
+            //Iterate through all GUI objects. This is so they render on top of everything.
+            foreach (VertexArrayObject vao in guiObjects)
+            {
                 if (vao.MeshRenderer is GuiTextComponent component)
                 {
                     vao.MeshRenderer.Mesh = Mesh.FromText(component.Text);
@@ -70,18 +85,11 @@ namespace SharpGame.Graphics
                     GL.BlendFunc(BlendingFactor.SrcAlpha, BlendingFactor.OneMinusSrcAlpha);
                 }
 
-                if (vao.MeshRenderer is GuiTextureComponent)
-                {
-                    GL.Disable(EnableCap.DepthTest);
-                    GL.Enable(EnableCap.Blend);
-                    GL.BlendFunc(BlendingFactor.SrcAlpha, BlendingFactor.OneMinusSrcAlpha);
-                }
-
                 vao.Render();
-
-                GL.Enable(EnableCap.DepthTest);
-                GL.Disable(EnableCap.Blend);
             }
+
+            GL.Enable(EnableCap.DepthTest);
+            GL.Disable(EnableCap.Blend);
         }
 
         public void Dispose()
