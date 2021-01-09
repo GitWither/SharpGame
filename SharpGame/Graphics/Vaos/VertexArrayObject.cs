@@ -18,7 +18,8 @@ namespace SharpGame.Graphics
     {
         private float time;
         private readonly int id;
-        private readonly int[] bufferIds = new int[4];
+
+        protected readonly int[] bufferIds = new int[4];
 
         public MeshRendererComponent MeshRenderer { get; private set; }
 
@@ -34,26 +35,25 @@ namespace SharpGame.Graphics
             Dispose();
         }
 
-        public void AddMesh(MeshRendererComponent meshRendererComponent)
+        public virtual void AddMesh(MeshRendererComponent meshRendererComponent)
         {
             this.MeshRenderer = meshRendererComponent;
         }
 
-        public void Upload()
+        public virtual void Upload()
         {
+            Bind();
 
-            GL.BindVertexArray(id);
-
-            BindVectorArrayToBuffer(bufferIds[0], 0, MeshRenderer.Mesh.Vertices);
-            BindVectorArrayToBuffer(bufferIds[1], 1, MeshRenderer.Mesh.FaceTexCoords);
-            BindVectorArrayToBuffer(bufferIds[2], 2, MeshRenderer.Mesh.Normals);
+            BindVectorArrayToBuffer(bufferIds[0], 0, MeshRenderer.Mesh.Vertices, false);
+            BindVectorArrayToBuffer(bufferIds[1], 1, MeshRenderer.Mesh.FaceTexCoords, false);
+            BindVectorArrayToBuffer(bufferIds[2], 2, MeshRenderer.Mesh.Normals, false);
 
             BindIndices(MeshRenderer.Mesh.Indices);
 
-            GL.BindVertexArray(0);
+            Unbind();
         }
 
-        public void Render()
+        public virtual void Render()
         {
             time += 0.1f;
             MeshRenderer.Material.Shader.UploadFloat("iTime", time);
@@ -91,35 +91,45 @@ namespace SharpGame.Graphics
             }
 
 
-            GL.BindVertexArray(id);
+            Bind();
             GL.DrawElements(BeginMode.Triangles, MeshRenderer.Mesh.Indices.Length, DrawElementsType.UnsignedInt, 0);
-            GL.BindVertexArray(0);
+            Unbind();
 
             MeshRenderer.Material.NormalMap?.Unbind();
             MeshRenderer.Material.BaseMap.Unbind();
             MeshRenderer.Material.Shader.Unbind();
         }
 
-        private void BindVectorArrayToBuffer(int bufferId, int attributeId, Vector3[] vectors)
+        protected void BindVectorArrayToBuffer(int bufferId, int attributeId, Vector3[] vectors, bool dynamic)
         {
             GL.BindBuffer(BufferTarget.ArrayBuffer, bufferId);
-            GL.BufferData(BufferTarget.ArrayBuffer, vectors.Length * Vector3.SizeInBytes, vectors, BufferUsageHint.StaticDraw);
+            GL.BufferData(BufferTarget.ArrayBuffer, vectors.Length * Vector3.SizeInBytes, vectors, dynamic ? BufferUsageHint.DynamicDraw : BufferUsageHint.StaticDraw);
             GL.VertexAttribPointer(attributeId, 3, VertexAttribPointerType.Float, false, 0, 0);
             GL.EnableVertexArrayAttrib(id, attributeId);
         }
 
-        private void BindVectorArrayToBuffer(int bufferId, int attributeId, Vector2[] vectors)
+        protected void BindVectorArrayToBuffer(int bufferId, int attributeId, Vector2[] vectors, bool dynamic)
         {
             GL.BindBuffer(BufferTarget.ArrayBuffer, bufferId);
-            GL.BufferData(BufferTarget.ArrayBuffer, vectors.Length * Vector2.SizeInBytes, vectors, BufferUsageHint.StaticDraw);
+            GL.BufferData(BufferTarget.ArrayBuffer, vectors.Length * Vector2.SizeInBytes, vectors, dynamic ? BufferUsageHint.DynamicDraw : BufferUsageHint.StaticDraw);
             GL.VertexAttribPointer(attributeId, 2, VertexAttribPointerType.Float, false, 0, 0);
             GL.EnableVertexArrayAttrib(id, attributeId);
         }
 
-        private void BindIndices(int[] indices)
+        protected void BindIndices(int[] indices)
         {
             GL.BindBuffer(BufferTarget.ElementArrayBuffer, bufferIds[3]);
             GL.BufferData(BufferTarget.ElementArrayBuffer, indices.Length * sizeof(uint), indices, BufferUsageHint.StaticDraw);
+        }
+
+        protected void Bind()
+        {
+            GL.BindVertexArray(id);
+        }
+
+        protected void Unbind()
+        {
+            GL.BindVertexArray(0);
         }
 
         public void Dispose()
