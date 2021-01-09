@@ -62,6 +62,13 @@ namespace SharpGame.Graphics
                 vao.Upload();
                 guiObjects.Add(vao);
             }
+            else if (meshRendererComponent is ParticleEmitterComponent)
+            {
+                vao = new ParticleVertexArrayObject();
+                vao.AddMesh(meshRendererComponent);
+                vao.Upload();
+                worldObjects.Add(vao);
+            }
             else
             { 
                 vao = new VertexArrayObject();

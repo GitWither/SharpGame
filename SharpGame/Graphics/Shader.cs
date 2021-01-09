@@ -18,6 +18,7 @@ namespace SharpGame.Graphics
         public static Shader Lit;
         public static Shader Gui;
         public static Shader Text;
+        public static Shader Particle;
 
         private readonly int programId;
 
@@ -27,6 +28,7 @@ namespace SharpGame.Graphics
             Lit = new Shader("lit");
             Gui = new Shader("gui");
             Text = new Shader("text");
+            Particle = new Shader("particle");
         }
 
         public Shader(string path) 

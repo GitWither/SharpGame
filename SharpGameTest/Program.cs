@@ -16,6 +16,7 @@ using SharpGame.Audio;
 using OpenTK.Audio.OpenAL;
 using SharpGame.Util;
 using SharpGame.Physics;
+using System.Runtime.InteropServices;
 
 namespace SharpGameTest
 {
@@ -78,6 +79,9 @@ namespace SharpGameTest
             camera.AddComponent(new PlayerControlledComponent());
             camera.PositionComponent.Set(0, 10, -15);
 
+            Actor particles = new Actor();
+            particles.AddComponent(new ParticleEmitterComponent(255, 2, 2, new Material(Shader.Particle, missing)));
+
             scene.AddActor(buffalo);
             scene.AddActor(camera);
             scene.AddActor(field);
@@ -86,6 +90,7 @@ namespace SharpGameTest
             scene.AddActor(testLol);
             scene.AddActor(text);
             scene.AddActor(light);
+            scene.AddActor(particles);
 
             window.LoadScene(scene);
 
