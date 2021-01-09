@@ -18,8 +18,7 @@ namespace SharpGame.Graphics
     {
         private float time;
         private readonly int id;
-        private readonly int[] bufferIds = new int[3];
-        private readonly int indicesId;
+        private readonly int[] bufferIds = new int[4];
 
         public MeshRendererComponent MeshRenderer { get; private set; }
 
@@ -28,7 +27,6 @@ namespace SharpGame.Graphics
         {
             id = GL.GenVertexArray();
             GL.GenBuffers(bufferIds.Length, bufferIds);
-            indicesId = GL.GenBuffer();
         }
 
         ~VertexArrayObject()
@@ -120,7 +118,7 @@ namespace SharpGame.Graphics
 
         private void BindIndices(int[] indices)
         {
-            GL.BindBuffer(BufferTarget.ElementArrayBuffer, indicesId);
+            GL.BindBuffer(BufferTarget.ElementArrayBuffer, bufferIds[3]);
             GL.BufferData(BufferTarget.ElementArrayBuffer, indices.Length * sizeof(uint), indices, BufferUsageHint.StaticDraw);
         }
 
