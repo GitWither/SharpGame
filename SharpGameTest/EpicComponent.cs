@@ -31,7 +31,7 @@ namespace SharpGameTest
             {
                 Actor cube = new Actor();
                 cube.AddComponent(new PhysicsComponent());
-                cube.AddComponent(new MeshRendererComponent(travis, new Material(Shader.Lit, travisTxt, 5)));
+                //cube.AddComponent(new MeshRendererComponent(travis, new Material(Shader.Unlit, travisTxt, 5)));
                 //cube.AddComponent(new DeathComponent());
 
                 //MeshRendererComponent mrc = this.Actor.GetComponent<MeshRendererComponent>();

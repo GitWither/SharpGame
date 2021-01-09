@@ -28,7 +28,7 @@ namespace SharpGame.Util
 
         public static Matrix4 CreateTransformationMatrix(PositionComponent positionComponent, RotationComponent rotationComponent, ScaleComponent scaleComponent)
         {
-            Matrix4 scale = Matrix4.CreateScale(scaleComponent);
+            Matrix4 scale = Matrix4.CreateScale(scaleComponent.X, scaleComponent.Y, scaleComponent.Z);
 
             Matrix4 rotation = Matrix4.CreateRotationZ(MathHelper.DegreesToRadians(rotationComponent.Roll)) *
                                Matrix4.CreateRotationY(MathHelper.DegreesToRadians(rotationComponent.Yaw)) *

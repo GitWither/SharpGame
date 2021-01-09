@@ -45,7 +45,6 @@ namespace SharpGame
             Alc.MakeContextCurrent(audioContext);
             AL.DistanceModel(ALDistanceModel.LinearDistance);
 
-            this.Title += " - " + GL.GetString(StringName.Renderer);
             this.VSync = VSyncMode.On;
 
             base.UpdateFrame += this.UpdateFrameHandler;
