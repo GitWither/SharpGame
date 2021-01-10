@@ -34,7 +34,7 @@ namespace SharpGame.Util
                                Matrix4.CreateRotationY(MathHelper.DegreesToRadians(rotationComponent.Yaw)) *
                                Matrix4.CreateRotationX(MathHelper.DegreesToRadians(rotationComponent.Pitch));
 
-            Matrix4 translation = Matrix4.CreateTranslation(positionComponent);
+            Matrix4 translation = Matrix4.CreateTranslation(positionComponent.X, positionComponent.Y, positionComponent.Z);
 
             return translation * rotation * scale;
         }

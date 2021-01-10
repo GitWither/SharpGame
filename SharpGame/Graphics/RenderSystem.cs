@@ -80,6 +80,7 @@ namespace SharpGame.Graphics
 
         public void Render()
         {
+            GL.Enable(EnableCap.Multisample);
             GL.Enable(EnableCap.CullFace);
             GL.Enable(EnableCap.LineSmooth);
             GL.Enable(EnableCap.PolygonSmooth);
