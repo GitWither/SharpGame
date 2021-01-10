@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace SharpGame.Graphics.Vaos
 {
-    class MeshVertexArrayObject : VertexArrayObject
+    internal class MeshVertexArrayObject : VertexArrayObject
     {
         public MeshRendererComponent MeshRenderer { get; private set; }
         public override void SetRenderer(MeshRendererComponent renderer)

@@ -29,6 +29,11 @@ namespace SharpGame.Objects
             this.ScaleComponent = new ScaleComponent(1, 1, 1);
         }
 
+        /// <summary>
+        /// Retuns a component of type T, if present. Returns null if such component is not present.
+        /// </summary>
+        /// <typeparam name="T">Type of component to search for</typeparam>
+        /// <returns>An instance of the component</returns>
         public T GetComponent<T>() where T : Component
         {
             for (int i = 0; i < SharedConstants.MaxComponents; i++)
@@ -41,6 +46,12 @@ namespace SharpGame.Objects
             return default;
         }
         
+        /// <summary>
+        /// Adds an instance of a component to the actor and returns that instance
+        /// </summary>
+        /// <typeparam name="T">Type of component to add</typeparam>
+        /// <param name="component">Instance of component to add</param>
+        /// <returns>An instance of the added component</returns>
         public T AddComponent<T>(T component) where T : Component
         {
             for (int i = 0; i < SharedConstants.MaxComponents; i++)
@@ -54,6 +65,12 @@ namespace SharpGame.Objects
             }
             return default;
         }
+
+        /// <summary>
+        /// Returns true if an actor has the component T
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <returns>True if the actor has the component specified</returns>
         public bool HasComponent<T>() where T : Component
         {
             for (int i = 0; i < SharedConstants.MaxComponents; i++)
@@ -65,6 +82,12 @@ namespace SharpGame.Objects
             }
             return false;
         }
+
+        /// <summary>
+        /// Removes a component of type T
+        /// </summary>
+        /// <typeparam name="T">Type of the component</typeparam>
+        /// <param name="component">Instace of the component to remove</param>
         public void RemoveComponent<T>(T component) where T : Component
         {
             for (int i = 0; i < SharedConstants.MaxComponents; i++)

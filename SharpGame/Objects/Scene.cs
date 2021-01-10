@@ -1,25 +1,23 @@
-﻿using OpenTK;
-using OpenTK.Graphics.OpenGL4;
-
-using SharpGame.Graphics;
-using SharpGame.Graphics.Meshes;
+﻿using SharpGame.Graphics;
 using SharpGame.Objects.Components;
 using SharpGame.Physics;
 using SharpGame.Util;
 
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SharpGame.Objects
 {
     public class Scene : IDisposable
     {
         public CameraComponent Camera { get; set; }
-        public PointLightComponent[] PointLights { get; set; }
+        internal PointLightComponent[] PointLights { get; set; }
+
+        public int ActorCount
+        {
+            get => actors.Count;
+        }
+
         private bool isRunning = false;
 
         private readonly List<Actor> actors;
@@ -40,7 +38,7 @@ namespace SharpGame.Objects
             actors.Clear();
         }
 
-        public void OnAwake()
+        internal void OnAwake()
         {
             if (physicsSystem == null && renderSystem == null)
             {
@@ -50,6 +48,10 @@ namespace SharpGame.Objects
             this.isRunning = true;
         }
 
+        /// <summary>
+        /// Registers a rendering system.
+        /// </summary>
+        /// <param name="renderSystem">An instance of a render system</param>
         public void RegisterRenderSystem(RenderSystem renderSystem)
         {
             if (!this.isRunning)
@@ -62,6 +64,10 @@ namespace SharpGame.Objects
             }
         }
 
+        /// <summary>
+        /// Registers a physics system.
+        /// </summary>
+        /// <param name="physicsSystem">An instance of a physics system</param>
         public void RegisterPhysicsSystem(PhysicsSystem physicsSystem)
         {
             if (!this.isRunning)
@@ -74,6 +80,10 @@ namespace SharpGame.Objects
             }
         }
 
+        /// <summary>
+        /// Adds an actor to the scene
+        /// </summary>
+        /// <param name="actor">An instance of the actor to add to the scene</param>
         public void AddActor(Actor actor)
         {
             actor.RootScene = this;
@@ -83,12 +93,12 @@ namespace SharpGame.Objects
             renderSystem.AddActor(actor);
         }
 
-        public void Render()
+        internal void Render()
         {
             renderSystem.Render();
         }
 
-        public void OnUpdate(float deltaTime)
+        internal void OnUpdate(float deltaTime)
         {
             physicsSystem.OnUpdate(deltaTime);
             for (int i = 0; i < actors.Count; i++)
@@ -97,7 +107,7 @@ namespace SharpGame.Objects
             }
         }
 
-        public void OnShutdown()
+        internal void OnShutdown()
         {
             physicsSystem.OnShutdown();
             foreach (Actor actor in actors)
@@ -107,16 +117,20 @@ namespace SharpGame.Objects
             this.isRunning = false;
         }
 
+        /// <summary>
+        /// Retuns an array of actors that have the component specified
+        /// </summary>
+        /// <typeparam name="T">Component to search for</typeparam>
+        /// <returns></returns>
         public Actor[] GetActorsByComponent<T>() where T: Component
         {
             return actors.FindAll(actor => actor.HasComponent<T>()).ToArray();
         }
 
-        public int GetActorAmount()
-        {
-            return actors.Count;
-        }
-
+        /// <summary>
+        /// Removes an actor from the scene
+        /// </summary>
+        /// <param name="actor">An instance of the actor to remove from the scene</param>
         public void RemoveActor(Actor actor)
         {
             actors.Remove(actor);

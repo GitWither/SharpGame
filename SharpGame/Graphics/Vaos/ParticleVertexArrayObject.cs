@@ -13,7 +13,7 @@ using System.Threading.Tasks;
 
 namespace SharpGame.Graphics.Vaos
 {
-    class ParticleVertexArrayObject : VertexArrayObject
+    internal class ParticleVertexArrayObject : VertexArrayObject
     {
         private ParticleEmitterComponent ParticleEmitter { get; set; }
         public override void SetRenderer(MeshRendererComponent renderer)
