@@ -60,8 +60,9 @@ namespace SharpGame.Graphics.Meshes
                 while (sr.Peek() >= 0)
                 {
                     string line = sr.ReadLine();
-                    string type = line.Substring(0, line.IndexOf(' '));
-                    string[] data = line.Substring(line.IndexOf(' ') + 1).Split(' ');
+                    int firstSpaceIndex = line.IndexOf(' ');
+                    string type = line.Substring(0, firstSpaceIndex);
+                    string[] data = line.Substring(firstSpaceIndex + 1).Split(' ');
                     switch (type)
                     {
                         case SharedConstants.VertexMeshToken:
@@ -114,7 +115,8 @@ namespace SharpGame.Graphics.Meshes
             List<Vector2> in_uvs = new List<Vector2>();
             List<Vector3> in_normals = new List<Vector3>();
 
-            for (int i = 0; i < vertexIndices.Count; i++)
+            int vertexIndicesLength = vertexIndices.Count;
+            for (int i = 0; i < vertexIndicesLength; i++)
             {
                 int vertexIndex = vertexIndices[i];
                 int texIndex = uvIndices[i];
@@ -134,10 +136,12 @@ namespace SharpGame.Graphics.Meshes
             List<Vector3> out_normals = new List<Vector3>();
             List<int> out_indices = new List<int>();
             int indexX = 0;
-            for (int i = 0; i < in_vertices.Count; i++)
+            int inVerticesLength = in_vertices.Count;
+            int outVerticesLength = out_vertices.Count;
+            for (int i = 0; i < inVerticesLength; i++)
             {
                 bool found = false;
-                for (int p = 0; p < out_vertices.Count; p++)
+                for (int p = 0; p < outVerticesLength; p++)
                 {
                     if (MathUtil.Vector3ApproximatelyEqual(in_vertices[i], out_vertices[p]) &&
                         MathUtil.Vector3ApproximatelyEqual(in_normals[i], out_normals[p]) &&

@@ -2,6 +2,7 @@
 using OpenTK.Graphics.OpenGL4;
 
 using SharpGame.Graphics.Meshes;
+using SharpGame.Objects.Components;
 using SharpGame.Util;
 
 using System;
@@ -12,14 +13,20 @@ using System.Threading.Tasks;
 
 namespace SharpGame.Graphics.Vaos
 {
-    class ParticleVertexArrayObject : VertexArrayObject
+    internal class ParticleVertexArrayObject : VertexArrayObject
     {
+        private ParticleEmitterComponent ParticleEmitter { get; set; }
+        public override void SetRenderer(MeshRendererComponent renderer)
+        {
+            this.ParticleEmitter = (ParticleEmitterComponent)renderer;
+        }
         public override void Upload()
         {
             this.Bind();
 
             this.BindVectorArrayToBuffer(this.bufferIds[0], 0, Mesh.GuiQuad.Vertices, false);
             this.BindVectorArrayToBuffer(this.bufferIds[1], 1, Mesh.GuiQuad.FaceTexCoords, false);
+
             this.BindVectorArrayToBuffer(this.bufferIds[2], 2, new Vector3[] {
                 new Vector3(2, 2, 5),
                 new Vector3(1, 2, 5),
@@ -36,28 +43,32 @@ namespace SharpGame.Graphics.Vaos
             }, true);
             GL.VertexAttribDivisor(2, 1);
 
-            this.BindIndices(this.MeshRenderer.Mesh.Indices);
+            this.BindIndices(Mesh.GuiQuad.Indices);
 
             this.Unbind();
         }
         public override void Render()
         {
-            MeshRenderer.Material.Shader.Bind();
-            MeshRenderer.Material.BaseMap.Bind(TextureUnit.Texture0);
+            ParticleEmitter.Material.Shader.Bind();
+            ParticleEmitter.Material.BaseMap.Bind(TextureUnit.Texture0);
 
             Matrix4 modelViewProjection = SharpGameWindow.ActiveScene.Camera.View * SharpGameWindow.ActiveScene.Camera.Projection;
-            Matrix4 transformation = MathUtil.CreateTransformationMatrix(this.MeshRenderer.Actor.PositionComponent, this.MeshRenderer.Actor.RotationComponent, this.MeshRenderer.Actor.ScaleComponent);
+            Matrix4 transformation = MathUtil.CreateTransformationMatrix(
+                this.ParticleEmitter.Actor.PositionComponent, 
+                this.ParticleEmitter.Actor.RotationComponent, 
+                this.ParticleEmitter.Actor.ScaleComponent
+                );
 
-            MeshRenderer.Material.Shader.UploadMatrix4(SharedConstants.UniformModelViewProjection, ref modelViewProjection);
-            MeshRenderer.Material.Shader.UploadMatrix4(SharedConstants.UniformTransformationMatrix, ref transformation);
+            ParticleEmitter.Material.Shader.UploadMatrix4(SharedConstants.UniformModelViewProjection, ref modelViewProjection);
+            ParticleEmitter.Material.Shader.UploadMatrix4(SharedConstants.UniformTransformationMatrix, ref transformation);
 
             Bind();
             //GL.DrawElements(BeginMode.Triangles, MeshRenderer.Mesh.Indices.Length, DrawElementsType.UnsignedInt, 0);
-            GL.DrawElementsInstanced(PrimitiveType.Triangles, MeshRenderer.Mesh.Indices.Length, DrawElementsType.UnsignedInt, (IntPtr)0, 2555);
+            GL.DrawElementsInstanced(PrimitiveType.Triangles, Mesh.GuiQuad.Indices.Length, DrawElementsType.UnsignedInt, (IntPtr)0, ParticleEmitter.Count);
             Unbind();
 
-            MeshRenderer.Material.BaseMap.Unbind();
-            MeshRenderer.Material.Shader.Unbind();
+            ParticleEmitter.Material.BaseMap.Unbind();
+            ParticleEmitter.Material.Shader.Unbind();
         }
     }
 }
