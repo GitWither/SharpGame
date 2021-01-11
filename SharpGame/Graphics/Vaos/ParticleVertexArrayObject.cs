@@ -40,8 +40,7 @@ namespace SharpGame.Graphics.Vaos
                 new Vector3(6, 4, 9),
                 new Vector3(7, 2, 6),
                 new Vector3(3, 1, 7)
-            }, true);
-            GL.VertexAttribDivisor(2, 1);
+            }, true, 1);
 
             this.BindIndices(Mesh.GuiQuad.Indices);
 
@@ -52,23 +51,18 @@ namespace SharpGame.Graphics.Vaos
             ParticleEmitter.Material.Shader.Bind();
             ParticleEmitter.Material.BaseMap.Bind(TextureUnit.Texture0);
 
-            Matrix4 modelViewProjection = SharpGameWindow.ActiveScene.Camera.View * SharpGameWindow.ActiveScene.Camera.Projection;
             Matrix4 view = SharpGameWindow.ActiveScene.Camera.View;
+            Matrix4 projection = SharpGameWindow.ActiveScene.Camera.Projection;
+
             Matrix4 transformation = MathUtil.CreateTransformationMatrix(
                 this.ParticleEmitter.Actor.PositionComponent, 
                 this.ParticleEmitter.Actor.RotationComponent, 
                 this.ParticleEmitter.Actor.ScaleComponent
                 );
 
-
-            //modelViewProjection *= Matrix4.CreateRotationZ(MathHelper.DegreesToRadians(SharpGameWindow.ActiveScene.Camera.Actor.RotationComponent.Yaw));
-            //modelViewProjection *= Matrix4.CreateScale(2);
-
-            //modelViewProjection *= SharpGameWindow.ActiveScene.Camera.View;
-
-            ParticleEmitter.Material.Shader.UploadMatrix4("view", ref view);
-            ParticleEmitter.Material.Shader.UploadMatrix4(SharedConstants.UniformModelViewProjection, ref modelViewProjection);
-            ParticleEmitter.Material.Shader.UploadMatrix4(SharedConstants.UniformTransformationMatrix, ref transformation);
+            ParticleEmitter.Material.Shader.UploadMatrix4(SharedConstants.UniformView, ref view);
+            ParticleEmitter.Material.Shader.UploadMatrix4(SharedConstants.UniformProjection, ref projection);
+            ParticleEmitter.Material.Shader.UploadMatrix4(SharedConstants.UniformModel, ref transformation);
 
             Bind();
             //GL.DrawElements(BeginMode.Triangles, MeshRenderer.Mesh.Indices.Length, DrawElementsType.UnsignedInt, 0);

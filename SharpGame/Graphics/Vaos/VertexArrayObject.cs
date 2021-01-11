@@ -37,20 +37,22 @@ namespace SharpGame.Graphics.Vaos
 
         public abstract void Render();
 
-        protected void BindVectorArrayToBuffer(int bufferId, int attributeId, Vector3[] vectors, bool dynamic)
+        protected void BindVectorArrayToBuffer(int bufferId, int attributeId, Vector3[] vectors, bool dynamic, int attribDivisor = 0)
         {
             GL.BindBuffer(BufferTarget.ArrayBuffer, bufferId);
             GL.BufferData(BufferTarget.ArrayBuffer, vectors.Length * Vector3.SizeInBytes, vectors, dynamic ? BufferUsageHint.DynamicDraw : BufferUsageHint.StaticDraw);
             GL.VertexAttribPointer(attributeId, 3, VertexAttribPointerType.Float, false, 0, 0);
             GL.EnableVertexArrayAttrib(id, attributeId);
+            GL.VertexAttribDivisor(attributeId, attribDivisor);
         }
 
-        protected void BindVectorArrayToBuffer(int bufferId, int attributeId, Vector2[] vectors, bool dynamic)
+        protected void BindVectorArrayToBuffer(int bufferId, int attributeId, Vector2[] vectors, bool dynamic, int attribDivisor = 0)
         {
             GL.BindBuffer(BufferTarget.ArrayBuffer, bufferId);
             GL.BufferData(BufferTarget.ArrayBuffer, vectors.Length * Vector2.SizeInBytes, vectors, dynamic ? BufferUsageHint.DynamicDraw : BufferUsageHint.StaticDraw);
             GL.VertexAttribPointer(attributeId, 2, VertexAttribPointerType.Float, false, 0, 0);
             GL.EnableVertexArrayAttrib(id, attributeId);
+            GL.VertexAttribDivisor(attributeId, attribDivisor);
         }
 
         protected void BindIndices(int[] indices)
