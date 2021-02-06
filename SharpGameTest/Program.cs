@@ -39,7 +39,7 @@ namespace SharpGameTest
             Texture rocketTxt = new Texture("rocket");
             Texture greenRing = new Texture("BaseMap");
 
-            Material rocks = new Material(Shader.Lit, new Texture("rock"), new Texture("rock_normals"), null, 0.5f);
+            Material rocks = new Material(Shader.Lit, new Texture("rock"), new Texture("rock_normals"), null, 1f);
 
             Actor field = new Actor();
             field.AddComponent(new MeshRendererComponent(Mesh.FromOBJ("scene"), rocks));
@@ -50,19 +50,19 @@ namespace SharpGameTest
 
             Actor buffalo = new Actor();
             //buffalo.ScaleComponent.Set(1f, 0.01f, 0.01f);
-            buffalo.AddComponent(new MeshRendererComponent(Mesh.FromOBJ("dragon"), new Material(Shader.Lit, missing, 0.5f)));
+            buffalo.AddComponent(new MeshRendererComponent(Mesh.FromOBJ("dragon"), new Material(Shader.Lit, missing, 1f)));
             //buffalo.AddComponent(new AudioSourceComponent(sound, 1, 1, 15, true));
             //buffalo.AddComponent(new PointLightComponent(new Vector3(1f, 1f, 1f)));
 
             Actor light = new Actor();
             light.PositionComponent.Set(0, 15, 0);
-            light.AddComponent(new PointLightComponent(new Vector3(0f, 1f, 0)));
+            light.AddComponent(new PointLightComponent(new Vector3(0f, 1f, 0), 2));
             light.AddComponent(new MeshRendererComponent(Mesh.FromOBJ("cube"), new Material(Shader.Unlit, missing)));
             light.AddComponent(new CoolComponent(1, -1));
 
             Actor light2 = new Actor();
             light2.PositionComponent.Set(0, 15, 0);
-            light2.AddComponent(new PointLightComponent(new Vector3(1f, 0.0f, 0)));
+            light2.AddComponent(new PointLightComponent(new Vector3(1f, 0.0f, 0), 2));
             light2.AddComponent(new MeshRendererComponent(Mesh.FromOBJ("cube"), new Material(Shader.Unlit, missing)));
             light2.AddComponent(new CoolComponent(-1, 1));
 
@@ -86,7 +86,7 @@ namespace SharpGameTest
             camera.PositionComponent.Set(0, 10, -15);
 
             Actor particles = new Actor();
-            particles.AddComponent(new ParticleEmitterComponent(255, 2, 2, new Material(Shader.Particle, missing)));
+            particles.AddComponent(new ParticleEmitterComponent(3, 2, 2, new Material(Shader.Particle, missing)));
 
             scene.AddActor(buffalo);
             scene.AddActor(camera);

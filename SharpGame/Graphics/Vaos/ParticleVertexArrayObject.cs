@@ -15,13 +15,16 @@ namespace SharpGame.Graphics.Vaos
 {
     internal class ParticleVertexArrayObject : VertexArrayObject
     {
+        Random random = new Random();
         private ParticleEmitterComponent ParticleEmitter { get; set; }
         public override void SetRenderer(MeshRendererComponent renderer)
         {
             this.ParticleEmitter = (ParticleEmitterComponent)renderer;
         }
+        Vector3[] positions;
         public override void Upload()
         {
+            positions = new Vector3[ParticleEmitter.Count];
             this.Bind();
 
             this.BindVectorArrayToBuffer(this.bufferIds[0], 0, Mesh.GuiQuad.Vertices, false);
@@ -39,6 +42,7 @@ namespace SharpGame.Graphics.Vaos
                 new Vector3(3, 5, 8),
                 new Vector3(6, 4, 9),
                 new Vector3(7, 2, 6),
+                new Vector3(3, 1, 7),
                 new Vector3(3, 1, 7)
             }, true, 1);
 
@@ -53,19 +57,26 @@ namespace SharpGame.Graphics.Vaos
 
             Matrix4 view = SharpGameWindow.ActiveScene.Camera.View;
             Matrix4 projection = SharpGameWindow.ActiveScene.Camera.Projection;
-
             Matrix4 transformation = MathUtil.CreateTransformationMatrix(
                 this.ParticleEmitter.Actor.PositionComponent, 
                 this.ParticleEmitter.Actor.RotationComponent, 
                 this.ParticleEmitter.Actor.ScaleComponent
                 );
 
+            for (int i = 0; i < ParticleEmitter.Count; i++)
+            {
+                positions[i].X += 0.001f;
+                positions[i].Y += 0.001f ;
+                positions[i].Z += 0.001f;
+            }
+
+            this.Bind();
+            this.BindVectorArrayToBuffer(this.bufferIds[2], 2, positions, true, 1);
+
             ParticleEmitter.Material.Shader.UploadMatrix4(SharedConstants.UniformView, ref view);
             ParticleEmitter.Material.Shader.UploadMatrix4(SharedConstants.UniformProjection, ref projection);
             ParticleEmitter.Material.Shader.UploadMatrix4(SharedConstants.UniformModel, ref transformation);
 
-            Bind();
-            //GL.DrawElements(BeginMode.Triangles, MeshRenderer.Mesh.Indices.Length, DrawElementsType.UnsignedInt, 0);
             GL.DrawElementsInstanced(PrimitiveType.Triangles, Mesh.GuiQuad.Indices.Length, DrawElementsType.UnsignedInt, (IntPtr)0, ParticleEmitter.Count);
             Unbind();
 
