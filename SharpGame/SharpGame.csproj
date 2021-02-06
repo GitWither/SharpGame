@@ -103,6 +103,7 @@
     <Compile Include="Objects\Components\Transform\RotationComponent.cs" />
     <Compile Include="Objects\Components\Transform\ScaleComponent.cs" />
     <Compile Include="Objects\Scene.cs" />
+    <Compile Include="Particles\Particle.cs" />
     <Compile Include="Physics\PhysicsSystem.cs" />
     <Compile Include="SharpGameWindow.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

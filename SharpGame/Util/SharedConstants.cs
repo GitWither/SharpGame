@@ -46,10 +46,11 @@ namespace SharpGame.Util
         //=============== SHADER UNIFORM CONSTANTS ===============
         public const string UniformModelViewProjection = "u_ModelViewProjection";
         public const string UniformSpecularity = "u_Specularity";
-        public const string UniformTransformationMatrix = "u_Translation";
+        public const string UniformModel = "u_Translation";
         public const string UniformHasNormalMap = "u_HasNormalMap";
         public const string UniformHasEmmissionMap = "u_HasEmmissionMap";
-
+        public const string UniformView = "u_View";
+        public const string UniformProjection = "u_Projection";
         //=============== PATH CONSTANTS ===============
         public const string ShaderPath = "Shaders/";
         public const string TextureFolder = "Textures/";

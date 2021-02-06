@@ -13,10 +13,12 @@ namespace SharpGame.Objects.Components
     public class PointLightComponent : Component
     {
         public Vector3 Color { get; private set; }
+        public float Distance { get; private set; }
 
-        public PointLightComponent(Vector3 color)
+        public PointLightComponent(Vector3 color, float distance)
         {
             this.Color = color;
+            this.Distance = distance;
         }
 
         public override void OnAwake()

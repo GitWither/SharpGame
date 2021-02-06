@@ -39,7 +39,7 @@ namespace SharpGame.Graphics.Vaos
 
             Matrix4 transformation = MathUtil.CreateTransformationMatrix(this.MeshRenderer.Actor.PositionComponent, this.MeshRenderer.Actor.RotationComponent, this.MeshRenderer.Actor.ScaleComponent);
 
-            MeshRenderer.Material.Shader.UploadMatrix4(SharedConstants.UniformTransformationMatrix, ref transformation);
+            MeshRenderer.Material.Shader.UploadMatrix4(SharedConstants.UniformModel, ref transformation);
 
             Bind();
             GL.DrawElements(BeginMode.Triangles, MeshRenderer.Mesh.Indices.Length, DrawElementsType.UnsignedInt, 0);

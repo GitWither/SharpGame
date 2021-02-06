@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace SharpGame.Objects.Components
 {
-    class ParticleEmitterComponent : MeshRendererComponent
+    public class ParticleEmitterComponent : MeshRendererComponent
     {
         public int Count { get; set; }
         public float Velocity { get; set; }

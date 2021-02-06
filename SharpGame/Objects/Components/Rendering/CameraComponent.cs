@@ -27,7 +27,6 @@ namespace SharpGame.Objects.Components
             this.FarClipPlane = farClipPlane;
             this.AspectRatio = aspectRatio;
             this.Projection = Matrix4.CreatePerspectiveFieldOfView(this.FieldOfView, AspectRatio, this.NearClipPlane, this.FarClipPlane);
-            this.View = Matrix4.Identity;
         }
 
         public override void OnAwake()
