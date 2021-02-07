@@ -13,7 +13,7 @@ using System.Threading.Tasks;
 
 namespace SharpGame.Graphics
 {
-    public class Cubemap
+    public class Cubemap : IDisposable
     {
         private readonly int id;
 

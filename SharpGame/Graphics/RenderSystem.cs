@@ -26,6 +26,11 @@ namespace SharpGame.Graphics
         {
             worldObjects = new List<VertexArrayObject>();
             guiObjects = new List<VertexArrayObject>();
+
+            GL.Enable(EnableCap.Multisample);
+            GL.Enable(EnableCap.LineSmooth);
+            GL.Enable(EnableCap.PolygonSmooth);
+            GL.Enable(EnableCap.StencilTest);
         }
 
         ~RenderSystem()
@@ -97,10 +102,6 @@ namespace SharpGame.Graphics
         {
             GL.DepthFunc(DepthFunction.Less);
             GL.Enable(EnableCap.CullFace);
-            GL.Enable(EnableCap.Multisample);
-            GL.Enable(EnableCap.LineSmooth);
-            GL.Enable(EnableCap.PolygonSmooth);
-            GL.Enable(EnableCap.StencilTest);
             GL.Enable(EnableCap.DepthTest);
             GL.Disable(EnableCap.Blend);
 
@@ -113,9 +114,7 @@ namespace SharpGame.Graphics
             GL.Disable(EnableCap.CullFace);
             GL.DepthFunc(DepthFunction.Lequal);
 
-            GL.DepthMask(false);
             skybockVertexArrayObject?.Render();
-            GL.DepthMask(true);
 
             //Iterate through all GUI objects. This is so they render on top of everything.
             foreach (VertexArrayObject vao in guiObjects)
