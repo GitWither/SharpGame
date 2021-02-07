@@ -19,6 +19,7 @@ namespace SharpGame.Graphics
         public static Shader Gui;
         public static Shader Text;
         public static Shader Particle;
+        public static Shader Skybox;
 
         private readonly int programId;
 
@@ -29,6 +30,7 @@ namespace SharpGame.Graphics
             Gui = new Shader("gui");
             Text = new Shader("text");
             Particle = new Shader("particle");
+            Skybox = new Shader("skybox");
         }
 
         public Shader(string path) 

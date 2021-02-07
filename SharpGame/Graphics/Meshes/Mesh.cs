@@ -32,6 +32,31 @@ namespace SharpGame.Graphics.Meshes
             );
 
 
+        public static Mesh SkyBox = new Mesh(
+            new Vector3[]
+            {
+                new Vector3(-1, 1, 1),
+                new Vector3(-1, -1, 1),
+                new Vector3(1, 1, 1),
+                new Vector3(1, -1, 1),
+                new Vector3(1, -1, -1),
+                new Vector3(1, 1, -1),
+                new Vector3(-1, 1, -1),
+                new Vector3(-1, -1, -1)
+            },
+            null,
+            null,
+            new int[] {
+                0, 1, 2, 2, 1, 3,
+                2, 3, 5, 5, 3, 4,
+                5, 4, 6, 6, 4, 7,
+                6, 7, 0, 0, 7, 1,
+                1, 7, 3, 3, 7, 4,
+                6, 0, 5, 5, 0, 2
+            }
+            );
+            
+
         public Vector3[] Vertices { get; set; }
         public Vector2[] FaceTexCoords { get; set; }
         public Vector3[] Normals { get; set; }

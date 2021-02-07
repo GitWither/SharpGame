@@ -20,6 +20,7 @@ namespace SharpGame.Graphics
     {
         private readonly List<VertexArrayObject> worldObjects;
         private readonly List<VertexArrayObject> guiObjects;
+        private SkybockVertexArrayObject skybockVertexArrayObject;
 
         public RenderSystem()
         {
@@ -44,6 +45,20 @@ namespace SharpGame.Graphics
                 Logger.Info("Actor does not have mesh renderer component. Not adding to renderer.");
             }
         }
+
+        public void SetSkyboxMaterial(SkyboxMaterial skyboxMaterial)
+        {
+            if (skyboxMaterial != null)
+            {
+                skybockVertexArrayObject = new SkybockVertexArrayObject();
+                skybockVertexArrayObject.SetSkyboxMaterial(skyboxMaterial);
+                skybockVertexArrayObject.Upload();
+            }
+            else
+            {
+                skybockVertexArrayObject = null;
+            }
+        } 
 
         private void Add(MeshRendererComponent meshRendererComponent)
         {
@@ -80,18 +95,28 @@ namespace SharpGame.Graphics
 
         public void Render()
         {
-            GL.Enable(EnableCap.Multisample);
+            GL.DepthFunc(DepthFunction.Less);
             GL.Enable(EnableCap.CullFace);
+            GL.Enable(EnableCap.Multisample);
             GL.Enable(EnableCap.LineSmooth);
             GL.Enable(EnableCap.PolygonSmooth);
             GL.Enable(EnableCap.StencilTest);
+            GL.Enable(EnableCap.DepthTest);
+            GL.Disable(EnableCap.Blend);
 
             //Iterate through all world-placed objects. 
             foreach (VertexArrayObject vao in worldObjects)
             {
                 vao.Render();
             }
-            
+
+            GL.Disable(EnableCap.CullFace);
+            GL.DepthFunc(DepthFunction.Lequal);
+
+            GL.DepthMask(false);
+            skybockVertexArrayObject?.Render();
+            GL.DepthMask(true);
+
             //Iterate through all GUI objects. This is so they render on top of everything.
             foreach (VertexArrayObject vao in guiObjects)
             {
@@ -101,9 +126,6 @@ namespace SharpGame.Graphics
 
                 vao.Render();
             }
-
-            GL.Enable(EnableCap.DepthTest);
-            GL.Disable(EnableCap.Blend);
         }
 
         public void Dispose()

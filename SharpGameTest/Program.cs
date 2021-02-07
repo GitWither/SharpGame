@@ -39,6 +39,12 @@ namespace SharpGameTest
             Texture rocketTxt = new Texture("rocket");
             Texture greenRing = new Texture("BaseMap");
 
+
+            Mesh simpleCube = Mesh.FromOBJ("simple_cube");
+
+            SkyboxMaterial skybox = new SkyboxMaterial(new Cubemap("skybox/test"), Shader.Skybox);
+            scene.SetSkyboxMaterial(skybox);
+
             Material rocks = new Material(Shader.Lit, new Texture("rock"), new Texture("rock_normals"), null, 1f);
 
             Actor field = new Actor();

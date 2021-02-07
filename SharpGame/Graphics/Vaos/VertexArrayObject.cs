@@ -32,7 +32,10 @@ namespace SharpGame.Graphics.Vaos
             Dispose();
         }
 
-        public abstract void SetRenderer(MeshRendererComponent renderer);
+        public virtual void SetRenderer(MeshRendererComponent renderer)
+        {
+
+        }
         public abstract void Upload();
 
         public abstract void Render();

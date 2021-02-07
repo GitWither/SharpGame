@@ -93,6 +93,11 @@ namespace SharpGame.Objects
             renderSystem.AddActor(actor);
         }
 
+        public void SetSkyboxMaterial(SkyboxMaterial skyboxMaterial)
+        {
+            this.renderSystem.SetSkyboxMaterial(skyboxMaterial);
+        }
+
         internal void Render()
         {
             renderSystem.Render();
