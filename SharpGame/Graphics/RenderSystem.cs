@@ -38,17 +38,28 @@ namespace SharpGame.Graphics
             this.Dispose();
         }
 
-        public void AddActor(Actor actor)
+        internal void AddWorldVertexArrayObject(VertexArrayObject vao)
         {
-            MeshRendererComponent meshRendererComponent = actor.GetComponent<MeshRendererComponent>();
-            if (meshRendererComponent != null)
-            {
-                Add(meshRendererComponent);
-            }
-            else
-            {
-                Logger.Info("Actor does not have mesh renderer component. Not adding to renderer.");
-            }
+            vao.Upload();
+            this.worldObjects.Add(vao);
+        }
+
+        internal void AddGUIVertexArrayObject(VertexArrayObject vao)
+        {
+            vao.Upload();
+            this.guiObjects.Add(vao);
+        }
+
+        internal void RemoveWorldVertexArrayObject(VertexArrayObject vao)
+        {
+            this.worldObjects.Remove(vao);
+            vao.Dispose();
+        }
+
+        internal void RemoveGUIVertexArrayObject(VertexArrayObject vao)
+        {
+            this.guiObjects.Remove(vao);
+            vao.Dispose();
         }
 
         public void SetSkyboxMaterial(SkyboxMaterial skyboxMaterial)
@@ -64,39 +75,6 @@ namespace SharpGame.Graphics
                 skybockVertexArrayObject = null;
             }
         } 
-
-        private void Add(MeshRendererComponent meshRendererComponent)
-        {
-            VertexArrayObject vao;
-            if (meshRendererComponent is GuiTextComponent)
-            {
-                vao = new TextVertexArrayObject();
-                vao.SetRenderer(meshRendererComponent);
-                vao.Upload();
-                guiObjects.Add(vao);
-            }
-            else if (meshRendererComponent is GuiTextureComponent)
-            {
-                vao = new GuiVertexArrayObject();
-                vao.SetRenderer(meshRendererComponent);
-                vao.Upload();
-                guiObjects.Add(vao);
-            }
-            else if (meshRendererComponent is ParticleEmitterComponent)
-            {
-                vao = new ParticleVertexArrayObject();
-                vao.SetRenderer(meshRendererComponent);
-                vao.Upload();
-                worldObjects.Add(vao);
-            }
-            else
-            { 
-                vao = new MeshVertexArrayObject();
-                vao.SetRenderer(meshRendererComponent);
-                vao.Upload();
-                worldObjects.Add(vao);
-            }
-        }
 
         public void Render()
         {

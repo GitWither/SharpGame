@@ -102,6 +102,8 @@
     <Compile Include="Objects\Components\Rendering\MeshRendererComponent.cs" />
     <Compile Include="Objects\Components\Gameplay\PlayerControlledComponent.cs" />
     <Compile Include="Objects\Components\GUI\GuiTextComponent.cs" />
+    <Compile Include="Objects\Components\Transform\ChildComponent.cs" />
+    <Compile Include="Objects\Components\Transform\ParentComponent.cs" />
     <Compile Include="Objects\Components\Transform\PositionComponent.cs" />
     <Compile Include="Objects\Components\Transform\RotationComponent.cs" />
     <Compile Include="Objects\Components\Transform\ScaleComponent.cs" />
