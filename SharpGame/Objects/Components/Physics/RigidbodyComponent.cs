@@ -17,7 +17,7 @@ namespace SharpGame.Objects.Components
         private RigidBody rigidBody;
         private CollisionShape collider;
         private MotionState motion;
-        RigidBodyConstructionInfo info;
+        private RigidBodyConstructionInfo info;
 
         public RigidbodyComponent(float mass)
         {
@@ -26,7 +26,7 @@ namespace SharpGame.Objects.Components
 
         public override void OnAwake()
         {
-            this.collider = new CapsuleShape(3, 3);
+            this.collider = new BoxShape(2);
             Vector3 intertia = collider.CalculateLocalInertia(this.Mass);
             Matrix trans = Matrix.Translation(this.Actor.PositionComponent.X, this.Actor.PositionComponent.Y, this.Actor.PositionComponent.Z) *
                 Matrix.RotationX(this.Actor.RotationComponent.Pitch) *
@@ -36,17 +36,22 @@ namespace SharpGame.Objects.Components
             motion = new DefaultMotionState(trans);
             info = new RigidBodyConstructionInfo(this.Mass, motion, this.collider, intertia);
             rigidBody = new RigidBody(info);
-            rigidBody.Translate(new Vector3(this.Actor.PositionComponent.X, this.Actor.PositionComponent.Y, this.Actor.PositionComponent.Z));
             this.Actor.RootScene.PhysicsSystem.AddRigidbody(rigidBody);
         }
 
         public override void OnUpdate(float deltaTime)
         {
-            this.Actor.PositionComponent.Set(motion.WorldTransform.M41, motion.WorldTransform.M42, motion.WorldTransform.M43);
+            if (motion != null)
+                this.Actor.PositionComponent.Set(motion.WorldTransform.M41, motion.WorldTransform.M42, motion.WorldTransform.M43);
         }
 
         public override void OnShutdown()
         {
+            this.Actor.RootScene.PhysicsSystem.RemoveRigidbody(rigidBody);
+            rigidBody.Dispose();
+            collider.Dispose();
+            motion.Dispose();
+            info.Dispose();
         }
     }
 }

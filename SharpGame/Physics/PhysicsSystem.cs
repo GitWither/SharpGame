@@ -18,21 +18,19 @@ namespace SharpGame.Physics
         CollisionDispatcher dispatcher;
         DbvtBroadphase broadphase;
 
-        List<CollisionShape> collisionShapes = new List<CollisionShape>();
         CollisionConfiguration collisionConfiguration;
+        private ConstraintSolver solver;
 
         public void OnAwake()
         {
             collisionConfiguration = new DefaultCollisionConfiguration();
             dispatcher = new CollisionDispatcher(collisionConfiguration);
-
             broadphase = new DbvtBroadphase();
-            World = new DiscreteDynamicsWorld(dispatcher, broadphase, null, collisionConfiguration)
+            solver = new SequentialImpulseConstraintSolver();
+            World = new DiscreteDynamicsWorld(dispatcher, broadphase, solver, collisionConfiguration)
             {
                 Gravity = new BulletSharp.Math.Vector3(0, -9.81f, 0)
             };
-
-
         }
 
         public void AddRigidbody(RigidBody rigidBody)
@@ -45,9 +43,13 @@ namespace SharpGame.Physics
             World.StepSimulation(deltaTime);
         }
 
+        public void RemoveRigidbody(RigidBody rigidBody)
+        {
+            World.RemoveRigidBody(rigidBody);
+        }
+
         public void OnShutdown()
         {
-
         }
     }
 }

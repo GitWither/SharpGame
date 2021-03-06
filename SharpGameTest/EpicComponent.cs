@@ -30,14 +30,14 @@ namespace SharpGameTest
             if (InputSystem.GetKeyDown(KeyCode.C))
             {
                 Actor cube = new Actor();
-                cube.AddComponent(new RigidbodyComponent(5f));
+                cube.PositionComponent.Set(random.Next(-15, 15), 250, random.Next(-15, 15));
+                cube.AddComponent(new RigidbodyComponent(55f));
                 cube.AddComponent(new MeshRendererComponent(travis, new Material(Shader.Unlit, travisTxt, 5)));
                 cube.AddComponent(new DeathComponent());
 
                 //MeshRendererComponent mrc = this.Actor.GetComponent<MeshRendererComponent>();
 
                 this.Actor.RootScene.AddActor(cube);
-                cube.PositionComponent.Set(random.Next(-15, 15), 15, random.Next(-15, 15));
 
                 //Logger.Info(this.Actor.RootScene.GetActorsByComponent<MeshRendererComponent>().Length);
             }

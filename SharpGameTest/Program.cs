@@ -54,7 +54,7 @@ namespace SharpGameTest
 
             Actor field = new Actor();
             field.AddComponent(new MeshRendererComponent(Mesh.FromOBJ("scene"), rocks));
-            //field.AddComponent(new RigidbodyComponent(0));
+            field.AddComponent(new RigidbodyComponent(0));
 
             Actor rocket = new Actor();
             rocket.AddComponent(new MeshRendererComponent(Mesh.FromOBJ("cannon"), new Material(Shader.Unlit, rocketTxt)));

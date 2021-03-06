@@ -45,7 +45,6 @@ namespace SharpGame.Objects
                 Logger.Error("Render and physics systems have not been initialized. A register is required before using them!");
                 return;
             }
-            PhysicsSystem.OnAwake();
             this.isRunning = true;
         }
 
@@ -74,6 +73,7 @@ namespace SharpGame.Objects
             if (!this.isRunning)
             {
                 this.PhysicsSystem = physicsSystem;
+                this.PhysicsSystem.OnAwake();
             }
             else
             {
