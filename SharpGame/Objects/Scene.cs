@@ -45,6 +45,7 @@ namespace SharpGame.Objects
                 Logger.Error("Render and physics systems have not been initialized. A register is required before using them!");
                 return;
             }
+            PhysicsSystem.OnAwake();
             this.isRunning = true;
         }
 
@@ -104,7 +105,7 @@ namespace SharpGame.Objects
 
         internal void OnUpdate(float deltaTime)
         {
-            PhysicsSystem.OnUpdate(deltaTime);
+            PhysicsSystem.OnUpdate(1.0f / 60);
             for (int i = 0; i < actors.Count; i++)
             {
                 actors[i].OnUpdate(deltaTime);

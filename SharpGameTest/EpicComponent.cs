@@ -30,7 +30,7 @@ namespace SharpGameTest
             if (InputSystem.GetKeyDown(KeyCode.C))
             {
                 Actor cube = new Actor();
-                cube.AddComponent(new PhysicsComponent());
+                cube.AddComponent(new RigidbodyComponent(5f));
                 cube.AddComponent(new MeshRendererComponent(travis, new Material(Shader.Unlit, travisTxt, 5)));
                 cube.AddComponent(new DeathComponent());
 

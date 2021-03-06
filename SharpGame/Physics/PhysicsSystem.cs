@@ -29,20 +29,20 @@ namespace SharpGame.Physics
             broadphase = new DbvtBroadphase();
             World = new DiscreteDynamicsWorld(dispatcher, broadphase, null, collisionConfiguration)
             {
-                Gravity = new BulletSharp.Math.Vector3(0, -10, 0)
+                Gravity = new BulletSharp.Math.Vector3(0, -9.81f, 0)
             };
 
 
         }
 
-        public void AddActor(Actor actor)
+        public void AddRigidbody(RigidBody rigidBody)
         {
-            //CollisionShape collisionShape 
+            World.AddRigidBody(rigidBody);
         }
 
         public void OnUpdate(float deltaTime)
         {
-            //World.StepSimulation(deltaTime);
+            World.StepSimulation(deltaTime);
         }
 
         public void OnShutdown()
