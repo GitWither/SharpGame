@@ -1,5 +1,6 @@
 ﻿using SharpGame.Graphics;
 using SharpGame.Graphics.Meshes;
+using SharpGame.Graphics.Vaos;
 
 using System;
 using System.Collections.Generic;
@@ -26,6 +27,17 @@ namespace SharpGame.Objects.Components
         public GuiTextComponent(string text, Texture font) : base(Mesh.FromText(text), new Material(Shader.Text, font))
         {
             this.text = text;
+        }
+
+        public override void OnAwake()
+        {
+            this.vao = new TextVertexArrayObject(this);
+            this.Actor.RootScene.RenderSystem.AddGUIVertexArrayObject(vao);
+        }
+
+        public override void OnShutdown()
+        {
+            this.Actor.RootScene.RenderSystem.RemoveGUIVertexArrayObject(vao);
         }
     }
 }

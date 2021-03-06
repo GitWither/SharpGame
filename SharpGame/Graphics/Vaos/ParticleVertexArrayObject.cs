@@ -17,9 +17,10 @@ namespace SharpGame.Graphics.Vaos
     {
         Random random = new Random();
         private ParticleEmitterComponent ParticleEmitter { get; set; }
-        public override void SetRenderer(MeshRendererComponent renderer)
+
+        public ParticleVertexArrayObject(ParticleEmitterComponent particleEmitterComponent) : base()
         {
-            this.ParticleEmitter = (ParticleEmitterComponent)renderer;
+            this.ParticleEmitter = particleEmitterComponent;
         }
         Vector3[] positions;
         public override void Upload()

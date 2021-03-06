@@ -55,7 +55,7 @@ namespace SharpGame.Objects.Components
             }
             if (InputSystem.GetKeyDown(KeyCode.Z))
             {
-                GL.PolygonMode(MaterialFace.FrontAndBack, PolygonMode.Line);
+                GL.PolygonMode(MaterialFace.FrontAndBack, PolygonMode.Point);
             }
             if (InputSystem.GetKeyUp(KeyCode.Z))
             {

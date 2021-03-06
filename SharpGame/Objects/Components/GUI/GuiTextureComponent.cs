@@ -2,6 +2,7 @@
 
 using SharpGame.Graphics;
 using SharpGame.Graphics.Meshes;
+using SharpGame.Graphics.Vaos;
 
 using System;
 using System.Collections.Generic;
@@ -15,6 +16,17 @@ namespace SharpGame.Objects.Components
     {
         public GuiTextureComponent(Texture texture): base(Mesh.GuiQuad, new Material(Shader.Gui, texture))
         {
+        }
+
+        public override void OnAwake()
+        {
+            this.vao = new GuiVertexArrayObject(this);
+            this.Actor.RootScene.RenderSystem.AddGUIVertexArrayObject(vao);
+        }
+
+        public override void OnShutdown()
+        {
+            this.Actor.RootScene.RenderSystem.RemoveGUIVertexArrayObject(vao);
         }
     }
 }

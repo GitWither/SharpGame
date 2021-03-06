@@ -39,13 +39,18 @@ namespace SharpGameTest
             Texture rocketTxt = new Texture("rocket");
             Texture greenRing = new Texture("BaseMap");
 
+            Mesh rocketMesh = Mesh.FromOBJ("cannon");
+
+            Mesh dragon = Mesh.FromOBJ("dragon");
+
 
             Mesh simpleCube = Mesh.FromOBJ("simple_cube");
 
             SkyboxMaterial skybox = new SkyboxMaterial(new Cubemap("skybox/test"), Shader.Skybox);
             scene.SetSkyboxMaterial(skybox);
 
-            Material rocks = new Material(Shader.Lit, new Texture("rock"), new Texture("rock_normals"), null, 1f);
+            Material rocks = new Material(Shader.Lit, new Texture("rock"), new Texture("rock_normals"), null, 0.5f);
+            Material unlit = new Material(Shader.Unlit, buffaloTxt);
 
             Actor field = new Actor();
             field.AddComponent(new MeshRendererComponent(Mesh.FromOBJ("scene"), rocks));
@@ -87,12 +92,25 @@ namespace SharpGameTest
             ring.PositionComponent.Set(0, 10, 0);
 
             Actor camera = new Actor();
-            camera.AddComponent(new CameraComponent(70f, 16/9f, 0.1f, 1000f));
+            camera.AddComponent(new CameraComponent(70f, 16 / 9f, 0.1f, 1000f));
             camera.AddComponent(new PlayerControlledComponent());
             camera.PositionComponent.Set(0, 10, -15);
 
             Actor particles = new Actor();
             particles.AddComponent(new ParticleEmitterComponent(3, 2, 2, new Material(Shader.Particle, missing)));
+
+            /*
+            for (int x = 0; x < 100; x++)
+            {
+                for (int y = 0; y < 100; y++)
+                {
+                    Actor obj = new Actor();
+                    obj.PositionComponent.Set(x * 15, y * 15, 0);
+                    obj.AddComponent(new MeshRendererComponent(dragon, rocks));
+                    scene.AddActor(obj);
+                }
+            }
+            */
 
             scene.AddActor(buffalo);
             scene.AddActor(camera);
@@ -108,10 +126,10 @@ namespace SharpGameTest
             window.LoadScene(scene);
 
             #if DEBUG
-            Point point =  window.Location;
+            Point point = window.Location;
             point.X -= 1920;
             window.Location = point;
-#endif
+            #endif
 
             window.Run();
         }

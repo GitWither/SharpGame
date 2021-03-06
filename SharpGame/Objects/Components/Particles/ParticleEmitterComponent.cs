@@ -1,5 +1,6 @@
 ﻿using SharpGame.Graphics;
 using SharpGame.Graphics.Meshes;
+using SharpGame.Graphics.Vaos;
 
 using System;
 using System.Collections.Generic;
@@ -20,6 +21,17 @@ namespace SharpGame.Objects.Components
             this.Count = count;
             this.Velocity = velocity;
             this.Life = life;
+        }
+
+        public override void OnAwake()
+        {
+            this.vao = new ParticleVertexArrayObject(this);
+            this.Actor.RootScene.RenderSystem.AddWorldVertexArrayObject(vao);
+        }
+
+        public override void OnShutdown()
+        {
+            this.Actor.RootScene.RenderSystem.RemoveWorldVertexArrayObject(vao);
         }
     }
 }

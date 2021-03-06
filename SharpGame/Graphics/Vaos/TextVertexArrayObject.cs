@@ -17,10 +17,12 @@ namespace SharpGame.Graphics.Vaos
     {
         public GuiTextComponent TextRenderer { get; set; }
 
-        public override void SetRenderer(MeshRendererComponent renderer)
+
+        public TextVertexArrayObject(GuiTextComponent guiTextComponent) : base()
         {
-            this.TextRenderer = (GuiTextComponent)renderer;
+            this.TextRenderer = guiTextComponent;
         }
+
         public override void Upload()
         {
             this.Bind();

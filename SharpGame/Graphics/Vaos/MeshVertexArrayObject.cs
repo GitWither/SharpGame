@@ -15,9 +15,10 @@ namespace SharpGame.Graphics.Vaos
     internal class MeshVertexArrayObject : VertexArrayObject
     {
         public MeshRendererComponent MeshRenderer { get; private set; }
-        public override void SetRenderer(MeshRendererComponent renderer)
+
+        public MeshVertexArrayObject(MeshRendererComponent meshRendererComponent) : base()
         {
-            this.MeshRenderer = renderer;
+            this.MeshRenderer = meshRendererComponent;
         }
         public override void Upload()
         {

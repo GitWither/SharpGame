@@ -14,7 +14,7 @@ using System.Threading.Tasks;
 
 namespace SharpGame.Graphics.Vaos
 {
-    internal abstract class VertexArrayObject : IDisposable
+    public abstract class VertexArrayObject : IDisposable
     {
         private readonly int id;
 
@@ -32,10 +32,6 @@ namespace SharpGame.Graphics.Vaos
             Dispose();
         }
 
-        public virtual void SetRenderer(MeshRendererComponent renderer)
-        {
-
-        }
         public abstract void Upload();
 
         public abstract void Render();

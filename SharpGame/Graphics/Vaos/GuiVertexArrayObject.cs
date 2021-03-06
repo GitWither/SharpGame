@@ -16,9 +16,9 @@ namespace SharpGame.Graphics.Vaos
     {
         public MeshRendererComponent MeshRenderer { get; set; }
 
-        public override void SetRenderer(MeshRendererComponent renderer)
+        public GuiVertexArrayObject(GuiTextureComponent guiTextureComponent) : base()
         {
-            this.MeshRenderer = renderer;
+            this.MeshRenderer = guiTextureComponent;
         }
         public override void Upload()
         {

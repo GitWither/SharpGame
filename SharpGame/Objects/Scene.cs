@@ -22,8 +22,8 @@ namespace SharpGame.Objects
 
         private readonly List<Actor> actors;
 
-        private RenderSystem renderSystem;
-        private PhysicsSystem physicsSystem;
+        internal RenderSystem RenderSystem { get; private set; }
+        internal PhysicsSystem PhysicsSystem { get; private set; }
 
 
         public Scene()
@@ -40,7 +40,7 @@ namespace SharpGame.Objects
 
         internal void OnAwake()
         {
-            if (physicsSystem == null && renderSystem == null)
+            if (PhysicsSystem == null && RenderSystem == null)
             {
                 Logger.Error("Render and physics systems have not been initialized. A register is required before using them!");
                 return;
@@ -56,7 +56,7 @@ namespace SharpGame.Objects
         {
             if (!this.isRunning)
             {
-                this.renderSystem = renderSystem;
+                this.RenderSystem = renderSystem;
             }
             else
             {
@@ -72,7 +72,7 @@ namespace SharpGame.Objects
         {
             if (!this.isRunning)
             {
-                this.physicsSystem = physicsSystem;
+                this.PhysicsSystem = physicsSystem;
             }
             else
             {
@@ -90,22 +90,21 @@ namespace SharpGame.Objects
             actor.OnAwake();
             actors.Add(actor);
             actor.OnStart();
-            renderSystem.AddActor(actor);
         }
 
         public void SetSkyboxMaterial(SkyboxMaterial skyboxMaterial)
         {
-            this.renderSystem.SetSkyboxMaterial(skyboxMaterial);
+            this.RenderSystem.SetSkyboxMaterial(skyboxMaterial);
         }
 
         internal void Render()
         {
-            renderSystem.Render();
+            RenderSystem.Render();
         }
 
         internal void OnUpdate(float deltaTime)
         {
-            physicsSystem.OnUpdate(deltaTime);
+            PhysicsSystem.OnUpdate(deltaTime);
             for (int i = 0; i < actors.Count; i++)
             {
                 actors[i].OnUpdate(deltaTime);
@@ -114,7 +113,7 @@ namespace SharpGame.Objects
 
         internal void OnShutdown()
         {
-            physicsSystem.OnShutdown();
+            PhysicsSystem.OnShutdown();
             foreach (Actor actor in actors)
             {
                 actor.OnShutdown();
@@ -138,6 +137,7 @@ namespace SharpGame.Objects
         /// <param name="actor">An instance of the actor to remove from the scene</param>
         public void RemoveActor(Actor actor)
         {
+            actor.OnShutdown();
             actors.Remove(actor);
         }
 

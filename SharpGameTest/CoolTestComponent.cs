@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace SharpGameTest
@@ -30,7 +31,7 @@ namespace SharpGameTest
             fps++;
             if (frameTime >= 1)
             {
-                fpstext = "FPS: " + fps.ToString();
+                fpstext = "FPS: " + fps;
                 frameTime = 0;
                 fps = 0;
             }
