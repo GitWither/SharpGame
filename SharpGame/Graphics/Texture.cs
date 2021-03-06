@@ -21,7 +21,7 @@ namespace SharpGame.Graphics
         private readonly int height;
         private readonly int width;
 
-        public Texture(string file)
+        public Texture(string file) : this((Bitmap)Image.FromFile(SharedConstants.TextureFolder + file + SharedConstants.TextureExtension))
         {
             Bitmap bitmap;
             try
@@ -33,8 +33,12 @@ namespace SharpGame.Graphics
                 Logger.Exception(e);
                 return;
             }
-            BitmapData bitmapData = bitmap.LockBits(new Rectangle(0, 0, bitmap.Width, bitmap.Height), ImageLockMode.ReadOnly, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
             Logger.Info("Successfully loaded texture " + file);
+        }
+
+        public Texture(Bitmap bitmap)
+        {
+            BitmapData bitmapData = bitmap.LockBits(new Rectangle(0, 0, bitmap.Width, bitmap.Height), ImageLockMode.ReadOnly, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
 
             id = GL.GenTexture();
             height = bitmapData.Height;
