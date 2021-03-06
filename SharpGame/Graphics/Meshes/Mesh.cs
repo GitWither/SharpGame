@@ -1,5 +1,4 @@
 ﻿using OpenTK;
-using OpenTK.Graphics.ES11;
 
 using SharpGame.Util;
 
@@ -87,7 +86,7 @@ namespace SharpGame.Graphics.Meshes
                     string line = sr.ReadLine();
                     int firstSpaceIndex = line.IndexOf(' ');
                     string type = line.Substring(0, firstSpaceIndex);
-                    string[] data = line.Substring(firstSpaceIndex + 1).Split(' ');
+                    Span<string> data = line.Substring(firstSpaceIndex + 1).Split(' ');
                     switch (type)
                     {
                         case SharedConstants.VertexMeshToken:
@@ -118,7 +117,7 @@ namespace SharpGame.Graphics.Meshes
 
                             for (byte i = 0; i < data.Length; i++)
                             {
-                                string[] vertexValues = data[i].Split('/');
+                                Span<string> vertexValues = data[i].Split('/');
 
                                 if (int.TryParse(vertexValues[0], out int index) &&
                                     int.TryParse(vertexValues[1], out int texIndex) &&
@@ -192,19 +191,20 @@ namespace SharpGame.Graphics.Meshes
                 }
             }
 
-            return new Mesh(out_vertices.ToArray(), out_normals.ToArray(), out_uvs.ToArray(), out_indices.ToArray());
+            Mesh finalMesh = new Mesh(out_vertices.ToArray(), out_normals.ToArray(), out_uvs.ToArray(), out_indices.ToArray());
+            return finalMesh;
         }
 
         public static Mesh FromText(string text)
         {
-            Vector3[] vertices = new Vector3[text.Length * 4];
-            Vector2[] uvs = new Vector2[text.Length * 4];
-            int[] indices = new int[text.Length * 6];
+            Span<Vector3> vertices = stackalloc Vector3[text.Length * 4];
+            Span<Vector2> uvs = stackalloc Vector2[text.Length * 4];
+            Span<int> indices = stackalloc int[text.Length * 6];
 
             float size = 1f;
             int x = 0;
             int y = 0;
-            int[] faceIndices = new int[] { 0, 1, 2, 2, 1, 3};
+            Span<int> faceIndices = stackalloc int[] { 0, 1, 2, 2, 1, 3};
             float likeBreakFactor = 0;
             float spacingFactor = 0;
             for (int i = 0; i < text.Length * 4; i += 4)
@@ -250,7 +250,7 @@ namespace SharpGame.Graphics.Meshes
                 spacingFactor += 1f;
             }
 
-            return new Mesh(vertices, new Vector3[] { }, uvs, indices);
+            return new Mesh(vertices.ToArray(), null, uvs.ToArray(), indices.ToArray());
         }
     }
 }
