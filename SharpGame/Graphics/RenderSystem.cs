@@ -16,97 +16,103 @@ using System.Threading.Tasks;
 
 namespace SharpGame.Graphics
 {
-    public class RenderSystem : IDisposable
-    {
-        private readonly List<VertexArrayObject> worldObjects;
-        private readonly List<VertexArrayObject> guiObjects;
-        private SkybockVertexArrayObject skybockVertexArrayObject;
+	public class RenderSystem : IDisposable
+	{
+		private readonly List<VertexArrayObject> worldObjects;
+		private readonly List<VertexArrayObject> guiObjects;
+		private SkybockVertexArrayObject skybockVertexArrayObject;
 
-        public RenderSystem()
-        {
-            worldObjects = new List<VertexArrayObject>();
-            guiObjects = new List<VertexArrayObject>();
+		public RenderSystem()
+		{
+			worldObjects = new List<VertexArrayObject>();
+			guiObjects = new List<VertexArrayObject>();
 
-            GL.Enable(EnableCap.Multisample);
-            GL.Enable(EnableCap.LineSmooth);
-            GL.Enable(EnableCap.PolygonSmooth);
-            GL.Enable(EnableCap.StencilTest);
-        }
+			GL.Enable(EnableCap.Multisample);
+			GL.Enable(EnableCap.LineSmooth);
+			GL.Enable(EnableCap.PolygonSmooth);
+			GL.Enable(EnableCap.StencilTest);
+		}
 
-        ~RenderSystem()
-        {
-            this.Dispose();
-        }
+		~RenderSystem()
+		{
+			this.Dispose();
+		}
 
-        internal void AddWorldVertexArrayObject(VertexArrayObject vao)
-        {
-            vao.Upload();
-            this.worldObjects.Add(vao);
-        }
+		internal void AddVertexArrayObject(VertexArrayObject vao)
+		{
+			//TODO: Implemented a proper layering system
+			vao.Upload();
+			switch (vao.LayerType)
+			{
+				case LayerType.WorldLayer:
+					worldObjects.Add(vao);
+					break;
+				case LayerType.GUILayer:
+					guiObjects.Add(vao);
+					break;
+			}
+		}
 
-        internal void AddGUIVertexArrayObject(VertexArrayObject vao)
-        {
-            vao.Upload();
-            this.guiObjects.Add(vao);
-        }
+		internal void RemoveVertexArrayObject(VertexArrayObject vao)
+		{
+			//TODO: Implemented a proper layering system
+			switch (vao.LayerType)
+			{
+				case LayerType.WorldLayer:
+					worldObjects.Remove(vao);
+					break;
+				case LayerType.GUILayer:
+					guiObjects.Remove(vao);
+					break;
+			}
+			vao.Dispose();
+		}
 
-        internal void RemoveWorldVertexArrayObject(VertexArrayObject vao)
-        {
-            this.worldObjects.Remove(vao);
-            vao.Dispose();
-        }
+		public void SetSkyboxMaterial(SkyboxMaterial skyboxMaterial)
+		{
+			if (skyboxMaterial != null)
+			{
+				skybockVertexArrayObject = new SkybockVertexArrayObject();
+				skybockVertexArrayObject.SetSkyboxMaterial(skyboxMaterial);
+				skybockVertexArrayObject.Upload();
+			}
+			else
+			{
+				skybockVertexArrayObject = null;
+			}
+		} 
 
-        internal void RemoveGUIVertexArrayObject(VertexArrayObject vao)
-        {
-            this.guiObjects.Remove(vao);
-            vao.Dispose();
-        }
+		public void Render()
+		{
+			GL.DepthFunc(DepthFunction.Less);
+			GL.Enable(EnableCap.CullFace);
+			GL.Enable(EnableCap.DepthTest);
+			GL.Disable(EnableCap.Blend);
 
-        public void SetSkyboxMaterial(SkyboxMaterial skyboxMaterial)
-        {
-            if (skyboxMaterial != null)
-            {
-                skybockVertexArrayObject = new SkybockVertexArrayObject();
-                skybockVertexArrayObject.SetSkyboxMaterial(skyboxMaterial);
-                skybockVertexArrayObject.Upload();
-            }
-            else
-            {
-                skybockVertexArrayObject = null;
-            }
-        } 
+			//Iterate through all world-placed objects. 
+			foreach (VertexArrayObject vao in worldObjects)
+			{
+				vao.Render();
+			}
 
-        public void Render()
-        {
-            GL.DepthFunc(DepthFunction.Less);
-            GL.Enable(EnableCap.CullFace);
-            GL.Enable(EnableCap.DepthTest);
-            GL.Disable(EnableCap.Blend);
+			GL.Disable(EnableCap.CullFace);
+			GL.DepthFunc(DepthFunction.Lequal);
 
-            //Iterate through all world-placed objects. 
-            foreach (VertexArrayObject vao in worldObjects)
-            {
-                vao.Render();
-            }
+			skybockVertexArrayObject?.Render();
 
-            GL.Disable(EnableCap.CullFace);
-            GL.DepthFunc(DepthFunction.Lequal);
+			//Iterate through all GUI objects. This is so they render on top of everything.
+			foreach (VertexArrayObject vao in guiObjects)
+			{
+				GL.Disable(EnableCap.DepthTest);
+				GL.Enable(EnableCap.Blend);
+				GL.BlendFunc(BlendingFactor.SrcAlpha, BlendingFactor.OneMinusSrcAlpha);
 
-            skybockVertexArrayObject?.Render();
+				vao.Render();
+			}
+		}
 
-            //Iterate through all GUI objects. This is so they render on top of everything.
-            foreach (VertexArrayObject vao in guiObjects)
-            {
-                GL.Disable(EnableCap.DepthTest);
-                GL.Enable(EnableCap.Blend);
-                GL.BlendFunc(BlendingFactor.SrcAlpha, BlendingFactor.OneMinusSrcAlpha);
-
-                vao.Render();
-            }
-        }
-
-        public void Dispose()
-        {
-        }
-    }
+		public void Dispose()
+		{
+		}
+	}
 }

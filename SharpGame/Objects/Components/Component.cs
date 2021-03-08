@@ -8,7 +8,7 @@ namespace SharpGame.Objects.Components
 {
     public abstract class Component
     {
-        public Actor Actor { get; set; }
+        public Actor Actor { get; internal set; }
         public virtual void OnAwake()
         {
 

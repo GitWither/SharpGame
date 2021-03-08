@@ -20,17 +20,13 @@ namespace SharpGame.Graphics.Vaos
 
         protected readonly int[] bufferIds = new int[4];
 
-
         public VertexArrayObject()
         {
             id = GL.GenVertexArray();
             GL.GenBuffers(bufferIds.Length, bufferIds);
         }
 
-        ~VertexArrayObject()
-        {
-            Dispose();
-        }
+        internal abstract LayerType LayerType { get; }
 
         public abstract void Upload();
 
@@ -72,9 +68,8 @@ namespace SharpGame.Graphics.Vaos
 
         public void Dispose()
         {
-            //GL.DeleteBuffer(indicesId);
-            //GL.DeleteBuffers(bufferIds.Length, bufferIds);
-            //GL.DeleteVertexArray(id);
+            GL.DeleteVertexArray(id);
+            GL.DeleteBuffers(bufferIds.Length, bufferIds);
         }
     }
 }

@@ -20,6 +20,7 @@ namespace SharpGame.Graphics.Vaos
         {
             this.MeshRenderer = guiTextureComponent;
         }
+        internal override LayerType LayerType => LayerType.GUILayer;
         public override void Upload()
         {
             this.Bind();

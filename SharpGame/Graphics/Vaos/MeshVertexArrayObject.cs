@@ -20,6 +20,9 @@ namespace SharpGame.Graphics.Vaos
         {
             this.MeshRenderer = meshRendererComponent;
         }
+
+        internal override LayerType LayerType => LayerType.WorldLayer;
+
         public override void Upload()
         {
             Bind();

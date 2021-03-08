@@ -22,6 +22,9 @@ namespace SharpGame.Graphics.Vaos
         {
             this.ParticleEmitter = particleEmitterComponent;
         }
+
+        internal override LayerType LayerType => LayerType.WorldLayer;
+
         Vector3[] positions;
         public override void Upload()
         {

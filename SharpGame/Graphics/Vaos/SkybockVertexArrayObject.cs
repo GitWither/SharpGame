@@ -10,6 +10,7 @@ namespace SharpGame.Graphics.Vaos
     {
         private SkyboxMaterial Material { get; set; }
 
+        internal override LayerType LayerType => LayerType.GUILayer;
         public void SetSkyboxMaterial(SkyboxMaterial skyboxMaterial)
         {
             this.Material = skyboxMaterial;

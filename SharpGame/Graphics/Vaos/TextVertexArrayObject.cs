@@ -17,6 +17,7 @@ namespace SharpGame.Graphics.Vaos
     {
         public GuiTextComponent TextRenderer { get; set; }
 
+        internal override LayerType LayerType => LayerType.GUILayer;
 
         public TextVertexArrayObject(GuiTextComponent guiTextComponent) : base()
         {
