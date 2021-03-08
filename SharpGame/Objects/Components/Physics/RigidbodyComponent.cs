@@ -1,5 +1,6 @@
 ﻿using BulletSharp;
-using BulletSharp.Math;
+
+using OpenTK;
 
 using SharpGame.Util;
 
@@ -14,26 +15,23 @@ namespace SharpGame.Objects.Components
     public class RigidbodyComponent : Component
     {
         public float Mass { get; set; }
+        float size;
         private RigidBody rigidBody;
         private CollisionShape collider;
         private MotionState motion;
         private RigidBodyConstructionInfo info;
 
-        public RigidbodyComponent(float mass)
+        public RigidbodyComponent(float mass, float size)
         {
             this.Mass = mass;
+            this.size = size;
         }
 
         public override void OnAwake()
         {
-            this.collider = new BoxShape(2);
+            this.collider = new SphereShape(size);
             Vector3 intertia = collider.CalculateLocalInertia(this.Mass);
-            Matrix trans = Matrix.Translation(this.Actor.PositionComponent.X, this.Actor.PositionComponent.Y, this.Actor.PositionComponent.Z) *
-                Matrix.RotationX(this.Actor.RotationComponent.Pitch) *
-                Matrix.RotationY(this.Actor.RotationComponent.Yaw) *
-                Matrix.RotationZ(this.Actor.RotationComponent.Roll) *
-                Matrix.Scaling(this.Actor.ScaleComponent.X, this.Actor.ScaleComponent.Y, this.Actor.ScaleComponent.Z);
-            motion = new DefaultMotionState(trans);
+            motion = new DefaultMotionState(MathUtil.CreateTransformationMatrix(this.Actor.PositionComponent, this.Actor.RotationComponent, this.Actor.ScaleComponent));
             info = new RigidBodyConstructionInfo(this.Mass, motion, this.collider, intertia);
             rigidBody = new RigidBody(info);
             this.Actor.RootScene.PhysicsSystem.AddRigidbody(rigidBody);
@@ -42,7 +40,14 @@ namespace SharpGame.Objects.Components
         public override void OnUpdate(float deltaTime)
         {
             if (motion != null)
-                this.Actor.PositionComponent.Set(motion.WorldTransform.M41, motion.WorldTransform.M42, motion.WorldTransform.M43);
+            {
+                Vector3 position = motion.WorldTransform.ExtractTranslation();
+                Vector3 rotation = motion.WorldTransform.ExtractRotation().ToAxisAngle().Xyz;
+                Vector3 scale = motion.WorldTransform.ExtractScale();
+                this.Actor.PositionComponent.Set(position.X, position.Y, position.Z);
+                this.Actor.ScaleComponent.Set(scale.X, scale.Y, scale.Z);
+                this.Actor.RotationComponent.Set(rotation.X, rotation.Y, rotation.Z);
+            }
         }
 
         public override void OnShutdown()

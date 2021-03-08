@@ -1,6 +1,4 @@
-﻿using BulletSharp.Math;
-
-using OpenTK;
+﻿using OpenTK;
 using OpenTK.Graphics.OpenGL4;
 
 using SharpGame.Graphics.Meshes;

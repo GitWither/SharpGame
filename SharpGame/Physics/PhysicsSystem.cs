@@ -29,7 +29,7 @@ namespace SharpGame.Physics
             solver = new SequentialImpulseConstraintSolver();
             World = new DiscreteDynamicsWorld(dispatcher, broadphase, solver, collisionConfiguration)
             {
-                Gravity = new BulletSharp.Math.Vector3(0, -9.81f, 0)
+                Gravity = new Vector3(0, -9.81f, 0)
             };
         }
 
@@ -50,6 +50,10 @@ namespace SharpGame.Physics
 
         public void OnShutdown()
         {
+            World.Dispose();
+            broadphase.Dispose();
+            dispatcher.Dispose();
+            collisionConfiguration.Dispose();
         }
     }
 }
