@@ -9,7 +9,8 @@ namespace SharpGame.Objects
     public interface ISystem
     {
         void OnAwake();
-        void OnUpdate(float deltaTime);
+        void OnUpdate(List<Actor> actors, float deltaTime);
+        void OnRender(List<Actor> actors);
         void OnShutdown();
     }
 }
