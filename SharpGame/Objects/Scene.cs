@@ -11,21 +11,7 @@ namespace SharpGame.Objects
     public class Scene : IDisposable
     {
         private readonly object cameraMutex = new object();
-        public CameraComponent Camera
-        {
-            get
-            {
-                lock (cameraMutex)
-                {
-                    return camera;
-                }
-            }
-
-            set
-            {
-                camera = value;
-            }
-        }
+        public CameraComponent Camera { get; set; }
         internal PointLightComponent[] PointLights { get; set; }
 
         public int ActorCount
@@ -36,7 +22,6 @@ namespace SharpGame.Objects
         public bool Running { get; private set; }
 
         private readonly List<Actor> actors;
-        private CameraComponent camera;
 
         internal RenderSystem RenderSystem { get; private set; }
         internal PhysicsSystem PhysicsSystem { get; private set; }
@@ -116,7 +101,7 @@ namespace SharpGame.Objects
             this.RenderSystem.SetSkyboxMaterial(skyboxMaterial);
         }
 
-        internal void Render()
+        internal void OnRender()
         {
             RenderSystem.Render();
         }

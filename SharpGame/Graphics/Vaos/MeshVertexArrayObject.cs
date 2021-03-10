@@ -74,8 +74,6 @@ namespace SharpGame.Graphics.Vaos
             GL.DrawElements(BeginMode.Triangles, MeshRenderer.Mesh.Indices.Length, DrawElementsType.UnsignedInt, 0);
             Unbind();
 
-            MeshRenderer.Material.EmissionMap?.Unbind();
-            MeshRenderer.Material.NormalMap?.Unbind();
             MeshRenderer.Material.BaseMap.Unbind();
             MeshRenderer.Material.Shader.Unbind();
         }

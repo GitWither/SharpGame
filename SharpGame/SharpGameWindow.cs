@@ -21,12 +21,16 @@ using BulletSharp;
 using System.Runtime.CompilerServices;
 using OpenTK.Audio;
 using System.Runtime.InteropServices.ComTypes;
+using System.Runtime.Remoting.Messaging;
 
 namespace SharpGame
 {
     public class SharpGameWindow : GameWindow
     {
         public static Scene ActiveScene;
+        public static int Width { get; private set; }
+        public static int Height { get; private set; }
+
 
         private readonly Thread logic = new Thread(UpdateThread);
 
@@ -49,19 +53,19 @@ namespace SharpGame
 
             this.VSync = VSyncMode.On;
 
-            //base.UpdateFrame += this.UpdateFrameHandler;
+            base.UpdateFrame += this.UpdateFrameHandler;
             base.RenderFrame += this.RenderFrameHandler;
             base.Resize += this.ResizeHandler;
             base.Closed += this.ClosedWindow;
 
-            Running = true;
+            //Running = true;
 
-            logic.Start();
+            //logic.Start();
         }
 
         ~SharpGameWindow()
         {
-            //base.UpdateFrame -= this.UpdateFrameHandler;
+            base.UpdateFrame -= this.UpdateFrameHandler;
             base.Closed -= this.ClosedWindow;
             base.RenderFrame -= this.RenderFrameHandler;
             base.Resize -= this.ResizeHandler;
@@ -82,8 +86,9 @@ namespace SharpGame
             }
             audioDevice = IntPtr.Zero;
 
-            Running = false;
-            logic.Abort();
+            ActiveScene.OnShutdown();
+            //Running = false;
+            //logic.Abort();
         }
 
         private void ResizeHandler(object sender, EventArgs e)
@@ -113,7 +118,7 @@ namespace SharpGame
 
             if (ActiveScene != null)
             {
-                ActiveScene.Render();
+                ActiveScene.OnRender();
             }
             else
             {
@@ -142,7 +147,6 @@ namespace SharpGame
             }
 
             ActiveScene?.OnShutdown();
-            Logger.Info("shut");
         }
     }
 }

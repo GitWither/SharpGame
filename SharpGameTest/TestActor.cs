@@ -20,7 +20,6 @@ namespace SharpGameTest
         {
             base.OnAwake();
             //AddComponent(new MeshRendererComponent(Mesh.FromOBJ("test")));
-            AddComponent(new PhysicsComponent());
             GetComponent<PositionComponent>().Set(0, 5, 5 );
         }
         public override void OnUpdate(float deltaTime)
