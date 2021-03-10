@@ -16,6 +16,7 @@ namespace SharpGame.Objects.Components
         public float Velocity { get; set; }
         public float Life { get; set; }
 
+        //Mesh.GuiQuad is actually unused here. Perhaps I could add a way to add custom meshes to particles?
         public ParticleEmitterComponent(int count, float velocity, float life, Material material) : base(Mesh.GuiQuad, material)
         {
             this.Count = count;
