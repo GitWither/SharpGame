@@ -47,7 +47,7 @@ namespace SharpGame.Graphics.Vaos
             TextRenderer.Material.Shader.Bind();
             TextRenderer.Material.BaseMap.Bind(TextureUnit.Texture0);
 
-            Matrix4 transformation = MathUtil.CreateTransformationMatrix(this.TextRenderer.Actor.PositionComponent, this.TextRenderer.Actor.RotationComponent, this.TextRenderer.Actor.ScaleComponent);
+            Matrix4 transformation = MathUtil.CreateTransformationMatrix(this.TextRenderer.Actor);
 
             TextRenderer.Material.Shader.UploadMatrix4(SharedConstants.UniformModel, ref transformation);
 

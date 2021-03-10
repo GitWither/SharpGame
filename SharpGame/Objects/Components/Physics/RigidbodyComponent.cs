@@ -31,7 +31,7 @@ namespace SharpGame.Objects.Components
         {
             this.collider = new SphereShape(size);
             Vector3 intertia = collider.CalculateLocalInertia(this.Mass);
-            motion = new DefaultMotionState(MathUtil.CreateTransformationMatrix(this.Actor.PositionComponent, this.Actor.RotationComponent, this.Actor.ScaleComponent));
+            motion = new DefaultMotionState(MathUtil.CreateTransformationMatrix(this.Actor));
             info = new RigidBodyConstructionInfo(this.Mass, motion, this.collider, intertia);
             rigidBody = new RigidBody(info);
             this.Actor.RootScene.PhysicsSystem.AddRigidbody(rigidBody);

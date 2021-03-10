@@ -1,6 +1,7 @@
 ﻿using OpenTK;
 using OpenTK.Input;
 
+using SharpGame.Objects;
 using SharpGame.Objects.Components;
 
 using System;
@@ -26,15 +27,15 @@ namespace SharpGame.Util
                    MathHelper.ApproximatelyEqualEpsilon(a.Y, b.Y, SharedConstants.VectorMargin);
         }
 
-        public static Matrix4 CreateTransformationMatrix(PositionComponent positionComponent, RotationComponent rotationComponent, ScaleComponent scaleComponent)
+        public static Matrix4 CreateTransformationMatrix(Actor actor)
         {
-            Matrix4 scale = Matrix4.CreateScale(scaleComponent.X, scaleComponent.Y, scaleComponent.Z);
+            Matrix4 scale = Matrix4.CreateScale(actor.ScaleComponent.X, actor.ScaleComponent.Y, actor.ScaleComponent.Z);
 
-            Matrix4 rotation = Matrix4.CreateRotationZ(MathHelper.DegreesToRadians(rotationComponent.Roll)) *
-                               Matrix4.CreateRotationY(MathHelper.DegreesToRadians(rotationComponent.Yaw)) *
-                               Matrix4.CreateRotationX(MathHelper.DegreesToRadians(rotationComponent.Pitch));
+            Matrix4 rotation = Matrix4.CreateRotationZ(MathHelper.DegreesToRadians(actor.RotationComponent.Roll)) *
+                               Matrix4.CreateRotationY(MathHelper.DegreesToRadians(actor.RotationComponent.Yaw)) *
+                               Matrix4.CreateRotationX(MathHelper.DegreesToRadians(actor.RotationComponent.Pitch));
 
-            Matrix4 translation = Matrix4.CreateTranslation(positionComponent.X, positionComponent.Y, positionComponent.Z);
+            Matrix4 translation = Matrix4.CreateTranslation(actor.PositionComponent.X, actor.PositionComponent.Y, actor.PositionComponent.Z);
 
             return translation * rotation * scale;
         }

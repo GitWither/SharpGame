@@ -46,15 +46,13 @@ namespace SharpGame.Graphics.Vaos
             MeshRenderer.Material.Shader.UploadBool(SharedConstants.UniformHasNormalMap, MeshRenderer.Material.NormalMap != null);
             MeshRenderer.Material.Shader.UploadBool(SharedConstants.UniformHasEmmissionMap, MeshRenderer.Material.EmissionMap != null);
 
-            Matrix4 modelViewProjection = SharpGameWindow.ActiveScene.Camera.View * SharpGameWindow.ActiveScene.Camera.Projection;
-            Matrix4 transformation = MathUtil.CreateTransformationMatrix(
-                this.MeshRenderer.Actor.PositionComponent, 
-                this.MeshRenderer.Actor.RotationComponent, 
-                this.MeshRenderer.Actor.ScaleComponent
-                );
+            Matrix4 view = SharpGameWindow.ActiveScene.Camera.View;
+            Matrix4 projection = SharpGameWindow.ActiveScene.Camera.Projection;
+            Matrix4 transformation = MathUtil.CreateTransformationMatrix(this.MeshRenderer.Actor);
 
+            MeshRenderer.Material.Shader.UploadMatrix4(SharedConstants.UniformView, ref view);
+            MeshRenderer.Material.Shader.UploadMatrix4(SharedConstants.UniformProjection, ref projection);
             MeshRenderer.Material.Shader.UploadMatrix4(SharedConstants.UniformModel, ref transformation);
-            MeshRenderer.Material.Shader.UploadMatrix4(SharedConstants.UniformModelViewProjection, ref modelViewProjection);
 
             MeshRenderer.Material.Shader.UploadFloat(SharedConstants.UniformSpecularity, MeshRenderer.Material.Specularity);
 
