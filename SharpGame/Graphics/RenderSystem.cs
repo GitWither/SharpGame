@@ -9,6 +9,7 @@ using SharpGame.Objects.Components;
 using SharpGame.Util;
 
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -42,6 +43,7 @@ namespace SharpGame.Graphics
 		{
 			//TODO: Implemented a proper layering system
 			vao.Upload();
+
 			switch (vao.LayerType)
 			{
 				case LayerType.WorldLayer:
@@ -56,6 +58,7 @@ namespace SharpGame.Graphics
 		internal void RemoveVertexArrayObject(VertexArrayObject vao)
 		{
 			//TODO: Implemented a proper layering system
+
 			switch (vao.LayerType)
 			{
 				case LayerType.WorldLayer:
@@ -90,9 +93,9 @@ namespace SharpGame.Graphics
 			GL.Disable(EnableCap.Blend);
 
 			//Iterate through all world-placed objects. 
-			foreach (VertexArrayObject vao in worldObjects)
+			for (int i = 0; i < worldObjects.Count; i++)
 			{
-				vao.Render();
+				worldObjects[i].Render();
 			}
 
 			GL.Disable(EnableCap.CullFace);
@@ -101,18 +104,19 @@ namespace SharpGame.Graphics
 			skybockVertexArrayObject?.Render();
 
 			//Iterate through all GUI objects. This is so they render on top of everything.
-			foreach (VertexArrayObject vao in guiObjects)
+			GL.Disable(EnableCap.DepthTest);
+			GL.Enable(EnableCap.Blend);
+			GL.BlendFunc(BlendingFactor.SrcAlpha, BlendingFactor.OneMinusSrcAlpha);
+			for (int i = 0; i < guiObjects.Count; i++)
 			{
-				GL.Disable(EnableCap.DepthTest);
-				GL.Enable(EnableCap.Blend);
-				GL.BlendFunc(BlendingFactor.SrcAlpha, BlendingFactor.OneMinusSrcAlpha);
-
-				vao.Render();
+				guiObjects[i].Render();
 			}
 		}
 
 		public void Dispose()
 		{
+			guiObjects.Clear();
+			worldObjects.Clear();
 		}
 	}
 }

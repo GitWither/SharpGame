@@ -209,7 +209,7 @@ namespace SharpGame.Graphics.Meshes
             float spacingFactor = 0;
             for (int i = 0; i < text.Length * 4; i += 4)
             {
-                char character = text[(int)(i * 0.25)];
+                char character = text[(int)(i * 0.25f)];
 
                 float uvX = (character % 16) / 16.0f;
                 float uvY = (character / 16) / 16.0f;

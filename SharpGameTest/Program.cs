@@ -98,20 +98,21 @@ namespace SharpGameTest
             camera.PositionComponent.Set(0, 10, -15);
 
             Actor particles = new Actor();
-            particles.AddComponent(new ParticleEmitterComponent(3, 2, 2, new Material(Shader.Particle, missing)));
+            particles.AddComponent(new ParticleEmitterComponent(3, 0.01f, 150, new Material(Shader.Particle, missing)));
 
-            /*
             for (int x = 0; x < 100; x++)
             {
                 for (int y = 0; y < 100; y++)
                 {
-                    Actor obj = new Actor();
-                    obj.PositionComponent.Set(x * 15, y * 15, 0);
-                    obj.AddComponent(new MeshRendererComponent(dragon, rocks));
-                    scene.AddActor(obj);
+                    for (int z = 0; z < 1; z++)
+                    {
+                        Actor actor = new Actor();
+                        actor.PositionComponent.Set(x * 15, y * 15, z * 15);
+                        actor.AddComponent(new MeshRendererComponent(simpleCube, new Material(Shader.Lit, buffaloTxt)));
+                        scene.AddActor(actor);
+                    }
                 }
             }
-            */
 
             scene.AddActor(buffalo);
             scene.AddActor(camera);

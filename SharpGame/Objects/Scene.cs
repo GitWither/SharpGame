@@ -10,7 +10,22 @@ namespace SharpGame.Objects
 {
     public class Scene : IDisposable
     {
-        public CameraComponent Camera { get; set; }
+        private readonly object cameraMutex = new object();
+        public CameraComponent Camera
+        {
+            get
+            {
+                lock (cameraMutex)
+                {
+                    return camera;
+                }
+            }
+
+            set
+            {
+                camera = value;
+            }
+        }
         internal PointLightComponent[] PointLights { get; set; }
 
         public int ActorCount
@@ -18,9 +33,10 @@ namespace SharpGame.Objects
             get => actors.Count;
         }
 
-        private bool isRunning = false;
+        public bool Running { get; private set; }
 
         private readonly List<Actor> actors;
+        private CameraComponent camera;
 
         internal RenderSystem RenderSystem { get; private set; }
         internal PhysicsSystem PhysicsSystem { get; private set; }
@@ -28,6 +44,8 @@ namespace SharpGame.Objects
 
         public Scene()
         {
+            Running = false;
+
             actors = new List<Actor>(SharedConstants.MaxActors);
 
             PointLights = new PointLightComponent[SharedConstants.MaxLights];
@@ -45,7 +63,7 @@ namespace SharpGame.Objects
                 Logger.Error("Render and physics systems have not been initialized. A register is required before using them!");
                 return;
             }
-            this.isRunning = true;
+            this.Running = true;
         }
 
         /// <summary>
@@ -54,7 +72,7 @@ namespace SharpGame.Objects
         /// <param name="renderSystem">An instance of a render system</param>
         public void RegisterRenderSystem(RenderSystem renderSystem)
         {
-            if (!this.isRunning)
+            if (!this.Running)
             {
                 this.RenderSystem = renderSystem;
             }
@@ -70,7 +88,7 @@ namespace SharpGame.Objects
         /// <param name="physicsSystem">An instance of a physics system</param>
         public void RegisterPhysicsSystem(PhysicsSystem physicsSystem)
         {
-            if (!this.isRunning)
+            if (!this.Running)
             {
                 this.PhysicsSystem = physicsSystem;
                 this.PhysicsSystem.OnAwake();
@@ -119,7 +137,7 @@ namespace SharpGame.Objects
             {
                 actor.OnShutdown();
             }
-            this.isRunning = false;
+            this.Running = false;
         }
 
         /// <summary>

@@ -20,15 +20,17 @@ using SharpGame.Util;
 using BulletSharp;
 using System.Runtime.CompilerServices;
 using OpenTK.Audio;
+using System.Runtime.InteropServices.ComTypes;
 
 namespace SharpGame
 {
     public class SharpGameWindow : GameWindow
     {
         public static Scene ActiveScene;
-        public static bool IsRunning;
 
         private readonly Thread logic = new Thread(UpdateThread);
+
+        private static bool Running = false;
 
         private ContextHandle audioContext;
         private IntPtr audioDevice;
@@ -47,21 +49,25 @@ namespace SharpGame
 
             this.VSync = VSyncMode.On;
 
-            base.UpdateFrame += this.UpdateFrameHandler;
+            //base.UpdateFrame += this.UpdateFrameHandler;
             base.RenderFrame += this.RenderFrameHandler;
             base.Resize += this.ResizeHandler;
+            base.Closed += this.ClosedWindow;
 
-            IsRunning = true;
-            //logic.Start();
-        }
+            Running = true;
 
-        private void ResizeHandler(object sender, EventArgs e)
-        {
-            ActiveScene?.Camera.SetAspectRatio((float)this.Width / this.Height);
-            GL.Viewport(this.ClientSize);
+            logic.Start();
         }
 
         ~SharpGameWindow()
+        {
+            //base.UpdateFrame -= this.UpdateFrameHandler;
+            base.Closed -= this.ClosedWindow;
+            base.RenderFrame -= this.RenderFrameHandler;
+            base.Resize -= this.ResizeHandler;
+        }
+
+        private void ClosedWindow(object sender, EventArgs e)
         {
             if (audioContext != ContextHandle.Zero)
             {
@@ -76,11 +82,14 @@ namespace SharpGame
             }
             audioDevice = IntPtr.Zero;
 
-            base.UpdateFrame -= this.UpdateFrameHandler;
-            base.RenderFrame -= this.RenderFrameHandler;
-            base.Resize -= this.ResizeHandler;
-
+            Running = false;
             logic.Abort();
+        }
+
+        private void ResizeHandler(object sender, EventArgs e)
+        {
+            ActiveScene?.Camera.SetAspectRatio((float)this.Width / this.Height);
+            GL.Viewport(this.ClientSize);
         }
 
         public void LoadScene(Scene scene)
@@ -111,7 +120,6 @@ namespace SharpGame
                 Logger.Error("There isn't an active scene added. Can't draw anything!");
             }
 
-
             SwapBuffers();
         }
 
@@ -128,10 +136,13 @@ namespace SharpGame
                 Thread.CurrentThread.Name = SharedConstants.MainThreadName;
             }
 
-            while (IsRunning)
+            while (Running)
             {
-                ActiveScene?.OnUpdate(0.00001f);
+                ActiveScene?.OnUpdate(0.001f);
             }
+
+            ActiveScene?.OnShutdown();
+            Logger.Info("shut");
         }
     }
 }

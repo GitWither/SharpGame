@@ -16,7 +16,7 @@ namespace SharpGameTest
     class EpicComponent : Component
     {
         Random random = new Random();
-        Mesh travis = Mesh.FromOBJ("cube");
+        Mesh travis = Mesh.FromOBJ("dragon_big");
         Texture travisTxt = new Texture("T_Cyclone_Body_D.tga");
         public override void OnAwake()
         {
