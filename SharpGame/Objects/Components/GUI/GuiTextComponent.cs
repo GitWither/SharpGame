@@ -19,10 +19,8 @@ namespace SharpGame.Objects.Components
             {
                 this.text = value;
                 this.Mesh = Mesh.FromText(value);
-                this.Rebuffer = true;
             }
         }
-        internal bool Rebuffer { get; set; }
         private string text;
         public GuiTextComponent(string text, Texture font) : base(Mesh.FromText(text), new Material(Shader.Text, font))
         {

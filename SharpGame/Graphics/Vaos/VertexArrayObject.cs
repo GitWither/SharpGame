@@ -34,6 +34,8 @@ namespace SharpGame.Graphics.Vaos
 
         protected void BindVectorArrayToBuffer(int bufferId, int attributeId, Vector3[] vectors, bool dynamic, int attribDivisor = 0)
         {
+            if (vectors == null) return;
+
             GL.BindBuffer(BufferTarget.ArrayBuffer, bufferId);
             GL.BufferData(BufferTarget.ArrayBuffer, vectors.Length * Vector3.SizeInBytes, vectors, dynamic ? BufferUsageHint.DynamicDraw : BufferUsageHint.StaticDraw);
             GL.VertexAttribPointer(attributeId, 3, VertexAttribPointerType.Float, false, 0, 0);
@@ -43,6 +45,8 @@ namespace SharpGame.Graphics.Vaos
 
         protected void BindVectorArrayToBuffer(int bufferId, int attributeId, Vector2[] vectors, bool dynamic, int attribDivisor = 0)
         {
+            if (vectors == null) return;
+
             GL.BindBuffer(BufferTarget.ArrayBuffer, bufferId);
             GL.BufferData(BufferTarget.ArrayBuffer, vectors.Length * Vector2.SizeInBytes, vectors, dynamic ? BufferUsageHint.DynamicDraw : BufferUsageHint.StaticDraw);
             GL.VertexAttribPointer(attributeId, 2, VertexAttribPointerType.Float, false, 0, 0);

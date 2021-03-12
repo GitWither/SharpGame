@@ -15,15 +15,24 @@ namespace SharpGame.Objects.Components
 {
     public class MeshRendererComponent : Component
     {
-        public Mesh Mesh { get; set; }
+        public Mesh Mesh
+        {
+            get => mesh;
+            set
+            {
+                this.mesh = value;
+                this.vao?.Upload();
+            }
+        }
         public Material Material { get; set; }
         public bool Static { get; set; }
 
         protected VertexArrayObject vao;
+        private Mesh mesh;
 
         public MeshRendererComponent(Mesh mesh, Material material)
         {
-            this.Mesh = mesh;
+            this.mesh = mesh;
             this.Material = material;
         }
 
