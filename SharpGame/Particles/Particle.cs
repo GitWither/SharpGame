@@ -12,6 +12,7 @@ namespace SharpGame.Particles
         {
             this.Lifetime = 0;
             this.Position = Vector3.Zero;
+            this.Velocity = Vector3.Zero;
         }
     }
 }
