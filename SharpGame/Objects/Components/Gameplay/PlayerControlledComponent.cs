@@ -57,10 +57,6 @@ namespace SharpGame.Objects.Components
             {
                 GL.PolygonMode(MaterialFace.FrontAndBack, PolygonMode.Point);
             }
-            if (InputSystem.GetKeyUp(KeyCode.Z))
-            {
-                GL.PolygonMode(MaterialFace.FrontAndBack, PolygonMode.Fill);
-            }
 
             if (delta.LengthSquared > 0.0001f)
             {

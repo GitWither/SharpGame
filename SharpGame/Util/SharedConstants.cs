@@ -15,7 +15,7 @@ namespace SharpGame.Util
 
         public const uint MaxComponents = 128;
         public const uint MaxMeshes = 120;
-        public const uint MaxLights = 4;
+        public const int MaxLights = 4;
 
         public const float VectorMargin = 0.01f;
 
@@ -51,6 +51,7 @@ namespace SharpGame.Util
         public const string UniformHasEmmissionMap = "u_HasEmmissionMap";
         public const string UniformView = "u_View";
         public const string UniformProjection = "u_Projection";
+
         //=============== PATH CONSTANTS ===============
         public const string ShaderPath = "Shaders/";
         public const string TextureFolder = "Textures/";

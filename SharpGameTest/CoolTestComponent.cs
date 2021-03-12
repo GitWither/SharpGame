@@ -23,7 +23,7 @@ namespace SharpGameTest
         public override void OnAwake()
         {
             text = this.Actor.GetComponent<GuiTextComponent>();
-            gpu = GL.GetString(StringName.Renderer);
+            gpu = GL.GetString(StringName.Version);
         }
         public override void OnUpdate(float deltaTime)
         {
@@ -35,7 +35,7 @@ namespace SharpGameTest
                 frameTime = 0;
                 fps = 0;
             }
-            text.Text = $"{ fpstext} Actors: {SharpGameWindow.ActiveScene.ActorCount}\nGPU: {gpu}\nXYZ: {(Vector3)SharpGameWindow.ActiveScene.Camera.Actor.PositionComponent}";
+            text.Text = $"{ fpstext} Actors: {SharpGameWindow.ActiveScene.ActorCount}\nGPU: {gpu}\nXYZ: {(Vector3)SharpGameWindow.ActiveScene.Camera.Actor.PositionComponent}\n";
         }
     }
 }

@@ -53,7 +53,7 @@ namespace SharpGameTest
             Material unlit = new Material(Shader.Unlit, buffaloTxt);
 
             Actor field = new Actor();
-            field.AddComponent(new MeshRendererComponent(Mesh.FromOBJ("scene"), rocks));
+            field.AddComponent(new MeshRendererComponent(Mesh.FromOBJ("terrain"), rocks));
             field.AddComponent(new RigidbodyComponent(0, 35));
 
             Actor rocket = new Actor();
@@ -68,13 +68,13 @@ namespace SharpGameTest
 
             Actor light = new Actor();
             light.PositionComponent.Set(0, 15, 0);
-            light.AddComponent(new PointLightComponent(new Vector3(0f, 1f, 0), 2));
+            light.AddComponent(new PointLightComponent(new Vector3(0f, 1f, 0), 2f));
             light.AddComponent(new MeshRendererComponent(Mesh.FromOBJ("cube"), new Material(Shader.Unlit, missing)));
             light.AddComponent(new CoolComponent(1, -1));
 
             Actor light2 = new Actor();
             light2.PositionComponent.Set(0, 15, 0);
-            light2.AddComponent(new PointLightComponent(new Vector3(1f, 0.0f, 0), 2));
+            light2.AddComponent(new PointLightComponent(new Vector3(1f, 0.0f, 0), 2f));
             light2.AddComponent(new MeshRendererComponent(Mesh.FromOBJ("cube"), new Material(Shader.Unlit, missing)));
             light2.AddComponent(new CoolComponent(-1, 1));
 
@@ -98,7 +98,7 @@ namespace SharpGameTest
             camera.PositionComponent.Set(0, 10, -15);
 
             Actor particles = new Actor();
-            particles.AddComponent(new ParticleEmitterComponent(3, 0.01f, 150, new Material(Shader.Particle, missing)));
+            particles.AddComponent(new ParticleEmitterComponent(15, 0.1f, 150, new Material(Shader.Particle, missing)));
 
             scene.AddActor(buffalo);
             scene.AddActor(camera);
@@ -108,7 +108,7 @@ namespace SharpGameTest
             scene.AddActor(testLol);
             scene.AddActor(text);
             scene.AddActor(light);
-            scene.AddActor(particles);
+            //scene.AddActor(particles);
             scene.AddActor(ring);
 
             window.LoadScene(scene);

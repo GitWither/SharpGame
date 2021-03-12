@@ -28,8 +28,6 @@ namespace SharpGame
     public class SharpGameWindow : GameWindow
     {
         public static Scene ActiveScene;
-        public static int Width { get; private set; }
-        public static int Height { get; private set; }
 
 
         private readonly Thread logic = new Thread(UpdateThread);
@@ -113,7 +111,6 @@ namespace SharpGame
 
         private void RenderFrameHandler(object sender, FrameEventArgs e)
         {
-            GL.ClearColor(Color4.Black);
             GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit | ClearBufferMask.StencilBufferBit);
 
             if (ActiveScene != null)

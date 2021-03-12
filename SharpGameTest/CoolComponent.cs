@@ -1,4 +1,5 @@
-﻿using SharpGame.Objects.Components;
+﻿using SharpGame.Graphics.Meshes;
+using SharpGame.Objects.Components;
 using SharpGame.Util;
 
 using System;
@@ -20,11 +21,15 @@ namespace SharpGameTest
             this.dirX = dirX;
             this.dirZ = dirZ;
         }
+        public override void OnAwake()
+        {
+            this.Actor.GetComponent<MeshRendererComponent>().Mesh = Mesh.SkyBox;
+        }
         public override void OnUpdate(float deltaTime)
         {
             hey += 1f * deltaTime;
             //Logger.Info(hey * deltaTime);
-            this.Actor.PositionComponent.Set(dirX * (float)Math.Sin(hey) * 15, 5, dirZ * (float)Math.Cos(hey) * 15);
+            this.Actor.PositionComponent.Set(dirX * (float)Math.Sin(hey) * 5, 2, dirZ * (float)Math.Cos(hey) * 5);
         }
     }
 }
