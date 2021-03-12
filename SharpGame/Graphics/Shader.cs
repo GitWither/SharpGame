@@ -9,6 +9,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Markup;
 
 namespace SharpGame.Graphics
 {
@@ -90,12 +91,24 @@ namespace SharpGame.Graphics
 
         public void UploadBool(string name, bool value)
         {
-            GL.Uniform1(GetUniformLocation(name), value ? 0.5f : 0);
+            if (value)
+            {
+                GL.Uniform1(GetUniformLocation(name), 0.5f);
+            }
+            else 
+            {
+                GL.Uniform1(GetUniformLocation(name), 0f);
+            }
         }
 
         public void UploadFloat(string name, float value)
         {
             GL.Uniform1(GetUniformLocation(name), value);
+        }
+
+        public void UploadFloatArray(string name, Span<float> value)
+        {
+            GL.Uniform1(GetUniformLocation(name), value.Length, value.ToArray());
         }
 
         public void UploadInt(string name, int value)
@@ -108,14 +121,16 @@ namespace SharpGame.Graphics
             GL.Uniform1(GetUniformLocation(name), value.Length, value);
         }
 
-        public void UploadVector3Array(string name, Vector3[] value)
+        public void UploadVector3Array(string name, Span<Vector3> value)
         {
             float[] values = new float[value.Length * 3];
             for (int i = 0; i < values.Length; i += 3)
             {
-                values[i] = value[i].X;
-                values[i + 1] = value[i].Y;
-                values[i + 2] = value[i].Z;
+                int vectorIndex = i / 3;
+
+                values[i] = value[vectorIndex].X;
+                values[i + 1] = value[vectorIndex].Y;
+                values[i + 2] = value[vectorIndex].Z;
             }
             GL.Uniform3(GetUniformLocation(name), value.Length, values);
         }

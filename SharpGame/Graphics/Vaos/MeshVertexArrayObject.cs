@@ -58,16 +58,22 @@ namespace SharpGame.Graphics.Vaos
 
             PointLightComponent[] lights = MeshRenderer.Actor.RootScene.PointLights;
 
+            Span<Vector3> lightPositions = stackalloc Vector3[SharedConstants.MaxLights];
+            Span<Vector3> lightColors = stackalloc Vector3[SharedConstants.MaxLights];
+            Span<float> lightDistances = stackalloc float[SharedConstants.MaxLights];
+
             for (int i = 0; i < SharedConstants.MaxLights; i++)
             {
-                if (lights[i] != null)
-                {
-                    Vector3 lightPos = lights[i].Actor.PositionComponent;
-                    Vector3 lightColor = lights[i].Color;
-                    MeshRenderer.Material.Shader.UploadVector3($"lightPosition[{i}]", ref lightPos);
-                    MeshRenderer.Material.Shader.UploadVector3($"lightColor[{i}]", ref lightColor);
-                }
+                if (lights[i] == null) continue;
+
+                lightPositions[i] = lights[i].Actor.PositionComponent;
+                lightColors[i] = lights[i].Color;
+                lightDistances[i] = lights[i].MaxDistance;
             }
+
+            MeshRenderer.Material.Shader.UploadFloatArray($"lightDistance", lightDistances);
+            MeshRenderer.Material.Shader.UploadVector3Array($"lightPosition", lightPositions);
+            MeshRenderer.Material.Shader.UploadVector3Array($"lightColor", lightColors);
 
 
             Bind();
