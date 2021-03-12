@@ -14,7 +14,7 @@ namespace SharpGame.Graphics.Vaos
 {
     internal class GuiVertexArrayObject : VertexArrayObject
     {
-        public MeshRendererComponent MeshRenderer { get; set; }
+        public GuiTextureComponent MeshRenderer { get; set; }
 
         public GuiVertexArrayObject(GuiTextureComponent guiTextureComponent) : base()
         {
