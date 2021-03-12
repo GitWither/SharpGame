@@ -204,7 +204,7 @@ namespace SharpGame.Graphics.Meshes
             float size = 1f;
             int x = 0;
             int y = 0;
-            Span<int> faceIndices = stackalloc int[] { 0, 1, 2, 2, 1, 3};
+            ReadOnlySpan<int> faceIndices = stackalloc int[] { 0, 1, 2, 2, 1, 3};
             float likeBreakFactor = 0;
             float spacingFactor = 0;
             for (int i = 0; i < text.Length * 4; i += 4)
