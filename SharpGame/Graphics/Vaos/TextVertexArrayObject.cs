@@ -38,12 +38,6 @@ namespace SharpGame.Graphics.Vaos
 
         public override void Render()
         {
-            if (TextRenderer.Rebuffer)
-            {
-                this.Upload();
-                TextRenderer.Rebuffer = false;
-            }
-
             TextRenderer.Material.Shader.Bind();
             TextRenderer.Material.BaseMap.Bind(TextureUnit.Texture0);
 
