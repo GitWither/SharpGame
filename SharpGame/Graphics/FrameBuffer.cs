@@ -8,14 +8,32 @@ using System.Threading.Tasks;
 
 namespace SharpGame.Graphics
 {
-    internal class FrameBuffer : IDisposable
+    internal class Framebuffer : IDisposable
     {
         private readonly int id;
-        public FrameBuffer(int width, int height)
+
+        private readonly int width;
+        private readonly int height;
+        public Framebuffer(int width, int height)
         {
+            this.width = width;
+            this.height = height;
+
             id = GL.GenFramebuffer();
 
             //GL.BindFramebuffer(FramebufferTarget.)
+
+           // if (GL.CheckFramebufferStatus(FramebufferTarget.Framebuffer) == FramebufferErrorCode.FramebufferComplete)  
+        }
+
+        public void Bind()
+        {
+            GL.BindFramebuffer(FramebufferTarget.Framebuffer, id);
+        }
+
+        public void Unbind()
+        {
+            GL.BindFramebuffer(FramebufferTarget.Framebuffer, 0);
         }
 
         public void Dispose()
