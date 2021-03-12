@@ -87,6 +87,7 @@ namespace SharpGame.Graphics
 
 		public void Render()
 		{
+			GL.BlendFunc(BlendingFactor.Zero, BlendingFactor.Zero);
 			GL.DepthFunc(DepthFunction.Less);
 			GL.Enable(EnableCap.CullFace);
 			GL.Enable(EnableCap.DepthTest);
