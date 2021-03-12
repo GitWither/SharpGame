@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace SharpGame.Graphics
 {
-    public class Material
+    public class Material : IDisposable
     {
         public Shader Shader { get; set; }
         public Texture BaseMap { get; set; }
@@ -38,6 +38,14 @@ namespace SharpGame.Graphics
             this.NormalMap = normalMap;
             this.EmissionMap = emissionMap;
             this.Specularity = specularity;
+        }
+
+        public void Dispose()
+        {
+            this.Shader.Dispose();
+            this.BaseMap.Dispose();
+            this.NormalMap.Dispose();
+            this.EmissionMap.Dispose();
         }
     }
 }

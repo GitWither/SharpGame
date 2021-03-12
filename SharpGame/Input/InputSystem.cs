@@ -1,5 +1,7 @@
 ﻿using OpenTK;
 using OpenTK.Input;
+using OpenTK.Mathematics;
+using OpenTK.Windowing.GraphicsLibraryFramework;
 
 using SharpGame.Util;
 
@@ -13,8 +15,8 @@ namespace SharpGame.Input
 {
     public static class InputSystem
     {
-        private static KeyboardState keyboardState;
-        private static MouseState mouseState = Mouse.GetState();
+        public static KeyboardState keyboardState = null;
+        public static MouseState mouseState = null;
 
         /// <summary>
         /// Checks whether a key is held down
@@ -23,30 +25,23 @@ namespace SharpGame.Input
         /// <returns>Returns true if a key is held down</returns>
         public static bool GetKeyDown(KeyCode key)
         {
-            keyboardState = Keyboard.GetState();
-            return keyboardState.IsKeyDown((Key)key);
+            return keyboardState.IsKeyDown((Keys)key);
         }
 
         public static bool GetKeyUp(KeyCode key)
         {
-            keyboardState = Keyboard.GetState();
-            return keyboardState.IsKeyUp((Key)key);
+            return keyboardState.IsKeyReleased((Keys)key);
         }
 
         public static bool GetKey(KeyCode key)
         {
-            keyboardState = Keyboard.GetState();
-            return keyboardState.IsKeyUp((Key)key) || keyboardState.IsKeyDown((Key)key);
+            return keyboardState.IsKeyReleased((Keys)key) || keyboardState.IsKeyDown((Keys)key);
         }
 
         public static Vector2 GetMouseAxis()
         {
-            MouseState newMouseState = Mouse.GetState();
-
-            float Xvalue = mouseState.X - newMouseState.X;
-            float Yvalue = newMouseState.Y - mouseState.Y;
-
-            mouseState = newMouseState;
+            float Xvalue = mouseState.PreviousX - mouseState.X;
+            float Yvalue = mouseState.Y - mouseState.PreviousY;
 
             return new Vector2(Xvalue, Yvalue);
         }

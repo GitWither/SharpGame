@@ -1,7 +1,7 @@
 ﻿using OpenTK;
 using OpenTK.Audio.OpenAL;
-using OpenTK.Graphics.ES10;
 using OpenTK.Graphics.OpenGL;
+using OpenTK.Mathematics;
 
 using SharpGame.Util;
 
@@ -51,7 +51,7 @@ namespace SharpGame.Audio
                     parsedBuffer[i] = (short)MathHelper.Clamp((int)(short.MaxValue * readBuffer[i]), short.MinValue, short.MaxValue);
                 }
 
-                AL.BufferData(soundId, vorbis.Channels == 1 ? ALFormat.Mono16 : ALFormat.Stereo16, parsedBuffer, readSamples * sizeof(short), vorbis.SampleRate);
+                //AL.BufferData(soundId, vorbis.Channels == 1 ? ALFormat.Mono16 : ALFormat.Stereo16, parsedBuffer, readSamples * sizeof(short), vorbis.SampleRate);
             }
         }
 

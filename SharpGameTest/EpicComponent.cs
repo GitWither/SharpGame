@@ -18,8 +18,11 @@ namespace SharpGameTest
         Random random = new Random();
         Mesh travis = Mesh.FromOBJ("dragon_big");
         Texture travisTxt = new Texture("T_Cyclone_Body_D.tga");
+        Material material;
         public override void OnAwake()
         {
+            material = new Material(Shader.Unlit, travisTxt, 5);
+
             this.Actor.PositionComponent.Set(0, 15, 0);
             this.Actor.RotationComponent.Set(25, 0, 0);
         }
@@ -31,8 +34,8 @@ namespace SharpGameTest
             {
                 Actor cube = new Actor();
                 cube.PositionComponent.Set(random.Next(-15, 15), 250, random.Next(-15, 15));
-                cube.AddComponent(new RigidbodyComponent(55f, 2));
-                cube.AddComponent(new MeshRendererComponent(travis, new Material(Shader.Unlit, travisTxt, 5)));
+                //cube.AddComponent(new RigidbodyComponent(55f, 2));
+                cube.AddComponent(new MeshRendererComponent(travis, material));
                 cube.AddComponent(new DeathComponent());
 
                 //MeshRendererComponent mrc = this.Actor.GetComponent<MeshRendererComponent>();

@@ -1,5 +1,6 @@
 ﻿using OpenTK;
 using OpenTK.Input;
+using OpenTK.Mathematics;
 
 using SharpGame.Objects;
 using SharpGame.Objects.Components;

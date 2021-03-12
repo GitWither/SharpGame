@@ -17,11 +17,12 @@ using SharpGame.Graphics.Meshes;
 using SharpGame.Objects;
 using SharpGame.Util;
 
-using BulletSharp;
 using System.Runtime.CompilerServices;
 using OpenTK.Audio;
 using System.Runtime.InteropServices.ComTypes;
-using System.Runtime.Remoting.Messaging;
+using OpenTK.Windowing.Desktop;
+using OpenTK.Windowing.Common;
+using SharpGame.Input;
 
 namespace SharpGame
 {
@@ -30,69 +31,42 @@ namespace SharpGame
         public static Scene ActiveScene;
 
 
-        private readonly Thread logic = new Thread(UpdateThread);
-
-        private static bool Running = false;
-
-        private ContextHandle audioContext;
-        private IntPtr audioDevice;
-
-        public SharpGameWindow(int width, int height, string title) : base(width, height, GraphicsMode.Default, title, GameWindowFlags.Default)
+        public SharpGameWindow(int width, int height, string title) : base(
+            GameWindowSettings.Default,
+            new NativeWindowSettings()
+            {
+                Size = new OpenTK.Mathematics.Vector2i(width, height),
+                Title = title
+            })
         {
             if (Thread.CurrentThread.Name == null)
             {
                 Thread.CurrentThread.Name = SharedConstants.RenderThreadName;
             }
 
-            audioDevice = Alc.OpenDevice(null);
-            audioContext = Alc.CreateContext(audioDevice, (int[])null);
-            Alc.MakeContextCurrent(audioContext);
+            InputSystem.keyboardState = this.KeyboardState;
+            InputSystem.mouseState = this.MouseState;
+
+            ALBase.RegisterOpenALResolver();
             AL.DistanceModel(ALDistanceModel.LinearDistance);
 
             this.VSync = VSyncMode.On;
-
-            base.UpdateFrame += this.UpdateFrameHandler;
-            base.RenderFrame += this.RenderFrameHandler;
-            base.Resize += this.ResizeHandler;
-            base.Closed += this.ClosedWindow;
-
-            //Running = true;
-
-            //logic.Start();
         }
 
-        ~SharpGameWindow()
+        protected override void OnClosed()
         {
-            base.UpdateFrame -= this.UpdateFrameHandler;
-            base.Closed -= this.ClosedWindow;
-            base.RenderFrame -= this.RenderFrameHandler;
-            base.Resize -= this.ResizeHandler;
-        }
-
-        private void ClosedWindow(object sender, EventArgs e)
-        {
-            if (audioContext != ContextHandle.Zero)
-            {
-                Alc.MakeContextCurrent(ContextHandle.Zero);
-                Alc.DestroyContext(audioContext);
-            }
-            audioContext = ContextHandle.Zero;
-
-            if (audioDevice != IntPtr.Zero)
-            {
-                Alc.CloseDevice(audioDevice);
-            }
-            audioDevice = IntPtr.Zero;
-
             ActiveScene.OnShutdown();
-            //Running = false;
-            //logic.Abort();
+
+            base.OnClosed();
         }
 
-        private void ResizeHandler(object sender, EventArgs e)
+
+        protected override void OnResize(ResizeEventArgs e)
         {
-            ActiveScene?.Camera.SetAspectRatio((float)this.Width / this.Height);
-            GL.Viewport(this.ClientSize);
+            GL.Viewport(0, 0, e.Size.X, e.Size.Y);
+            ActiveScene?.Camera.SetAspectRatio(this.Size.X / (float)this.Size.Y);
+
+            base.OnResize(e);
         }
 
         public void LoadScene(Scene scene)
@@ -109,7 +83,7 @@ namespace SharpGame
             }
         }
 
-        private void RenderFrameHandler(object sender, FrameEventArgs e)
+        protected override void OnRenderFrame(FrameEventArgs e)
         {
             GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit | ClearBufferMask.StencilBufferBit);
 
@@ -123,27 +97,16 @@ namespace SharpGame
             }
 
             SwapBuffers();
+
+            base.OnRenderFrame(e);
         }
 
 
-        private void UpdateFrameHandler(object sender, FrameEventArgs e)
+        protected override void OnUpdateFrame(FrameEventArgs e)
         {
             ActiveScene?.OnUpdate((float)e.Time);
-        }
 
-        private static void UpdateThread()
-        {
-            if (Thread.CurrentThread.Name == null)
-            {
-                Thread.CurrentThread.Name = SharedConstants.MainThreadName;
-            }
-
-            while (Running)
-            {
-                ActiveScene?.OnUpdate(0.001f);
-            }
-
-            ActiveScene?.OnShutdown();
+            base.OnUpdateFrame(e);
         }
     }
 }

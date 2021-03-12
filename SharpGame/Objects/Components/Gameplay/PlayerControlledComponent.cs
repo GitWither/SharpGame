@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using SharpGame.Input;
 using OpenTK;
 using SharpGame.Util;
+using OpenTK.Mathematics;
 
 namespace SharpGame.Objects.Components
 {

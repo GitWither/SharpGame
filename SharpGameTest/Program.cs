@@ -17,6 +17,7 @@ using OpenTK.Audio.OpenAL;
 using SharpGame.Util;
 using SharpGame.Physics;
 using System.Runtime.InteropServices;
+using OpenTK.Mathematics;
 
 namespace SharpGameTest
 {
@@ -82,7 +83,7 @@ namespace SharpGameTest
             testLol.AddComponent(new GuiTextureComponent(main));
 
             Actor text = new Actor();
-            text.AddComponent(new GuiTextComponent("no", font));
+            text.AddComponent(new GuiTextComponent("FUCK YOU go fuck urself", font));
             text.AddComponent(new CoolTestComponent());
             text.ScaleComponent.Set(0.05f, 0.07f, 1);
             text.PositionComponent.Set(-20, 13, 0);
@@ -112,12 +113,6 @@ namespace SharpGameTest
             scene.AddActor(ring);
 
             window.LoadScene(scene);
-
-            #if DEBUG
-            Point point = window.Location;
-            point.X -= 1920;
-            window.Location = point;
-            #endif
 
             window.Run();
         }

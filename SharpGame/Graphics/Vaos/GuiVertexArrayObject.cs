@@ -1,5 +1,6 @@
 ﻿using OpenTK;
 using OpenTK.Graphics.OpenGL4;
+using OpenTK.Mathematics;
 
 using SharpGame.Objects.Components;
 using SharpGame.Util;
@@ -12,7 +13,7 @@ using System.Threading.Tasks;
 
 namespace SharpGame.Graphics.Vaos
 {
-    internal class GuiVertexArrayObject : VertexArrayObject
+    internal class GuiVertexArrayObject : VertexArrayObject, IDisposable
     {
         public GuiTextureComponent MeshRenderer { get; set; }
 

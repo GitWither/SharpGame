@@ -10,13 +10,13 @@ namespace SharpGame.Input
 {
     public enum KeyCode
     {
-        W = 105,
-        A = 83,
-        S = 101,
-        Z = 108,
-        D = 86,
-        C = 85,
-        Space = 51,
-        LeftShift = 1
+        W = 87,
+        A = 65,
+        S = 83,
+        Z = 90,
+        D = 68,
+        C = 67,
+        Space = 32,
+        LeftShift = 340
     }
 }
