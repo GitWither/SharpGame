@@ -53,18 +53,28 @@ namespace SharpGame.Graphics.Vaos
             Span<Vector3> positions = stackalloc Vector3[ParticleEmitter.Count];
             for (int i = 0; i < ParticleEmitter.Count; i++)
             {
+                if (particlePool[i].Velocity == Vector3.Zero)
+                {
+                    float rangeScaled = (ParticleEmitter.Velocity * 2);
+
+                    float x = (float)random.NextDouble() * rangeScaled - ParticleEmitter.Velocity;
+                    float y = (float)random.NextDouble() * rangeScaled - ParticleEmitter.Velocity;
+                    float z = (float)random.NextDouble() * rangeScaled - ParticleEmitter.Velocity;
+
+                    particlePool[i].Velocity = new Vector3(x, y, z);
+                }
                 Vector3 particlePos = particlePool[i].Position;
 
 
-                particlePos.X += 0;
-                particlePos.Y += ParticleEmitter.Velocity;
-                particlePos.Z += 0;
+                particlePos.X += particlePool[i].Velocity.X;
+                particlePos.Y += particlePool[i].Velocity.Y;
+                particlePos.Z += particlePool[i].Velocity.Z;
 
                 particlePool[i].Lifetime++;
                 positions[i] = particlePos;
                 particlePool[i].Position = particlePos;
 
-                if (particlePool[i].Lifetime == ParticleEmitter.Life)
+                if (particlePos.LengthSquared > 250 * 250 && particlePool[i].Lifetime >= ParticleEmitter.MaxLifetime)
                 {
                     particlePool[i].Reset();
                 }
