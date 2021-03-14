@@ -36,7 +36,8 @@ namespace SharpGame
             new NativeWindowSettings()
             {
                 Size = new OpenTK.Mathematics.Vector2i(width, height),
-                Title = title
+                Title = title,
+                NumberOfSamples = 3
             })
         {
             if (Thread.CurrentThread.Name == null)

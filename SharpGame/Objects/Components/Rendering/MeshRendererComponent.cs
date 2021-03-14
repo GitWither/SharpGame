@@ -45,7 +45,7 @@ namespace SharpGame.Objects.Components
         public override void OnShutdown()
         {
             this.Actor.RootScene.RenderSystem.RemoveVertexArrayObject(vao);
-            Material.Dispose();
+            //Material.Dispose();
         }
     }
 }

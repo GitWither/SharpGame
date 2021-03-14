@@ -72,9 +72,9 @@ namespace SharpGame.Graphics.Vaos
                 lightDistances[i] = lights[i].MaxDistance;
             }
 
-            MeshRenderer.Material.Shader.UploadFloatArray($"lightDistance", lightDistances);
-            MeshRenderer.Material.Shader.UploadVector3Array($"lightPosition", lightPositions);
-            MeshRenderer.Material.Shader.UploadVector3Array($"lightColor", lightColors);
+            MeshRenderer.Material.Shader.UploadFloatArray("lightDistance", lightDistances);
+            MeshRenderer.Material.Shader.UploadVector3Array("lightPosition", lightPositions);
+            MeshRenderer.Material.Shader.UploadVector3Array("lightColor", lightColors);
 
 
             Bind();
