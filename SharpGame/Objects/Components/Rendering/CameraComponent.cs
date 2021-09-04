@@ -32,11 +32,21 @@ namespace SharpGame.Objects.Components
 
         public override void OnAwake()
         {
+            Logger.Info("test");
             this.Actor.RootScene.Camera = this;
+
+            this.Actor.RootScene.ResolutionChanged += this.ResolutionChanged;
+        }
+
+        private void ResolutionChanged(object sender, Events.ScreenEventArgs e)
+        {
+            Logger.Info("resizing");
+            this.SetAspectRatio(e.Size.X / (float)e.Size.Y);
         }
 
         public override void OnUpdate(float deltaTime)
         {
+            //Logger.Info("rendering");
             float forwardX = (float)(Math.Sin(MathHelper.DegreesToRadians(this.Actor.RotationComponent.Yaw)) * Math.Cos(MathHelper.DegreesToRadians(this.Actor.RotationComponent.Pitch)));
             float forwardY = (float)Math.Sin(MathHelper.DegreesToRadians(this.Actor.RotationComponent.Pitch));
             float forwardZ = (float)(Math.Cos(MathHelper.DegreesToRadians(this.Actor.RotationComponent.Yaw)) * Math.Cos(MathHelper.DegreesToRadians(this.Actor.RotationComponent.Pitch)));
@@ -51,6 +61,8 @@ namespace SharpGame.Objects.Components
         public override void OnShutdown()
         {
             this.Actor.RootScene.Camera = null;
+
+            this.Actor.RootScene.ResolutionChanged -= this.ResolutionChanged;
         }
 
         public void SetFieldOfView(float fieldOfView)

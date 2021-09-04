@@ -8,6 +8,7 @@ using SharpGame.Util;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -17,7 +18,7 @@ namespace SharpGame.Objects
     {
         public Scene RootScene { get; set; }
 
-        private readonly Component[] components = new Component[SharedConstants.MaxComponents];
+        private readonly List<Component> components = new List<Component>((int)SharedConstants.MaxComponents);
         public PositionComponent PositionComponent { get; private set; }
         public RotationComponent RotationComponent { get; private set; }
         public ScaleComponent ScaleComponent { get; private set; }
@@ -36,14 +37,7 @@ namespace SharpGame.Objects
         /// <returns>An instance of the component</returns>
         public T GetComponent<T>() where T : Component
         {
-            for (int i = 0; i < SharedConstants.MaxComponents; i++)
-            {
-                if (this.components[i] is T t)
-                {
-                    return t;
-                }
-            }
-            return default;
+            return (T)components.Find((c) => c is T);
         }
         
         /// <summary>
@@ -54,16 +48,9 @@ namespace SharpGame.Objects
         /// <returns>An instance of the added component</returns>
         public T AddComponent<T>(T component) where T : Component
         {
-            for (int i = 0; i < SharedConstants.MaxComponents; i++)
-            {
-                if (this.components[i] == null)
-                {
-                    this.components[i] = component;
-                    component.Actor = this;
-                    return component;
-                }
-            }
-            return default;
+            components.Add(component);
+            component.Actor = this;
+            return component;
         }
 
         /// <summary>
@@ -73,14 +60,7 @@ namespace SharpGame.Objects
         /// <returns>True if the actor has the component specified</returns>
         public bool HasComponent<T>() where T : Component
         {
-            for (int i = 0; i < SharedConstants.MaxComponents; i++)
-            {
-                if (this.components[i] is T)
-                {
-                    return true;
-                }
-            }
-            return false;
+            return components.Any((c) => c is T);
         }
 
         /// <summary>
@@ -90,33 +70,22 @@ namespace SharpGame.Objects
         /// <param name="component">Instace of the component to remove</param>
         public void RemoveComponent<T>(T component) where T : Component
         {
-            for (int i = 0; i < SharedConstants.MaxComponents; i++)
-            {
-                if (this.components[i] == component)
-                {
-                    this.components[i] = null;
-                    component.OnShutdown();
-                    break;
-                }
-            }
+            components.Remove(component);
+            component.OnShutdown();
         }
         public virtual void OnAwake()
         {
-            this.AddComponent(this.PositionComponent);
-            this.AddComponent(this.RotationComponent);
-            this.AddComponent(this.ScaleComponent);
-
-            for (int i = 0; i < SharedConstants.MaxComponents; i++)
+            for (int i = 0; i < components.Count; i++)
             {
-                components[i]?.OnAwake();
+                components[i].OnAwake();
             }
         }
 
         public virtual void OnUpdate(float deltaTime)
         {
-            for (int i = 0; i < SharedConstants.MaxComponents; i++)
+            for (int i = 0; i < components.Count; i++)
             {
-                components[i]?.OnUpdate(deltaTime);
+                components[i].OnUpdate(deltaTime);
             }
         }
 
@@ -126,9 +95,9 @@ namespace SharpGame.Objects
 
         public virtual void OnShutdown()
         {
-            for (int i = 0; i < SharedConstants.MaxComponents; i++)
+            for (int i = 0; i < components.Count; i++)
             {
-                components[i]?.OnShutdown();
+                components[i].OnShutdown();
             }
         }
     }

@@ -19,14 +19,17 @@ namespace SharpGame.Graphics
 {
 	public class RenderSystem : IDisposable
 	{
-		private readonly List<VertexArrayObject> worldObjects;
-		private readonly List<VertexArrayObject> guiObjects;
+		private readonly Layer[] layers;
+
 		private SkybockVertexArrayObject skybockVertexArrayObject;
 
 		public RenderSystem()
 		{
-			worldObjects = new List<VertexArrayObject>();
-			guiObjects = new List<VertexArrayObject>();
+			layers = new Layer[]
+			{
+				new Layer(),
+				new Layer()
+			};
 
 			GL.Enable(EnableCap.Multisample);
 			GL.Enable(EnableCap.LineSmooth);
@@ -39,36 +42,16 @@ namespace SharpGame.Graphics
 			this.Dispose();
 		}
 
-		internal void AddVertexArrayObject(VertexArrayObject vao)
+		internal void AddActor(Actor actor)
 		{
 			//TODO: Implemented a proper layering system
-			vao.Upload();
-
-			switch (vao.LayerType)
-			{
-				case LayerType.WorldLayer:
-					worldObjects.Add(vao);
-					break;
-				case LayerType.GUILayer:
-					guiObjects.Add(vao);
-					break;
-			}
+			layers[0].Add(actor);
 		}
 
-		internal void RemoveVertexArrayObject(VertexArrayObject vao)
+		internal void RemoveActor(Actor actor)
 		{
 			//TODO: Implemented a proper layering system
-
-			switch (vao.LayerType)
-			{
-				case LayerType.WorldLayer:
-					worldObjects.Remove(vao);
-					break;
-				case LayerType.GUILayer:
-					guiObjects.Remove(vao);
-					break;
-			}
-			vao.Dispose();
+			layers[0].Remove(actor);
 		}
 
 		public void SetSkyboxMaterial(SkyboxMaterial skyboxMaterial)
@@ -94,10 +77,7 @@ namespace SharpGame.Graphics
 			GL.Disable(EnableCap.Blend);
 
 			//Iterate through all world-placed objects. 
-			for (int i = 0; i < worldObjects.Count; i++)
-			{
-				worldObjects[i].Render();
-			}
+			layers[(int)LayerType.WorldLayer].Render();
 
 			GL.Disable(EnableCap.CullFace);
 			GL.DepthFunc(DepthFunction.Lequal);
@@ -108,16 +88,15 @@ namespace SharpGame.Graphics
 			GL.Disable(EnableCap.DepthTest);
 			GL.Enable(EnableCap.Blend);
 			GL.BlendFunc(BlendingFactor.SrcAlpha, BlendingFactor.OneMinusSrcAlpha);
-			for (int i = 0; i < guiObjects.Count; i++)
-			{
-				guiObjects[i].Render();
-			}
+			layers[(int)LayerType.GUILayer].Render();
 		}
 
 		public void Dispose()
 		{
-			guiObjects.Clear();
-			worldObjects.Clear();
+			for (int i = 0; i < layers.Length; i++)
+            {
+				layers[i].Dispose();
+            }
 		}
 	}
 }

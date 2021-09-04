@@ -23,6 +23,10 @@ using System.Runtime.InteropServices.ComTypes;
 using OpenTK.Windowing.Desktop;
 using OpenTK.Windowing.Common;
 using SharpGame.Input;
+using SharpGame.Events;
+using OpenTK.Mathematics;
+using OpenTK.Windowing.GraphicsLibraryFramework;
+using System.Diagnostics;
 
 namespace SharpGame
 {
@@ -30,44 +34,43 @@ namespace SharpGame
     {
         public static Scene ActiveScene;
 
+        private Thread updateThread;
 
         public SharpGameWindow(int width, int height, string title) : base(
             GameWindowSettings.Default,
             new NativeWindowSettings()
             {
-                Size = new OpenTK.Mathematics.Vector2i(width, height),
+                Size = new Vector2i(width, height),
                 Title = title,
                 NumberOfSamples = 3
             })
         {
-            if (Thread.CurrentThread.Name == null)
-            {
-                Thread.CurrentThread.Name = SharedConstants.RenderThreadName;
-            }
+            Thread.CurrentThread.Name = SharedConstants.RenderThreadName;
+        }
 
+        protected override void OnLoad()
+        {
             InputSystem.keyboardState = this.KeyboardState;
             InputSystem.mouseState = this.MouseState;
 
             ALBase.RegisterOpenALResolver();
             AL.DistanceModel(ALDistanceModel.LinearDistance);
 
-            this.VSync = VSyncMode.On;
+            updateThread = new Thread(OnUpdate);
+            updateThread.Start();
+
+            //this.VSync = VSyncMode.On;
+            base.OnLoad();
         }
 
         protected override void OnClosed()
         {
-            ActiveScene.OnShutdown();
-
-            base.OnClosed();
+            ActiveScene.Running = false;
         }
-
 
         protected override void OnResize(ResizeEventArgs e)
         {
             GL.Viewport(0, 0, e.Size.X, e.Size.Y);
-            ActiveScene?.Camera.SetAspectRatio(this.Size.X / (float)this.Size.Y);
-
-            base.OnResize(e);
         }
 
         public void LoadScene(Scene scene)
@@ -98,16 +101,25 @@ namespace SharpGame
             }
 
             SwapBuffers();
-
-            base.OnRenderFrame(e);
         }
 
-
-        protected override void OnUpdateFrame(FrameEventArgs e)
+        protected void OnUpdate()
         {
-            ActiveScene?.OnUpdate((float)e.Time);
+            Stopwatch sw = new Stopwatch();
+            Thread.CurrentThread.Name = SharedConstants.LogicThreadName;
 
-            base.OnUpdateFrame(e);
+            while (ActiveScene.Running)
+            {
+                sw.Restart();
+
+                this.Title = sw.Elapsed.TotalSeconds.ToString();
+                ActiveScene.OnUpdate((float)sw.Elapsed.TotalSeconds);
+            }
+
+
+            ActiveScene.OnShutdown();
+
+            return;
         }
     }
 }

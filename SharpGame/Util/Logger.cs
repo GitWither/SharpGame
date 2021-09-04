@@ -23,9 +23,11 @@ namespace SharpGame.Util
         [Conditional("DEBUG")]
         private static void Log(ConsoleColor color, string level, object message)
         {
-            Console.ForegroundColor = color;
-            Console.WriteLine($"[{DateTime.Now}] [{level}] [{Thread.CurrentThread.Name}]: {message}");
-            Console.ResetColor();
+            new Thread(() => {
+                Console.ForegroundColor = color;
+                Console.WriteLine($"[{DateTime.Now}] [{level}] [{Thread.CurrentThread.Name}]: {message}");
+                Console.ResetColor();
+            }).Start();
         }
     }
 }

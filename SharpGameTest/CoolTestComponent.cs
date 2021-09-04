@@ -37,7 +37,7 @@ namespace SharpGameTest
                 frameTime = 0;
                 fps = 0;
             }
-            text.Text = $"{ fpstext} Actors: {SharpGameWindow.ActiveScene.ActorCount}\nGPU: {gpu}\nXYZ: {(Vector3)SharpGameWindow.ActiveScene.Camera.Actor.PositionComponent}\n";
+            //text.Text = $"{ fpstext} Actors: {SharpGameWindow.ActiveScene.ActorCount}\nGPU: {gpu}\nXYZ: {(Vector3)SharpGameWindow.ActiveScene.Camera.Actor.PositionComponent}\n";
         }
     }
 }

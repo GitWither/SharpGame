@@ -30,12 +30,11 @@ namespace SharpGame.Objects.Components
         public override void OnAwake()
         {
             this.vao = new TextVertexArrayObject(this);
-            this.Actor.RootScene.RenderSystem.AddVertexArrayObject(vao);
         }
 
         public override void OnShutdown()
         {
-            this.Actor.RootScene.RenderSystem.RemoveVertexArrayObject(vao);
+            this.vao.Dispose();
         }
     }
 }

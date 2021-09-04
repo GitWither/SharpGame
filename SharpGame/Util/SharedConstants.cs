@@ -41,7 +41,7 @@ namespace SharpGame.Util
 
         //=============== THREAD NAMES ===============
         public const string RenderThreadName = "RENDER";
-        public const string MainThreadName = "MAIN";
+        public const string LogicThreadName = "LOGIC";
 
         //=============== SHADER UNIFORM CONSTANTS ===============
         public const string UniformModelViewProjection = "u_ModelViewProjection";

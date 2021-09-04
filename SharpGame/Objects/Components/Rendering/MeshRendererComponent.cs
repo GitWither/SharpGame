@@ -30,6 +30,11 @@ namespace SharpGame.Objects.Components
         protected VertexArrayObject vao;
         private Mesh mesh;
 
+        internal void Render()
+        {
+            this.vao.Render();
+        }
+
         public MeshRendererComponent(Mesh mesh, Material material)
         {
             this.mesh = mesh;
@@ -39,13 +44,12 @@ namespace SharpGame.Objects.Components
         public override void OnAwake()
         {
             this.vao = new MeshVertexArrayObject(this);
-            this.Actor.RootScene.RenderSystem.AddVertexArrayObject(vao);
+            this.vao.Upload();
         }
 
         public override void OnShutdown()
         {
-            this.Actor.RootScene.RenderSystem.RemoveVertexArrayObject(vao);
-            //Material.Dispose();
+            this.vao.Dispose();
         }
     }
 }

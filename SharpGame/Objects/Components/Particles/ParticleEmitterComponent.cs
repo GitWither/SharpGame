@@ -27,12 +27,12 @@ namespace SharpGame.Objects.Components
         public override void OnAwake()
         {
             this.vao = new ParticleVertexArrayObject(this);
-            this.Actor.RootScene.RenderSystem.AddVertexArrayObject(vao);
+            this.vao.Upload();
         }
 
         public override void OnShutdown()
         {
-            this.Actor.RootScene.RenderSystem.RemoveVertexArrayObject(vao);
+            this.vao.Dispose();
         }
     }
 }

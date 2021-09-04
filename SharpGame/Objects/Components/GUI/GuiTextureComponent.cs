@@ -22,12 +22,12 @@ namespace SharpGame.Objects.Components
         public override void OnAwake()
         {
             this.vao = new GuiVertexArrayObject(this);
-            this.Actor.RootScene.RenderSystem.AddVertexArrayObject(vao);
+            vao.Upload();
         }
 
         public override void OnShutdown()
         {
-            this.Actor.RootScene.RenderSystem.RemoveVertexArrayObject(vao);
+            this.vao.Dispose();
         }
     }
 }

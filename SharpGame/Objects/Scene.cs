@@ -1,16 +1,30 @@
-﻿using SharpGame.Graphics;
+﻿using OpenTK.Mathematics;
+
+using SharpGame.Events;
+using SharpGame.Graphics;
 using SharpGame.Objects.Components;
 using SharpGame.Physics;
 using SharpGame.Util;
 
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 
 namespace SharpGame.Objects
 {
     public class Scene : IDisposable
     {
-        private readonly object cameraMutex = new object();
+        public event EventHandler<ActorEventArgs> ActorAdded;
+        public event EventHandler<ActorEventArgs> ActorRemoved;
+
+        public event EventHandler<ScreenEventArgs> ResolutionChanged;
+
+        private readonly ConcurrentQueue<Actor> toBeAddedActorsLogic;
+        private readonly ConcurrentQueue<Actor> toBeAddedActorsRender;
+
+        private readonly ConcurrentQueue<Actor> toBeRemovedActorsLogic;
+        private readonly ConcurrentQueue<Actor> toBeRemovedActorsRender;
+
         public CameraComponent Camera { get; set; }
         internal PointLightComponent[] PointLights { get; set; }
 
@@ -19,7 +33,7 @@ namespace SharpGame.Objects
             get => actors.Count;
         }
 
-        public bool Running { get; private set; }
+        public bool Running { get; set; }
 
         private readonly List<Actor> actors;
 
@@ -32,6 +46,12 @@ namespace SharpGame.Objects
             Running = false;
 
             actors = new List<Actor>(SharedConstants.MaxActors);
+
+            toBeAddedActorsRender = new ConcurrentQueue<Actor>();
+            toBeAddedActorsLogic = new ConcurrentQueue<Actor>();
+
+            toBeRemovedActorsLogic = new ConcurrentQueue<Actor>();
+            toBeRemovedActorsRender = new ConcurrentQueue<Actor>();
 
             PointLights = new PointLightComponent[SharedConstants.MaxLights];
         }
@@ -90,10 +110,13 @@ namespace SharpGame.Objects
         /// <param name="actor">An instance of the actor to add to the scene</param>
         public void AddActor(Actor actor)
         {
+            toBeAddedActorsRender.Enqueue(actor);
+            toBeAddedActorsLogic.Enqueue(actor);
             actor.RootScene = this;
             actor.OnAwake();
             actors.Add(actor);
             actor.OnStart();
+            //ActorAdded?.Invoke(this, new ActorEventArgs(actor));
         }
 
         public void SetSkyboxMaterial(SkyboxMaterial skyboxMaterial)
@@ -103,12 +126,31 @@ namespace SharpGame.Objects
 
         internal void OnRender()
         {
+            while (toBeAddedActorsRender.Count > 0)
+            {
+                if (toBeAddedActorsRender.TryDequeue(out Actor actor))
+                {
+                    actor.OnAwake();
+                    RenderSystem.AddActor(actor);
+                }
+            }
+
+
             RenderSystem.Render();
         }
 
         internal void OnUpdate(float deltaTime)
         {
-            PhysicsSystem.OnUpdate(1.0f / 60);
+            while (toBeAddedActorsLogic.Count > 0)
+            {
+                if (toBeAddedActorsLogic.TryDequeue(out Actor actor))
+                {
+                    actor.RootScene = this;
+                    actors.Add(actor);
+                }
+            }
+
+            //PhysicsSystem.OnUpdate(1.0f / 60);
             for (int i = 0; i < actors.Count; i++)
             {
                 actors[i].OnUpdate(deltaTime);
@@ -117,12 +159,12 @@ namespace SharpGame.Objects
 
         internal void OnShutdown()
         {
+            this.Running = false;
             PhysicsSystem.OnShutdown();
             foreach (Actor actor in actors)
             {
                 actor.OnShutdown();
             }
-            this.Running = false;
         }
 
         /// <summary>
@@ -141,8 +183,16 @@ namespace SharpGame.Objects
         /// <param name="actor">An instance of the actor to remove from the scene</param>
         public void RemoveActor(Actor actor)
         {
-            actor.OnShutdown();
-            actors.Remove(actor);
+            toBeRemovedActorsRender.Enqueue(actor);
+            toBeRemovedActorsLogic.Enqueue(actor);
+            //ActorRemoved?.Invoke(this, new ActorEventArgs(actor));
+            //actor.OnShutdown();
+            //actors.Remove(actor);
+        }
+
+        internal void ScreenResized(Vector2i newSize)
+        {
+            ResolutionChanged?.Invoke(this, new ScreenEventArgs(newSize));
         }
 
         public void Dispose()

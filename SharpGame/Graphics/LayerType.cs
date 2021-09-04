@@ -8,8 +8,8 @@ namespace SharpGame.Graphics
 {
     internal enum LayerType
     {
-        GUILayer,
-        WorldLayer,
-        SkyboxLayer
+        GUILayer = 1,
+        WorldLayer = 0,
+        SkyboxLayer = 2
     }
 }
