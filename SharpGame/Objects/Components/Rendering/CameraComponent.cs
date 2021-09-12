@@ -32,7 +32,6 @@ namespace SharpGame.Objects.Components
 
         public override void OnAwake()
         {
-            Logger.Info("test");
             this.Actor.RootScene.Camera = this;
 
             this.Actor.RootScene.ResolutionChanged += this.ResolutionChanged;
@@ -46,7 +45,6 @@ namespace SharpGame.Objects.Components
 
         public override void OnUpdate(float deltaTime)
         {
-            //Logger.Info("rendering");
             float forwardX = (float)(Math.Sin(MathHelper.DegreesToRadians(this.Actor.RotationComponent.Yaw)) * Math.Cos(MathHelper.DegreesToRadians(this.Actor.RotationComponent.Pitch)));
             float forwardY = (float)Math.Sin(MathHelper.DegreesToRadians(this.Actor.RotationComponent.Pitch));
             float forwardZ = (float)(Math.Cos(MathHelper.DegreesToRadians(this.Actor.RotationComponent.Yaw)) * Math.Cos(MathHelper.DegreesToRadians(this.Actor.RotationComponent.Pitch)));

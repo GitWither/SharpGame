@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "SharpGame": {
+      "commandName": "Project",
+      "remoteDebugEnabled": false
+    }
+  }
+}

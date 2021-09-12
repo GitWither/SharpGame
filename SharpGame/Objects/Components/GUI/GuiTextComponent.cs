@@ -30,6 +30,7 @@ namespace SharpGame.Objects.Components
         public override void OnAwake()
         {
             this.vao = new TextVertexArrayObject(this);
+            this.vao.Upload();
         }
 
         public override void OnShutdown()

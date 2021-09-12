@@ -64,8 +64,8 @@ namespace SharpGame.Objects.Components
                 this.Actor.PositionComponent.Translate(((Right.X * delta.X) + (Forward.X * delta.Z))*deltaTime, delta.Y * deltaTime, ((Forward.Z * delta.Z) + (Right.Z * delta.X))*deltaTime);
             }
 
-            Vector2 mouseDelta = InputSystem.GetMouseAxis() * 0.00005f;
-            this.Actor.RotationComponent.Rotate(-mouseDelta.Y, mouseDelta.X, 0);
+            Vector2 mouseDelta = InputSystem.GetMouseDelta() * 0.05f;
+            this.Actor.RotationComponent.Rotate(-mouseDelta.Y, -mouseDelta.X, 0);
 
             if (this.Actor.RotationComponent.Pitch >= 89)
             {

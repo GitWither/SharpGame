@@ -8,6 +8,7 @@ using SharpGame.Util;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -15,8 +16,14 @@ namespace SharpGame.Input
 {
     public static class InputSystem
     {
-        public static KeyboardState keyboardState = null;
-        public static MouseState mouseState = null;
+        private static KeyboardState keyboardState = null;
+        private static MouseState mouseState = null;
+
+        public static void Init(KeyboardState ks, MouseState ms)
+        {
+            keyboardState = ks;
+            mouseState = ms;
+        }
 
         /// <summary>
         /// Checks whether a key is held down
@@ -38,12 +45,9 @@ namespace SharpGame.Input
             return keyboardState.IsKeyReleased((Keys)key) || keyboardState.IsKeyDown((Keys)key);
         }
 
-        public static Vector2 GetMouseAxis()
+        public static Vector2 GetMouseDelta()
         {
-            float Xvalue = mouseState.PreviousX - mouseState.X;
-            float Yvalue = mouseState.Y - mouseState.PreviousY;
-
-            return new Vector2(Xvalue, Yvalue);
+            return mouseState.Delta;
         }
     }
 }

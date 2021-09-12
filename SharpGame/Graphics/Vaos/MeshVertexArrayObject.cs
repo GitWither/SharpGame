@@ -28,9 +28,9 @@ namespace SharpGame.Graphics.Vaos
         {
             Bind();
 
-            BindVectorArrayToBuffer(bufferIds[0], 0, new Vector3[] { Vector3.One }, false);
-            BindVectorArrayToBuffer(bufferIds[1], 1, new Vector2[] { Vector2.One }, false);
-            BindVectorArrayToBuffer(bufferIds[2], 2, new Vector3[] { Vector3.One }, false);
+            BindVectorArrayToBuffer(bufferIds[0], 0, MeshRenderer.Mesh.Vertices, false);
+            BindVectorArrayToBuffer(bufferIds[1], 1, MeshRenderer.Mesh.FaceTexCoords, false);
+            BindVectorArrayToBuffer(bufferIds[2], 2, MeshRenderer.Mesh.Normals, false);
 
             BindIndices(MeshRenderer.Mesh.Indices);
 

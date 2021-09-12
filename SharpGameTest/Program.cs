@@ -107,9 +107,9 @@ namespace SharpGameTest
             scene.AddActor(light2);
             scene.AddActor(rocket);
             //scene.AddActor(testLol);
-            //scene.AddActor(text);
+            scene.AddActor(text);
             scene.AddActor(light);
-            //scene.AddActor(particles);
+            scene.AddActor(particles);
             scene.AddActor(ring);
 
             window.LoadScene(scene);

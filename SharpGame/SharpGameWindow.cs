@@ -50,8 +50,7 @@ namespace SharpGame
 
         protected override void OnLoad()
         {
-            InputSystem.keyboardState = this.KeyboardState;
-            InputSystem.mouseState = this.MouseState;
+            InputSystem.Init(this.KeyboardState, this.MouseState);
 
             ALBase.RegisterOpenALResolver();
             AL.DistanceModel(ALDistanceModel.LinearDistance);
