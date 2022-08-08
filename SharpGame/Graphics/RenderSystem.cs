@@ -14,19 +14,15 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using SharpActors;
 
 namespace SharpGame.Graphics
 {
-	public class RenderSystem
+	internal class RenderSystem : ActorSystem
 	{
-
-        public RenderSystem()
+        public void OnRender()
 		{
-        }
 
-
-        public void Render()
-		{
         }
 
 	}

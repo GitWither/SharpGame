@@ -61,11 +61,11 @@ namespace SharpGame.Graphics
             Shader.UploadBool(SharedConstants.UniformHasNormalMap, false);
             Shader.UploadBool(SharedConstants.UniformHasEmmissionMap, false);
 
-            var sceneProjection = SharpGameWindow.ActiveScene.Projection;
-            var sceneView = SharpGameWindow.ActiveScene.View;
-            Shader.UploadMatrix4(SharedConstants.UniformView, ref sceneView);
-            Shader.UploadMatrix4(SharedConstants.UniformProjection, ref sceneProjection);
-            Shader.UploadMatrix4(SharedConstants.UniformModel, ref transformation);
+            //var sceneProjection = SharpGameWindow.ActiveScene.Projection;
+            //var sceneView = SharpGameWindow.ActiveScene.View;
+            //Shader.UploadMatrix4(SharedConstants.UniformView, ref sceneView);
+            //Shader.UploadMatrix4(SharedConstants.UniformProjection, ref sceneProjection);
+            //Shader.UploadMatrix4(SharedConstants.UniformModel, ref transformation);
 
             Shader.UploadFloat(SharedConstants.UniformSpecularity, Specularity);
 

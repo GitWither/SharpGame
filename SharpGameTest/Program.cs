@@ -30,8 +30,6 @@ namespace SharpGameTest
 
             Scene scene = new Scene();
 
-            scene.RegisterPhysicsSystem(new PhysicsSystem());
-            scene.RegisterRenderSystem(new RenderSystem());
 
             //Sound sound = new Sound(@"C:\Users\Daniel\Desktop\Minecraft Bedrock Launcher\Minecraft-1.16.210.50\data\resource_packs\vanilla_music\sounds\music\game\creative\creative1.ogg");
             Texture missing = new Texture("missing");

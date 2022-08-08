@@ -62,21 +62,6 @@ namespace SharpGame.Objects
             this.Running = true;
         }
 
-        /// <summary>
-        /// Registers a rendering system.
-        /// </summary>
-        /// <param name="renderSystem">An instance of a render system</param>
-        public void RegisterRenderSystem(RenderSystem renderSystem)
-        {
-            if (!this.Running)
-            {
-                this.RenderSystem = renderSystem;
-            }
-            else
-            {
-                Logger.Error("Cannot register system while scene is running");
-            }
-        }
 
         /// <summary>
         /// Registers a physics system.
