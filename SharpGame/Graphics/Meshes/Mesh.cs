@@ -9,6 +9,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using SharpGame.Graphics.Vaos;
 
 namespace SharpGame.Graphics.Meshes
 {
@@ -16,17 +17,17 @@ namespace SharpGame.Graphics.Meshes
     {
         public static Mesh GuiQuad = new Mesh(
             new Vector3[] {
-                new Vector3(-1, 1, 0),
-                new Vector3(-1, -1, 0),
-                new Vector3(1, 1, 0),
-                new Vector3(1, -1, 0)
+                new(-1, 1, 0),
+                new(-1, -1, 0),
+                new(1, 1, 0),
+                new(1, -1, 0)
             }, 
             null,
             new Vector2[] {
-                new Vector2(0, 0),
-                new Vector2(0, 1),
-                new Vector2(1, 0),
-                new Vector2(1, 1)
+                new(0, 0),
+                new(0, 1),
+                new(1, 0),
+                new(1, 1)
             }, 
             new int[] {0, 1, 2, 2, 1, 3 }
             );
@@ -35,14 +36,14 @@ namespace SharpGame.Graphics.Meshes
         public static Mesh SkyBox = new Mesh(
             new Vector3[]
             {
-                new Vector3(-1, 1, 1),
-                new Vector3(-1, -1, 1),
-                new Vector3(1, 1, 1),
-                new Vector3(1, -1, 1),
-                new Vector3(1, -1, -1),
-                new Vector3(1, 1, -1),
-                new Vector3(-1, 1, -1),
-                new Vector3(-1, -1, -1)
+                new(-1, 1, 1),
+                new(-1, -1, 1),
+                new(1, 1, 1),
+                new(1, -1, 1),
+                new(1, -1, -1),
+                new(1, 1, -1),
+                new(-1, 1, -1),
+                new(-1, -1, -1)
             },
             null,
             null,
@@ -61,12 +62,17 @@ namespace SharpGame.Graphics.Meshes
         public Vector2[] FaceTexCoords { get; set; }
         public Vector3[] Normals { get; set; }
         public int[] Indices { get; set; }
+
+        internal VertexArrayObject vao;
         public Mesh(Vector3[] vertices, Vector3[] normals, Vector2[] texCoords, int[] faceIndices)
         {
             this.Vertices = vertices;
             this.FaceTexCoords = texCoords;
             this.Indices = faceIndices;
             this.Normals = normals;
+            this.vao = new VertexArrayObject();
+            this.vao.Upload(Vertices, FaceTexCoords, Normals, Indices);
+
         }
 
         //I don't know why, I don't want to know why, I shouldn't have to wonder why, but this piece of code was the most painful thing I ever worked with
@@ -252,6 +258,11 @@ namespace SharpGame.Graphics.Meshes
             }
 
             return new Mesh(vertices.ToArray(), null, uvs.ToArray(), indices.ToArray());
+        }
+
+        public void Render(Matrix4 transformation, Material material)
+        {
+            material.Draw(this.vao, transformation);
         }
     }
 }

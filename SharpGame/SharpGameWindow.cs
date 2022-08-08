@@ -34,8 +34,6 @@ namespace SharpGame
     {
         public static Scene ActiveScene;
 
-        private Thread updateThread;
-
         public SharpGameWindow(int width, int height, string title) : base(
             GameWindowSettings.Default,
             new NativeWindowSettings()
@@ -54,9 +52,6 @@ namespace SharpGame
 
             ALBase.RegisterOpenALResolver();
             AL.DistanceModel(ALDistanceModel.LinearDistance);
-
-            updateThread = new Thread(OnUpdate);
-            updateThread.Start();
 
             //this.VSync = VSyncMode.On;
             base.OnLoad();
@@ -88,11 +83,19 @@ namespace SharpGame
 
         protected override void OnRenderFrame(FrameEventArgs e)
         {
+            GL.BlendFunc(BlendingFactor.Zero, BlendingFactor.Zero);
+            GL.DepthFunc(DepthFunction.Less);
+            GL.Enable(EnableCap.CullFace);
+            GL.Enable(EnableCap.DepthTest);
+            GL.Disable(EnableCap.Blend);
             GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit | ClearBufferMask.StencilBufferBit);
 
             if (ActiveScene != null)
             {
+                Stopwatch sw = Stopwatch.StartNew();
                 ActiveScene.OnRender();
+                sw.Stop();
+                this.Title = sw.ElapsedMilliseconds.ToString();
             }
             else
             {
@@ -102,23 +105,9 @@ namespace SharpGame
             SwapBuffers();
         }
 
-        protected void OnUpdate()
+        protected override void OnUpdateFrame(FrameEventArgs args)
         {
-            Stopwatch sw = new Stopwatch();
-            Thread.CurrentThread.Name = SharedConstants.LogicThreadName;
-
-            while (ActiveScene.Running)
-            {
-                sw.Restart();
-
-                this.Title = sw.Elapsed.TotalSeconds.ToString();
-                ActiveScene.OnUpdate((float)sw.Elapsed.TotalSeconds);
-            }
-
-
-            ActiveScene.OnShutdown();
-
-            return;
+            ActiveScene.OnUpdate((float)args.Time);
         }
     }
 }

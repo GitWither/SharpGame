@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 
 namespace SharpGame.Objects.Components
 {
+    /*
     public class AudioSourceComponent : Component
     {
         public Sound Sound { get; set; }
@@ -43,4 +44,5 @@ namespace SharpGame.Objects.Components
             this.Sound.SetListenerData(SharpGameWindow.ActiveScene.Camera.Actor.PositionComponent.X, SharpGameWindow.ActiveScene.Camera.Actor.PositionComponent.Y, SharpGameWindow.ActiveScene.Camera.Actor.PositionComponent.Z);
         }
     }
+    */
 }

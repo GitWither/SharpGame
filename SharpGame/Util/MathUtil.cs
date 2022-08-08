@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using SharpGame.Objects.Components.Transform;
 
 namespace SharpGame.Util
 {
@@ -28,15 +29,13 @@ namespace SharpGame.Util
                    MathHelper.ApproximatelyEqualEpsilon(a.Y, b.Y, SharedConstants.VectorMargin);
         }
 
-        public static Matrix4 CreateTransformationMatrix(Actor actor)
+        public static Matrix4 CreateTransformationMatrix(TransformComponent transform)
         {
-            Matrix4 scale = Matrix4.CreateScale(actor.ScaleComponent.X, actor.ScaleComponent.Y, actor.ScaleComponent.Z);
+            Matrix4 scale = Matrix4.CreateScale(transform.Scale);
 
-            Matrix4 rotation = Matrix4.CreateRotationZ(MathHelper.DegreesToRadians(actor.RotationComponent.Roll)) *
-                               Matrix4.CreateRotationY(MathHelper.DegreesToRadians(actor.RotationComponent.Yaw)) *
-                               Matrix4.CreateRotationX(MathHelper.DegreesToRadians(actor.RotationComponent.Pitch));
+            Matrix4 rotation = Matrix4.CreateFromQuaternion(new Quaternion(transform.Rotation));
 
-            Matrix4 translation = Matrix4.CreateTranslation(actor.PositionComponent.X, actor.PositionComponent.Y, actor.PositionComponent.Z);
+            Matrix4 translation = Matrix4.CreateTranslation(transform.Position);
 
             return translation * rotation * scale;
         }

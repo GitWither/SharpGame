@@ -11,28 +11,15 @@ using System.Threading.Tasks;
 
 namespace SharpGame.Objects.Components
 {
-    public class PointLightComponent : Component
+    public struct PointLightComponent
     {
-        public Vector3 Color { get; private set; }
-        public float MaxDistance { get; private set; }
+        public Vector3 Color { get; set; }
+        public float MaxDistance { get; set; }
 
         public PointLightComponent(Vector3 color, float maxDistance)
         {
             this.Color = color;
             this.MaxDistance = maxDistance;
         }
-
-        public override void OnAwake()
-        {
-            for (int i = 0; i < SharedConstants.MaxLights; i++)
-            {
-                if (this.Actor.RootScene.PointLights[i] == null)
-                {
-                    this.Actor.RootScene.PointLights[i] = this;
-                    break;
-                }
-            }
-        }
-
     }
 }

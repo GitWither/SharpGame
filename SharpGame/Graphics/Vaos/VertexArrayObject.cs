@@ -15,11 +15,16 @@ using System.Threading.Tasks;
 
 namespace SharpGame.Graphics.Vaos
 {
-    public abstract class VertexArrayObject : IDisposable
+    public class VertexArrayObject : IDisposable
     {
         private readonly int id;
 
         protected readonly int[] bufferIds = new int[4];
+
+        public Vector3[] vertices;
+        public Vector2[] uv;
+        public Vector3[] normals;
+        public int[] indices;
 
         public VertexArrayObject()
         {
@@ -27,11 +32,23 @@ namespace SharpGame.Graphics.Vaos
             GL.GenBuffers(bufferIds.Length, bufferIds);
         }
 
-        internal abstract LayerType LayerType { get; }
+        public void Upload(Vector3[] vertices, Vector2[] uv, Vector3[] normals, int[] indices)
+        {
+            this.vertices = vertices;
+            this.uv = uv;
+            this.normals = normals;
+            this.indices = indices;
+            Bind();
 
-        public abstract void Upload();
+            BindVectorArrayToBuffer(bufferIds[0], 0, vertices, false);
+            BindVectorArrayToBuffer(bufferIds[1], 1, uv, false);
+            BindVectorArrayToBuffer(bufferIds[2], 2, normals, false);
 
-        public abstract void Render();
+            BindIndices(indices);
+
+            Unbind();
+        }
+
 
         protected void BindVectorArrayToBuffer(int bufferId, int attributeId, Vector3[] vectors, bool dynamic, int attribDivisor = 0)
         {
@@ -61,7 +78,7 @@ namespace SharpGame.Graphics.Vaos
             GL.BufferData(BufferTarget.ElementArrayBuffer, indices.Length * sizeof(uint), indices, BufferUsageHint.StaticDraw);
         }
 
-        protected void Bind()
+        public void Bind()
         {
             GL.BindVertexArray(id);
         }
