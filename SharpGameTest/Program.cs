@@ -93,8 +93,6 @@ namespace SharpGameTest
             particles.AddComponent(new ParticleEmitterComponent(15, 0.1f, 150, new Material(Shader.Particle, missing)));
 
 
-            window.LoadScene(scene);
-
             window.Run();
         }
     }

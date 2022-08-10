@@ -28,6 +28,7 @@ namespace SharpGame.Objects
         public Matrix4 Projection { get; set; }
         public Matrix4 View { get; set; }
         internal PointLightComponent[] PointLights { get; set; }
+        public int ActorCount => m_ActorRegistry.Count;
 
 
         public bool Running { get; set; }
