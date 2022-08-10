@@ -10,29 +10,20 @@ using System.Threading.Tasks;
 
 namespace SharpGame.Objects.Components
 {
-    public class ParticleEmitterComponent : MeshRendererComponent
+    public struct ParticleEmitterComponent
     {
         public int Count { get; set; }
         public float Velocity { get; set; }
         public float MaxLifetime { get; set; }
 
-        //Mesh.GuiQuad is actually unused here. Perhaps I could add a way to add custom meshes to particles?
-        public ParticleEmitterComponent(int count, float velocity, float life, Material material) : base(Mesh.GuiQuad, material)
+        public Material Material { get; set; }
+
+        public ParticleEmitterComponent(int count, float velocity, float maxLifetime, Material material)
         {
             this.Count = count;
             this.Velocity = velocity;
-            this.MaxLifetime = life;
-        }
-
-        public override void OnAwake()
-        {
-            this.vao = new ParticleVertexArrayObject(this);
-            this.vao.Upload();
-        }
-
-        public override void OnShutdown()
-        {
-            this.vao.Dispose();
+            this.MaxLifetime = maxLifetime;
+            this.Material = material;
         }
     }
 }

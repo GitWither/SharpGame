@@ -27,14 +27,14 @@ using SharpGame.Events;
 using OpenTK.Mathematics;
 using OpenTK.Windowing.GraphicsLibraryFramework;
 using System.Diagnostics;
+using SharpGame.Core;
 
 namespace SharpGame
 {
     public class SharpGameWindow : GameWindow
     {
-        public static Scene ActiveScene;
-
-        private Thread updateThread;
+        private Stack<ILayer> m_Layers;
+        public static SharpGameWindow Instance { get; private set; } = null;
 
         public SharpGameWindow(int width, int height, string title) : base(
             GameWindowSettings.Default,
@@ -46,6 +46,8 @@ namespace SharpGame
             })
         {
             Thread.CurrentThread.Name = SharedConstants.RenderThreadName;
+            this.m_Layers = new Stack<ILayer>();
+            Instance = this;
         }
 
         protected override void OnLoad()
@@ -55,16 +57,16 @@ namespace SharpGame
             ALBase.RegisterOpenALResolver();
             AL.DistanceModel(ALDistanceModel.LinearDistance);
 
-            updateThread = new Thread(OnUpdate);
-            updateThread.Start();
-
             //this.VSync = VSyncMode.On;
             base.OnLoad();
         }
 
         protected override void OnClosed()
         {
-            ActiveScene.Running = false;
+            foreach (ILayer layer in m_Layers)
+            {
+                layer.OnDetach();
+            }
         }
 
         protected override void OnResize(ResizeEventArgs e)
@@ -72,53 +74,31 @@ namespace SharpGame
             GL.Viewport(0, 0, e.Size.X, e.Size.Y);
         }
 
-        public void LoadScene(Scene scene)
-        {
-            if (ActiveScene != scene)
-            {
-                ActiveScene?.OnShutdown();
-                ActiveScene = scene;
-                ActiveScene.OnAwake();
-            }
-            else
-            {
-                Logger.Warn("This scene is already loaded. Skipping.");
-            }
-        }
 
         protected override void OnRenderFrame(FrameEventArgs e)
         {
-            GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit | ClearBufferMask.StencilBufferBit);
-
-            if (ActiveScene != null)
+            if (this.IsFocused)
             {
-                ActiveScene.OnRender();
+                foreach (ILayer layer in m_Layers)
+                {
+                    layer.OnRender();
+                }
             }
-            else
-            {
-                Logger.Error("There isn't an active scene added. Can't draw anything!");
-            }
-
             SwapBuffers();
         }
 
-        protected void OnUpdate()
+        protected override void OnUpdateFrame(FrameEventArgs args)
         {
-            Stopwatch sw = new Stopwatch();
-            Thread.CurrentThread.Name = SharedConstants.LogicThreadName;
-
-            while (ActiveScene.Running)
+            foreach (ILayer layer in m_Layers)
             {
-                sw.Restart();
-
-                this.Title = sw.Elapsed.TotalSeconds.ToString();
-                ActiveScene.OnUpdate((float)sw.Elapsed.TotalSeconds);
+                layer.OnUpdate((float)args.Time);
             }
+        }
 
-
-            ActiveScene.OnShutdown();
-
-            return;
+        public void PushLayer(ILayer layer)
+        {
+            m_Layers.Push(layer);
+            layer.OnAttach();
         }
     }
 }

@@ -18,6 +18,7 @@ using SharpGame.Util;
 using SharpGame.Physics;
 using System.Runtime.InteropServices;
 using OpenTK.Mathematics;
+using SharpGame.Objects.Components.Transform;
 
 namespace SharpGameTest
 {
@@ -29,10 +30,8 @@ namespace SharpGameTest
 
             Scene scene = new Scene();
 
-            scene.RegisterPhysicsSystem(new PhysicsSystem());
-            scene.RegisterRenderSystem(new RenderSystem());
 
-            Sound sound = new Sound(@"C:\Users\Daniel\Desktop\Minecraft Bedrock Launcher\Minecraft-1.16.210.50\data\resource_packs\vanilla_music\sounds\music\game\creative\creative1.ogg");
+            //Sound sound = new Sound(@"C:\Users\Daniel\Desktop\Minecraft Bedrock Launcher\Minecraft-1.16.210.50\data\resource_packs\vanilla_music\sounds\music\game\creative\creative1.ogg");
             Texture missing = new Texture("missing");
             Texture main = new Texture("download");
             Texture buffaloTxt = new Texture("buffalo");
@@ -47,72 +46,52 @@ namespace SharpGameTest
 
             Mesh simpleCube = Mesh.FromOBJ("simple_cube");
 
-            SkyboxMaterial skybox = new SkyboxMaterial(new Cubemap("skybox/test"), Shader.Skybox);
-            scene.SetSkyboxMaterial(skybox);
 
-            Material rocks = new Material(Shader.Lit, new Texture("rock"), new Texture("rock_normals"), null, 0.5f);
+            Material rocks = new Material(Shader.Unlit, new Texture("rock"), new Texture("rock_normals"), null, 0.5f);
             Material unlit = new Material(Shader.Unlit, buffaloTxt);
 
-            Actor field = new Actor();
-            field.AddComponent(new MeshRendererComponent(Mesh.FromOBJ("terrain"), rocks));
-            field.AddComponent(new RigidbodyComponent(0, 35));
+            Actor field = scene.CreateActor();
+            TransformComponent transform = new TransformComponent
+            {
+                Scale = Vector3.One
+            };
+            field.AddComponent(transform);
+            field.AddComponent(new MeshComponent(Mesh.FromOBJ("terrain"), rocks));
 
-            Actor rocket = new Actor();
-            rocket.AddComponent(new MeshRendererComponent(Mesh.FromOBJ("cannon"), new Material(Shader.Unlit, rocketTxt)));
-            rocket.AddComponent(new EpicComponent());
+            Actor rocket = scene.CreateActor();
+            rocket.AddComponent(new TransformComponent(Vector3.Zero, Vector3.Zero, Vector3.One));
+            rocket.AddComponent(new MeshComponent(Mesh.FromOBJ("cannon"), new Material(Shader.Unlit, rocketTxt)));
 
-            Actor buffalo = new Actor();
+            Actor buffalo = scene.CreateActor();
+            buffalo.AddComponent(new TransformComponent(Vector3.Zero, Vector3.Zero, Vector3.One));
             //buffalo.ScaleComponent.Set(1f, 0.01f, 0.01f);
-            buffalo.AddComponent(new MeshRendererComponent(Mesh.FromOBJ("dragon"), new Material(Shader.Lit, missing, 1f)));
+            buffalo.AddComponent(new MeshComponent(Mesh.FromOBJ("dragon"), new Material(Shader.Lit, missing, 1f)));
             //buffalo.AddComponent(new AudioSourceComponent(sound, 1, 1, 15, true));
             //buffalo.AddComponent(new PointLightComponent(new Vector3(1f, 1f, 1f)));
 
-            Actor light = new Actor();
-            light.PositionComponent.Set(0, 15, 0);
+            Actor light = scene.CreateActor();
             light.AddComponent(new PointLightComponent(new Vector3(0f, 1f, 0), 2f));
-            light.AddComponent(new MeshRendererComponent(Mesh.FromOBJ("cube"), new Material(Shader.Unlit, missing)));
-            light.AddComponent(new CoolComponent(1, -1));
+            light.AddComponent(new MeshComponent(Mesh.FromOBJ("cube"), new Material(Shader.Unlit, missing)));
 
-            Actor light2 = new Actor();
-            light2.PositionComponent.Set(0, 15, 0);
+            Actor light2 = scene.CreateActor();
             light2.AddComponent(new PointLightComponent(new Vector3(1f, 0.0f, 0), 2f));
-            light2.AddComponent(new MeshRendererComponent(Mesh.FromOBJ("cube"), new Material(Shader.Unlit, missing)));
-            light2.AddComponent(new CoolComponent(-1, 1));
+            light2.AddComponent(new MeshComponent(Mesh.FromOBJ("cube"), new Material(Shader.Unlit, missing)));
 
-            Actor testLol = new Actor();
-            testLol.AddComponent(new GuiTextureComponent(main));
 
-            Actor text = new Actor();
-            text.AddComponent(new GuiTextComponent("FUCK YOU go fuck urself", font));
-            text.AddComponent(new CoolTestComponent());
-            text.ScaleComponent.Set(0.05f, 0.07f, 1);
-            text.PositionComponent.Set(-20, 13, 0);
+            Actor text = scene.CreateActor();
+            text.AddComponent(new GuiTextComponent("Hello world", font));
 
-            Actor ring = new Actor();
-            ring.AddComponent(new MeshRendererComponent(Mesh.FromOBJ("ring"), new Material(Shader.Lit, greenRing, null, new Texture("EmmissionMap"))));
-            ring.ScaleComponent.Set(4, 4, 4);
-            ring.PositionComponent.Set(0, 10, 0);
+            Actor ring = scene.CreateActor();
+            ring.AddComponent(new MeshComponent(Mesh.FromOBJ("ring"), new Material(Shader.Lit, greenRing, null, new Texture("EmmissionMap"))));
 
-            Actor camera = new Actor();
+            Actor camera = scene.CreateActor();
+            camera.AddComponent(new TransformComponent(new Vector3(0, 5, 15), Vector3.Zero, Vector3.One));
             camera.AddComponent(new CameraComponent(70f, 16 / 9f, 0.1f, 1000f));
             camera.AddComponent(new PlayerControlledComponent());
-            camera.PositionComponent.Set(0, 10, -15);
 
-            Actor particles = new Actor();
+            Actor particles = scene.CreateActor();
             particles.AddComponent(new ParticleEmitterComponent(15, 0.1f, 150, new Material(Shader.Particle, missing)));
 
-            scene.AddActor(buffalo);
-            scene.AddActor(camera);
-            scene.AddActor(field);
-            scene.AddActor(light2);
-            scene.AddActor(rocket);
-            //scene.AddActor(testLol);
-            scene.AddActor(text);
-            scene.AddActor(light);
-            scene.AddActor(particles);
-            scene.AddActor(ring);
-
-            window.LoadScene(scene);
 
             window.Run();
         }

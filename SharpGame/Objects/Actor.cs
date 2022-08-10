@@ -16,18 +16,14 @@ namespace SharpGame.Objects
 {
     public class Actor
     {
-        public Scene RootScene { get; set; }
+        private Scene m_RootScene;
+        private int m_Id;
 
-        private readonly List<Component> components = new List<Component>((int)SharedConstants.MaxComponents);
-        public PositionComponent PositionComponent { get; private set; }
-        public RotationComponent RotationComponent { get; private set; }
-        public ScaleComponent ScaleComponent { get; private set; }
 
-        public Actor()
+        public Actor(int id, Scene scene)
         {
-            this.PositionComponent = new PositionComponent(0, 0, 0);
-            this.RotationComponent = new RotationComponent(0, 0, 0);
-            this.ScaleComponent = new ScaleComponent(1, 1, 1);
+            this.m_Id = id;
+            this.m_RootScene = scene;
         }
 
         /// <summary>
@@ -35,9 +31,9 @@ namespace SharpGame.Objects
         /// </summary>
         /// <typeparam name="T">Type of component to search for</typeparam>
         /// <returns>An instance of the component</returns>
-        public T GetComponent<T>() where T : Component
+        public T GetComponent<T>() where T : struct
         {
-            return (T)components.Find((c) => c is T);
+            return m_RootScene.ActorRegistry.GetComponent<T>(m_Id);
         }
         
         /// <summary>
@@ -46,11 +42,9 @@ namespace SharpGame.Objects
         /// <typeparam name="T">Type of component to add</typeparam>
         /// <param name="component">Instance of component to add</param>
         /// <returns>An instance of the added component</returns>
-        public T AddComponent<T>(T component) where T : Component
+        public T AddComponent<T>(T component) where T : struct
         {
-            components.Add(component);
-            component.Actor = this;
-            return component;
+            return m_RootScene.ActorRegistry.AddComponent<T>(m_Id, component);
         }
 
         /// <summary>
@@ -58,47 +52,20 @@ namespace SharpGame.Objects
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <returns>True if the actor has the component specified</returns>
-        public bool HasComponent<T>() where T : Component
+        public bool HasComponent<T>() where T : struct
         {
-            return components.Any((c) => c is T);
+            return m_RootScene.ActorRegistry.HasComponent<T>(m_Id);
         }
 
         /// <summary>
         /// Removes a component of type T
         /// </summary>
         /// <typeparam name="T">Type of the component</typeparam>
-        /// <param name="component">Instace of the component to remove</param>
-        public void RemoveComponent<T>(T component) where T : Component
+        /// <param name="component">Instance of the component to remove</param>
+        public void RemoveComponent<T>() where T : struct
         {
-            components.Remove(component);
-            component.OnShutdown();
-        }
-        public virtual void OnAwake()
-        {
-            for (int i = 0; i < components.Count; i++)
-            {
-                components[i].OnAwake();
-            }
+            m_RootScene.ActorRegistry.RemoveComponent<T>(m_Id);
         }
 
-        public virtual void OnUpdate(float deltaTime)
-        {
-            for (int i = 0; i < components.Count; i++)
-            {
-                components[i].OnUpdate(deltaTime);
-            }
-        }
-
-        public virtual void OnStart()
-        {
-        }
-
-        public virtual void OnShutdown()
-        {
-            for (int i = 0; i < components.Count; i++)
-            {
-                components[i].OnShutdown();
-            }
-        }
     }
 }

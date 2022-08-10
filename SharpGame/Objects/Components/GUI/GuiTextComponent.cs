@@ -10,32 +10,15 @@ using System.Threading.Tasks;
 
 namespace SharpGame.Objects.Components
 {
-    public class GuiTextComponent : MeshRendererComponent
+    public struct GuiTextComponent
     {
-        public string Text
-        {
-            get => text;
-            set
-            {
-                this.text = value;
-                this.Mesh = Mesh.FromText(value);
-            }
-        }
-        private string text;
-        public GuiTextComponent(string text, Texture font) : base(Mesh.FromText(text), new Material(Shader.Text, font))
-        {
-            this.text = text;
-        }
+        public string Text { get; set; }
+        public Texture Font { get; set; }
 
-        public override void OnAwake()
+        public GuiTextComponent(string text, Texture font)
         {
-            this.vao = new TextVertexArrayObject(this);
-            this.vao.Upload();
-        }
-
-        public override void OnShutdown()
-        {
-            this.vao.Dispose();
+            this.Text = text;
+            this.Font = font;
         }
     }
 }
