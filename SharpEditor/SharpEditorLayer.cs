@@ -1,13 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ImGuiNET;
 using OpenTK.Graphics.OpenGL4;
 using OpenTK.Mathematics;
+using SharpEditor.Util;
 using SharpGame;
 using SharpGame.Core;
+using SharpGame.Graphics;
 using SharpGame.Objects;
 using SharpGame.Util;
 using Vector2 = System.Numerics.Vector2;
@@ -22,6 +25,8 @@ namespace SharpEditor
         private Scene m_ActiveScene;
 
         private Actor m_SelectedActor;
+
+        private Framebuffer m_SceneBuffer; 
         public void OnDetach()
         {
             m_ImGuiController.Dispose();
@@ -30,6 +35,8 @@ namespace SharpEditor
         public void OnAttach()
         {
             m_ImGuiController = new ImGuiController(1920, 1080);
+
+            m_SceneBuffer = new Framebuffer(1920, 1080, 1);
 
             m_EditorScene = new Scene();
             m_ActiveScene = m_EditorScene;
@@ -40,11 +47,8 @@ namespace SharpEditor
             m_ImGuiController.Update(SharpGameWindow.Instance, deltaTime);
         }
 
-        public void OnRender()
+        private void OnImGuiRender()
         {
-            //GL.ClearColor(new Color4(0, 32, 48, 255));
-            GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit | ClearBufferMask.StencilBufferBit);
-
             ImGuiViewportPtr viewport = ImGui.GetMainViewport();
             ImGui.SetNextWindowPos(viewport.Pos);
             ImGui.SetNextWindowSize(viewport.Size);
@@ -55,9 +59,9 @@ namespace SharpEditor
 
             ImGui.PushStyleVar(ImGuiStyleVar.WindowPadding, Vector2.Zero);
             ImGui.Begin("Dockspace",
-                ImGuiWindowFlags.MenuBar | 
+                ImGuiWindowFlags.MenuBar |
                 ImGuiWindowFlags.NoDocking |
-                ImGuiWindowFlags.NoBackground | 
+                ImGuiWindowFlags.NoBackground |
                 ImGuiWindowFlags.NoTitleBar |
                 ImGuiWindowFlags.NoCollapse |
                 ImGuiWindowFlags.NoResize |
@@ -70,7 +74,7 @@ namespace SharpEditor
             ImGuiStylePtr style = ImGui.GetStyle();
             float minWinSizeX = style.WindowMinSize.X;
             style.WindowMinSize.X = 370.0f;
-            ImGui.DockSpace(ImGui.GetID("Dock"), Vector2.Zero, ImGuiDockNodeFlags.None);
+            ImGui.DockSpace(ImGui.GetID("Dock"), Vector2.Zero, ImGuiDockNodeFlags.PassthruCentralNode);
 
             style.WindowMinSize.X = minWinSizeX;
 
@@ -90,40 +94,63 @@ namespace SharpEditor
                 ImGui.EndMenuBar();
             }
 
-            ImGui.Begin("Hierarchy");
 
-            if (ImGui.BeginPopupContextWindow("ActorPopup"))
+            using (new ScopedMenu("Hierarchy"))
             {
-                if (ImGui.MenuItem("Create Actor"))
+                if (ImGui.BeginPopupContextWindow("ActorPopup"))
                 {
-                    Actor actor = m_EditorScene.CreateActor();
-                    m_SelectedActor = actor;
-                }
+                    if (ImGui.MenuItem("Create Actor"))
+                    {
+                        Actor actor = m_EditorScene.CreateActor();
+                        m_SelectedActor = actor;
+                    }
 
-                ImGui.EndPopup();
+                    ImGui.EndPopup();
+                }
             }
 
-            ImGui.End();
+            using (new ScopedStyle(ImGuiStyleVar.WindowPadding, Vector2.Zero))
+            {
+                using (new ScopedMenu("Viewport"))
+                {
+                    Vector2 sizeAvail = ImGui.GetContentRegionAvail();
+                    ImGui.Image((IntPtr)m_SceneBuffer.ColorAttachment, new Vector2(sizeAvail.X, sizeAvail.Y));
+                }
+            }
 
-            ImGui.Begin("Viewport");
-            ImGui.End();
+            using (new ScopedMenu("Inspector"))
+            {
 
-            ImGui.Begin("Inspector");
-            ImGui.End();
+            }
 
-            ImGui.Begin("Assets");
+            using (new ScopedMenu("Assets"))
+            {
 
-            ImGui.End();
+            }
 
-            ImGui.Begin("Information");
-            ImGui.Text($"Actors: {m_EditorScene.ActorCount}");
-            ImGui.End();
+            using (new ScopedMenu("Information"))
+            {
+                ImGui.Text($"Actors: {m_EditorScene.ActorCount}");
+            }
+
             ImGui.ShowDemoWindow();
 
             ImGui.End();
 
 
             m_ImGuiController.Render();
+        }
+
+        public void OnRender()
+        {
+            m_SceneBuffer.Bind();
+            GL.ClearColor(Color4.DarkSalmon);
+
+            GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit | ClearBufferMask.StencilBufferBit);
+            m_SceneBuffer.Unbind();
+
+            OnImGuiRender();
+
         }
     }
 }
