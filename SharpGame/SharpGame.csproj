@@ -32,6 +32,12 @@
     <None Update="Shaders\gui.vert">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Update="Shaders\imgui.frag">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Shaders\imgui.vert">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="Shaders\lit.frag">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

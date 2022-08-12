@@ -44,13 +44,12 @@ namespace SharpGame.Util
         public const string LogicThreadName = "LOGIC";
 
         //=============== SHADER UNIFORM CONSTANTS ===============
-        public const string UniformModelViewProjection = "u_ModelViewProjection";
+        //public const string UniformModelViewProjection = "u_ModelViewProjection";
         public const string UniformSpecularity = "u_Specularity";
         public const string UniformModel = "u_Translation";
         public const string UniformHasNormalMap = "u_HasNormalMap";
         public const string UniformHasEmmissionMap = "u_HasEmmissionMap";
-        public const string UniformView = "u_View";
-        public const string UniformProjection = "u_Projection";
+        public const string UniformViewProjection = "u_ViewProjection";
 
         //=============== PATH CONSTANTS ===============
         public const string ShaderPath = "Shaders/";

@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using SharpGame.Util;
-using GL = OpenTK.Graphics.OpenGL4.GL;
+using OpenTK.Graphics.OpenGL4;
 
 namespace SharpGame.Graphics
 {
@@ -20,6 +20,9 @@ namespace SharpGame.Graphics
         private int m_Samples;
         private bool m_SwapChain = false;
         private int m_ColorAttachment, m_DepthAttachment;
+
+        public int Width => m_Width;
+        public int Height => m_Height;
 
         public int ColorAttachment => m_ColorAttachment;
 
@@ -34,6 +37,13 @@ namespace SharpGame.Graphics
 
         private void Reset()
         {
+            if (m_Id != 0)
+            {
+                GL.DeleteFramebuffer(m_Id);
+                GL.DeleteTexture(m_ColorAttachment);
+                GL.DeleteTexture(m_DepthAttachment);
+            }
+
             m_Id = GL.GenFramebuffer();
             GL.BindFramebuffer(FramebufferTarget.Framebuffer, m_Id);
 
@@ -47,8 +57,8 @@ namespace SharpGame.Graphics
 
             GL.CreateTextures(TextureTarget.Texture2D, 1, out m_DepthAttachment);
             GL.BindTexture(TextureTarget.Texture2D, m_DepthAttachment);
-            //GL.TexStorage2D(TextureTarget2d.Texture2D, 1, SizedInternalFormat.R32i, m_Width, m_Height);
-            GL.TexImage2D(TextureTarget.Texture2D, 0, PixelInternalFormat.Depth24Stencil8, m_Width, m_Height, 0, PixelFormat.DepthStencil, PixelType.UnsignedInt248, IntPtr.Zero);
+            GL.TexStorage2D(TextureTarget2d.Texture2D, 1, (SizedInternalFormat)PixelInternalFormat.Depth24Stencil8, m_Width, m_Height);
+            //GL.TexImage2D(TextureTarget.Texture2D, 1, PixelInternalFormat.Depth24Stencil8, m_Width, m_Height, 0, PixelFormat.DepthStencil, PixelType.UnsignedInt248, IntPtr.Zero);
             GL.FramebufferTexture2D(FramebufferTarget.Framebuffer, FramebufferAttachment.DepthStencilAttachment, TextureTarget.Texture2D, m_DepthAttachment, 0);
 
             if (GL.CheckFramebufferStatus(FramebufferTarget.Framebuffer) != FramebufferErrorCode.FramebufferComplete)
@@ -78,7 +88,7 @@ namespace SharpGame.Graphics
         public void Bind()
         {
             GL.BindFramebuffer(FramebufferTarget.Framebuffer, m_Id);
-            GL.Viewport(0, 0, m_Width, m_Height);
+            //GL.Viewport(0, 0, m_Width, m_Height);
         }
 
         public void Unbind()
@@ -89,6 +99,8 @@ namespace SharpGame.Graphics
         public void Dispose()
         {
             GL.DeleteFramebuffer(m_Id);
+            GL.DeleteTexture(m_ColorAttachment);
+            GL.DeleteTexture(m_DepthAttachment);
         }
     }
 }

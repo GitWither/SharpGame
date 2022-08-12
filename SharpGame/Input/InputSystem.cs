@@ -25,6 +25,11 @@ namespace SharpGame.Input
             mouseState = ms;
         }
 
+        public static bool GetMouseButtonDown(MouseCode mouse)
+        {
+            return mouseState.IsButtonDown((MouseButton)mouse);
+        }
+
         /// <summary>
         /// Checks whether a key is held down
         /// </summary>

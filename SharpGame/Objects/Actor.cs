@@ -31,9 +31,9 @@ namespace SharpGame.Objects
         /// </summary>
         /// <typeparam name="T">Type of component to search for</typeparam>
         /// <returns>An instance of the component</returns>
-        public T GetComponent<T>() where T : struct
+        public ref T GetComponent<T>() where T : struct
         {
-            return m_RootScene.ActorRegistry.GetComponent<T>(m_Id);
+            return ref m_RootScene.ActorRegistry.GetComponent<T>(m_Id);
         }
         
         /// <summary>
@@ -66,6 +66,8 @@ namespace SharpGame.Objects
         {
             m_RootScene.ActorRegistry.RemoveComponent<T>(m_Id);
         }
+
+        public static implicit operator int(Actor actor) => actor.m_Id;
 
     }
 }

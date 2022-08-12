@@ -14,7 +14,7 @@ namespace SharpEditor
     {
         static void Main(string[] args)
         {
-            SharpEditor editor = new SharpEditor(1920, 1080, "SharpEditor");
+            SharpEditor editor = new SharpEditor(1280, 720, "SharpEditor");
             editor.Run();
         }
     }
