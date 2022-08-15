@@ -8,9 +8,13 @@ using SharpGame.Objects.Components;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
 using SharpGame.Objects.Components.Transform;
+using Quaternion = OpenTK.Mathematics.Quaternion;
+using Vector2 = OpenTK.Mathematics.Vector2;
+using Vector3 = OpenTK.Mathematics.Vector3;
 
 namespace SharpGame.Util
 {
@@ -33,11 +37,12 @@ namespace SharpGame.Util
         {
             Matrix4 scale = Matrix4.CreateScale(transform.Scale);
 
-            Matrix4 rotation = Matrix4.CreateFromQuaternion(new Quaternion(transform.Rotation));
+            Matrix4 rotation = Matrix4.CreateFromQuaternion(Quaternion.FromEulerAngles(transform.Rotation.X,
+                transform.Rotation.Y, transform.Rotation.Z));
 
             Matrix4 translation = Matrix4.CreateTranslation(transform.Position);
 
-            return translation * rotation * scale;
+            return scale * rotation * translation;
         }
     }
 }
