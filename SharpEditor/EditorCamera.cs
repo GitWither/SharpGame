@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing.Drawing2D;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -8,47 +9,50 @@ using SharpGame.Graphics;
 using SharpGame.Input;
 using SharpGame.Util;
 
+
 namespace SharpEditor
 {
     public class EditorCamera : Camera
     {
-        private Vector3 m_Position = Vector3.Zero;
-        public Vector3 m_FocalPoint = Vector3.Zero;
+        public Vector3 Position { get; private set; }
+        public Vector3 FocalPoint { get; private set; }
 
-        private float m_Distance = 10f;
+        public float Distance { get; private set; }
 
-        private float m_Pitch, m_Yaw;
-        private Vector2 m_Viewport = new Vector2(1280, 720);
 
-        public Quaternion Orientation => new(new Vector3(-m_Pitch, -m_Yaw, 0));
+        public Vector3 Rotation { get; private set; }
+        private Vector2 m_ViewportSize = new Vector2(1280, 720);
+
+        public Quaternion Orientation => Quaternion.Conjugate(Quaternion.FromEulerAngles(Rotation.X, Rotation.Y, 0));
         public Vector3 Up => Orientation * Vector3.UnitY;
         public Vector3 Right => Orientation * Vector3.UnitX;
         public Vector3 Forward => Orientation * -Vector3.UnitZ;
 
-        public EditorCamera(float fov, float aspectRatio, float near, float far) : base(fov, aspectRatio, near, far)
+        public EditorCamera(float fov, float aspectRatio, float near, float far, float width, float height) : base(fov, aspectRatio, near, far)
         {
-            UpdateViewMatrix();
+            Distance = 10;
+
             UpdateProjectionMatrix();
         }
 
         private void UpdateViewMatrix()
         {
-            m_Position = m_FocalPoint - Forward * m_Distance;
+            Position = FocalPoint - Forward * Distance;
 
-            //View = Matrix4.LookAt(m_Position, Forward, Up);
-            View = Matrix4.CreateTranslation(m_Position) * Matrix4.CreateFromQuaternion(Orientation);
-            View.Invert();
+            View = Matrix4.CreateFromQuaternion(Orientation) * Matrix4.CreateTranslation(Position);
+            View = Matrix4.Invert(View);
         }
 
         private void UpdateProjectionMatrix()
         {
-            AspectRatio = m_Viewport.X / m_Viewport.Y;
+            AspectRatio = m_ViewportSize.X / m_ViewportSize.Y;
             Projection = Matrix4.CreatePerspectiveFieldOfView(MathHelper.DegreesToRadians(Fov), AspectRatio, Near, Far);
         }
 
         public void UpdateViewportSize(float width, float height)
         {
-            this.m_Viewport = new Vector2(width, height);
+            m_ViewportSize.X = width;
+            m_ViewportSize.Y = height;
             UpdateProjectionMatrix();
         }
 
@@ -68,7 +72,7 @@ namespace SharpEditor
             {
                 MouseZoom(delta.Y);
             }
-
+            
             UpdateViewMatrix();
         }
 
@@ -81,36 +85,35 @@ namespace SharpEditor
 
         private void MousePan(Vector2 delta)
         {
-            float x = Math.Min(m_Viewport.X / 1000.0f, 2.4f); // max = 2.4f
+            float x = Math.Min(m_ViewportSize.X / 1000.0f, 2.4f); // max = 2.4f
             float xFactor = 0.0366f * (x * x) - 0.1778f * x + 0.3021f;
 
-            float y = Math.Min(m_Viewport.Y / 1000.0f, 2.4f); // max = 2.4f
+            float y = Math.Min(m_ViewportSize.Y / 1000.0f, 2.4f); // max = 2.4f
             float yFactor = 0.0366f * (y * y) - 0.1778f * y + 0.3021f;
 
-            m_FocalPoint += -Right * delta.X * xFactor * m_Distance;
-            m_FocalPoint += Up * delta.Y  * yFactor * m_Distance;
+            FocalPoint += -Right * delta.X * xFactor * Distance;
+            FocalPoint += Up * delta.Y  * yFactor * Distance;
         }
 
         private void MouseRotate(Vector2 delta)
         {
-            Logger.Info($"{delta}");
             float yawSign = Up.Y < 0 ? -1.0f : 1.0f;
-            m_Pitch += delta.Y * 0.8f;
-            m_Yaw += yawSign * delta.X * 0.8f;
+
+            Rotation += new Vector3(delta.Y * 0.8f, delta.X * 0.8f * yawSign, 0);
         }
 
         void MouseZoom(float delta)
         {
-            float distance = m_Distance * 0.2f;
+            float distance = Distance * 0.2f;
             distance = Math.Max(distance, 0.0f);
             float speed = distance * distance;
             speed = Math.Min(speed, 100.0f); // max speed = 100
 
-            m_Distance -= delta * speed;
-            if (m_Distance < 1.0f)
+            Distance -= delta * speed;
+            if (Distance < 1.0f)
             {
-                m_FocalPoint += Forward;
-                m_Distance = 1.0f;
+                FocalPoint += Forward;
+                Distance = 1.0f;
             }
         }
     }
