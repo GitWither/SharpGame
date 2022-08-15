@@ -30,7 +30,7 @@ namespace SharpGame.Objects
 
 
         private RenderSystem m_RenderSystem;
-        private Renderer m_Renderer = new Renderer();
+        private Renderer Renderer { get; set; }
 
 
         public Scene()
@@ -50,7 +50,8 @@ namespace SharpGame.Objects
 
             m_RenderSystem = m_ActorRegistry.RegisterSystem<RenderSystem, TransformComponent, MeshComponent>();
 
-            m_Renderer.Initialize();
+            Renderer = new Renderer();
+            Renderer.Initialize();
         }
 
         internal void OnAwake()
@@ -79,11 +80,11 @@ namespace SharpGame.Objects
 
         public void OnRender(Camera camera)
         {
-            m_Renderer.Begin(camera);
+            Renderer.Begin(camera);
 
-            m_RenderSystem.OnRender(m_ActorRegistry, m_Renderer);
+            m_RenderSystem.OnRender(m_ActorRegistry, Renderer);
 
-            m_Renderer.End();
+            Renderer.End();
         }
 
         public IEnumerable<int> EnumarateActors()

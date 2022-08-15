@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using ImGuiNET;
 using OpenTK.Graphics.OpenGL4;
 using OpenTK.Mathematics;
+using SharpEditor.Panels;
 using SharpEditor.Util;
 using SharpGame;
 using SharpGame.Core;
@@ -42,6 +43,12 @@ namespace SharpEditor
 
         private Color4 m_BackgroundColor;
         private string m_CurrentDirectorty = Directory.GetCurrentDirectory();
+
+
+        private InspectorPanel m_Inspector;
+        private ActorsPanel m_Actors;
+        private AssetsPanel m_Assets;
+
         public void OnDetach()
         {
             m_ImGuiController.Dispose();
@@ -52,6 +59,12 @@ namespace SharpEditor
             m_ImGuiController = new ImGuiController(1280, 720);
 
             m_SceneBuffer = new Framebuffer(1280, 720, 1);
+
+
+            m_Actors = new ActorsPanel();
+            m_Inspector = new InspectorPanel(m_Actors);
+            m_Assets = new AssetsPanel();
+
 
             m_EditorCamera = new EditorCamera(30.0f, 16/ 9f, 0.01f, 1000f, 1280, 720);
 
@@ -64,10 +77,12 @@ namespace SharpEditor
             m_EditorScene = new Scene();
             m_ActiveScene = m_EditorScene;
 
+            m_Actors.Scene = m_EditorScene;
+
             Actor actor = m_EditorScene.CreateActor("Terrain");
             actor.AddComponent(new MeshComponent(Mesh.FromOBJ("terrain"),
                 new Material(Shader.Unlit, new Texture("grass20"))));
-            m_SelectedActor = actor;
+            m_Actors.SelectedActor = actor;
         }
 
         private void TextInput(OpenTK.Windowing.Common.TextInputEventArgs obj)
@@ -160,137 +175,11 @@ namespace SharpEditor
                 }
             }
 
-            using (new ScopedMenu("Actors"))
-            {
-                if (ImGui.Button("Create Actor"))
-                {
-                    Actor actor = m_EditorScene.CreateActor("New Actor");
-                    m_SelectedActor = actor;
-                }
-                ImGui.SameLine();
-                ImGui.Button("Delete All Actors");
 
-                ImGui.Separator();
+            m_Inspector.OnImGuiRender();
+            m_Actors.OnImGuiRender();
+            m_Assets.OnImGuiRender();
 
-                foreach (int actor in m_ActiveScene.EnumarateActors())
-                {
-                    Actor actorObj = new Actor(actor, m_ActiveScene);
-
-                    ref NameComponent name = ref actorObj.GetComponent<NameComponent>();
-
-                    bool isActorRemoved = false;
-
-                    if (ImGui.TreeNodeEx(new IntPtr(actor),  (m_SelectedActor == actorObj ? ImGuiTreeNodeFlags.Selected : 0), name.Name))
-                    {
-                        if (ImGui.IsItemClicked())
-                        {
-                            m_SelectedActor = actorObj;
-                        }
-
-                        if (ImGui.BeginPopupContextWindow("ActorSettings"))
-                        {
-                            if (ImGui.MenuItem("Delete Actor"))
-                            {
-                                isActorRemoved = true;
-                            }
-
-                            ImGui.EndPopup();
-                        }
-
-                        ImGui.TreePop();
-                    }
-
-                    if (isActorRemoved)
-                    {
-                        m_ActiveScene.RemoveActor(actorObj);
-                    }
-                }
-            }
-
-
-            using (new ScopedMenu("Inspector"))
-            {
-                ref NameComponent actorName = ref m_SelectedActor.GetComponent<NameComponent>();
-                IntPtr namePtr = Marshal.StringToHGlobalAnsi(actorName.Name);
-                ImGui.InputText("Actor Name", namePtr, 256);
-                actorName.Name = Marshal.PtrToStringAnsi(namePtr, 256);
-                Marshal.FreeHGlobal(namePtr);
-
-                if (ImGui.Button("Add Component"))
-                {
-                    ImGui.OpenPopup("AddComponent");
-                }
-
-                if (ImGui.BeginPopup("AddComponent"))
-                {
-                    RenderAddComponent<MeshComponent>("Mesh Component");
-                    RenderAddComponent<CameraComponent>("Camera Component");
-                    RenderAddComponent<PointLightComponent>("Point Light Component");
-                    ImGui.EndPopup();
-                }
-
-                RenderComponent("Transform Component", (ref TransformComponent transform) =>
-                {
-                    Vector3 convertedPosVec = new Vector3(transform.Position.X, transform.Position.Y, transform.Position.Z);
-                    ImGui.DragFloat3("Position", ref convertedPosVec, 0.05f);
-                    transform.Position = new OpenTK.Mathematics.Vector3(convertedPosVec.X, convertedPosVec.Y, convertedPosVec.Z);
-
-                    Vector3 convertedRotVec = new Vector3(transform.Rotation.X, transform.Rotation.Y, transform.Rotation.Z);
-                    ImGui.DragFloat3("Rotation", ref convertedRotVec, 0.05f);
-                    transform.Rotation = new OpenTK.Mathematics.Vector3(convertedRotVec.X, convertedRotVec.Y, convertedRotVec.Z);
-
-                    Vector3 convertedScaleVec = new Vector3(transform.Scale.X, transform.Scale.Y, transform.Scale.Z);
-                    ImGui.DragFloat3("Scale", ref convertedScaleVec, 0.05f);
-                    transform.Scale = new OpenTK.Mathematics.Vector3(convertedScaleVec.X, convertedScaleVec.Y, convertedScaleVec.Z);
-                });
-
-                RenderComponent("Mesh Component", (ref MeshComponent mesh) =>
-                {
-                });
-
-                RenderComponent("Camera Component", (ref CameraComponent camera) =>
-                {
-                    float fov = camera.FieldOfView;
-                    ImGui.DragFloat("FOV", ref fov);
-                    camera.FieldOfView = fov;
-                });
-
-                RenderComponent("Point Light Component", (ref PointLightComponent pointLight) =>
-                {
-                    Vector3 convertedColorVec = new Vector3(pointLight.Color.X, pointLight.Color.Y, pointLight.Color.Z);
-                    ImGui.ColorEdit3("Light Color", ref convertedColorVec);
-                    pointLight.Color = new OpenTK.Mathematics.Vector3(convertedColorVec.X, convertedColorVec.Y, convertedColorVec.Z);
-
-                    float maxDistance = pointLight.MaxDistance;
-                    ImGui.DragFloat("Distance", ref maxDistance);
-                    pointLight.MaxDistance = maxDistance;
-                });
-            }
-
-            using (new ScopedMenu("Assets"))
-            {
-                if (ImGui.Button("<"))
-                {
-                    m_CurrentDirectorty = Directory.GetParent(m_CurrentDirectorty).FullName;
-                }
-                ImGui.Columns(5, "cool");
-                foreach (string path in Directory.EnumerateFileSystemEntries(m_CurrentDirectorty))
-                {
-                    if (Directory.Exists(path))
-                    {
-                        if (ImGui.Button(Path.GetFileNameWithoutExtension(path)))
-                        {
-                            m_CurrentDirectorty = Path.Combine(m_CurrentDirectorty, path);
-                        }
-                    }
-                    else
-                    {
-                        ImGui.Text(Path.GetFileName(path));
-                    }
-
-                    ImGui.NextColumn();
-                }
-            }
 
             using (new ScopedMenu("Information"))
             {
@@ -300,7 +189,7 @@ namespace SharpEditor
                 ImGui.ColorEdit4("Background Color", ref colorRef);
                 m_BackgroundColor = new Color4(colorRef.X, colorRef.Y, colorRef.Z, colorRef.W);
 
-                ImGui.Text($"Selected Actor: {m_SelectedActor.GetComponent<NameComponent>().Name}");
+                ImGui.Text($"Selected Actor: {m_Actors.SelectedActor.GetComponent<NameComponent>().Name}");
             }
 
             ImGui.End();
@@ -321,7 +210,6 @@ namespace SharpEditor
             GL.ClearColor(m_BackgroundColor);
             GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit | ClearBufferMask.StencilBufferBit);
             //GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit | ClearBufferMask.StencilBufferBit);
-            GL.Disable(EnableCap.CullFace);
 
             m_EditorScene.OnRender(m_EditorCamera);
             
@@ -331,39 +219,5 @@ namespace SharpEditor
 
             OnImGuiRender();
         }
-
-        private void RenderAddComponent<T>(string name) where T : struct
-        {
-            if (!m_SelectedActor.HasComponent<T>())
-            {
-                if (ImGui.Button(name))
-                {
-                    m_SelectedActor.AddComponent(new T());
-                }
-            }
-        }
-
-        private void RenderComponent<T>(string name, RenderComponentAction<T> renderAction) where T : struct
-        {
-            if (!m_SelectedActor.HasComponent<T>()) return;
-
-            bool componentTreeOpen = ImGui.TreeNodeEx(name);
-            ImGui.SameLine();
-            if (ImGui.Button("Remove"))
-            {
-                m_SelectedActor.RemoveComponent<T>();
-                return;
-            }
-
-            if (componentTreeOpen)
-            {
-                ref T component = ref m_SelectedActor.GetComponent<T>();
-                renderAction.Invoke(ref component);
-
-                ImGui.TreePop();
-            }
-        }
-
-        delegate void RenderComponentAction<T>(ref T component);
     }
 }
