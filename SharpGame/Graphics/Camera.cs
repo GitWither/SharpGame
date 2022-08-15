@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
 using OpenTK.Mathematics;
@@ -22,10 +23,6 @@ namespace SharpGame.Graphics
             this.AspectRatio = aspectRatio;
             this.Near = near;
             this.Far = far;
-
-            this.Projection =
-                Matrix4.CreatePerspectiveFieldOfView(MathHelper.DegreesToRadians(fov), aspectRatio, near, far);
-            //this.View = Matrix4.LookAt(Vector3.Zero, Vector3.One, Vector3.UnitY);
         }
     }
 }
