@@ -312,6 +312,8 @@ void main()
                 return;
             }
 
+            GL.Clear(ClearBufferMask.ColorBufferBit);
+
             // Get intial state.
             int prevVAO = GL.GetInteger(GetPName.VertexArrayBinding);
             int prevArrayBuffer = GL.GetInteger(GetPName.ArrayBufferBinding);
@@ -387,6 +389,7 @@ void main()
             GL.BlendFunc(BlendingFactor.SrcAlpha, BlendingFactor.OneMinusSrcAlpha);
             GL.Disable(EnableCap.CullFace);
             GL.Disable(EnableCap.DepthTest);
+            GL.Viewport(0, 0, _windowWidth, _windowHeight);
 
             // Render command lists
             for (int n = 0; n < draw_data.CmdListsCount; n++)
