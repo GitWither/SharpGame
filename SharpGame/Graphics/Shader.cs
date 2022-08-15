@@ -12,17 +12,18 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Markup;
 
+
 namespace SharpGame.Graphics
 {
     public class Shader : IDisposable
     {
-        public static Shader Unlit;
-        public static Shader Lit;
-        public static Shader Gui;
-        public static Shader Text;
-        public static Shader Particle;
-        public static Shader Skybox;
-        public static Shader ImGui;
+        public static readonly Shader Unlit;
+        public static readonly Shader Lit;
+        public static readonly Shader Gui;
+        public static readonly Shader Text;
+        public static readonly Shader Particle;
+        public static readonly Shader Skybox;
+        public static readonly Shader ImGui;
 
         private readonly int programId;
 
