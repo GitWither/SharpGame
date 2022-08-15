@@ -7,7 +7,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using SharpGame.Util;
-using OpenTK.Graphics.OpenGL4;
 
 namespace SharpGame.Graphics
 {
@@ -44,7 +43,7 @@ namespace SharpGame.Graphics
                 GL.DeleteTexture(m_DepthAttachment);
             }
 
-            m_Id = GL.GenFramebuffer();
+            GL.CreateFramebuffers(1, out m_Id);
             GL.BindFramebuffer(FramebufferTarget.Framebuffer, m_Id);
 
             GL.CreateTextures(TextureTarget.Texture2D, 1, out m_ColorAttachment);
@@ -88,7 +87,7 @@ namespace SharpGame.Graphics
         public void Bind()
         {
             GL.BindFramebuffer(FramebufferTarget.Framebuffer, m_Id);
-            //GL.Viewport(0, 0, m_Width, m_Height);
+            GL.Viewport(0, 0, m_Width, m_Height);
         }
 
         public void Unbind()
