@@ -18,7 +18,7 @@
       <Version>0.10.1</Version>
     </PackageReference>
     <PackageReference Include="OpenTK">
-      <Version>4.6.4</Version>
+      <Version>4.7.4</Version>
     </PackageReference>
     <PackageReference Include="System.Drawing.Common" Version="5.0.2" />
   </ItemGroup>
