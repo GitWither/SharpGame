@@ -21,32 +21,22 @@ namespace SharpGame.Graphics.Vaos
 
         protected readonly int[] bufferIds = new int[4];
 
-        public Vector3[] vertices;
-        public Vector2[] uv;
-        public Vector3[] normals;
-        public int[] indices;
+        public int IndexCount { get; }
 
-        public VertexArrayObject()
+        public VertexArrayObject(Vector3[] vertexBuffer, Vector2[] uvBuffer, Vector3[] normalsBuffer, int[] indexBuffer)
         {
             id = GL.GenVertexArray();
             GL.GenBuffers(bufferIds.Length, bufferIds);
-        }
 
-        public void Upload(Vector3[] vertices, Vector2[] uv, Vector3[] normals, int[] indices)
-        {
-            this.vertices = vertices;
-            this.uv = uv;
-            this.normals = normals;
-            this.indices = indices;
             Bind();
 
-            BindVectorArrayToBuffer(bufferIds[0], 0, vertices, false);
-            BindVectorArrayToBuffer(bufferIds[1], 1, uv, false);
-            BindVectorArrayToBuffer(bufferIds[2], 2, normals, false);
+            BindVectorArrayToBuffer(bufferIds[0], 0, vertexBuffer, false);
+            BindVectorArrayToBuffer(bufferIds[1], 1, uvBuffer, false);
+            BindVectorArrayToBuffer(bufferIds[2], 2, normalsBuffer, false);
 
-            BindIndices(indices);
+            this.IndexCount = indexBuffer.Length;
 
-            Unbind();
+            BindIndices(indexBuffer);
         }
 
 

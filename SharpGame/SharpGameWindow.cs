@@ -28,6 +28,7 @@ using OpenTK.Mathematics;
 using OpenTK.Windowing.GraphicsLibraryFramework;
 using System.Diagnostics;
 using SharpGame.Core;
+using Timer = SharpGame.Util.Timer;
 
 namespace SharpGame
 {
@@ -71,18 +72,15 @@ namespace SharpGame
 
         protected override void OnResize(ResizeEventArgs e)
         {
-            GL.Viewport(0, 0, e.Size.X, e.Size.Y);
+            base.OnResize(e);
         }
 
 
         protected override void OnRenderFrame(FrameEventArgs e)
         {
-            if (this.IsFocused)
+            foreach (ILayer layer in m_Layers)
             {
-                foreach (ILayer layer in m_Layers)
-                {
-                    layer.OnRender();
-                }
+                layer.OnRender();
             }
             SwapBuffers();
         }

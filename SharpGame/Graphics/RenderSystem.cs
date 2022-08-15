@@ -15,14 +15,21 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using SharpActors;
+using SharpGame.Objects.Components.Transform;
 
 namespace SharpGame.Graphics
 {
 	internal class RenderSystem : ActorSystem
-	{
-        public void OnRender()
+    {
+        public void OnRender(ActorRegistry actorRegistry, Renderer renderer)
 		{
+            foreach (int actor in this.Actors)
+            {
+                ref MeshComponent mesh = ref actorRegistry.GetComponent<MeshComponent>(actor);
+                ref TransformComponent transform = ref actorRegistry.GetComponent<TransformComponent>(actor);
 
+                renderer.DrawMesh(mesh.Material, mesh.Mesh, transform);
+            }
         }
 
 	}
