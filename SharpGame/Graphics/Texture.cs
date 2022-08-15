@@ -16,7 +16,7 @@ namespace SharpGame.Graphics
 {
     public class Texture
     {
-        private readonly int id;
+        public int Id { get; }
 
         private readonly int height;
         private readonly int width;
@@ -44,7 +44,7 @@ namespace SharpGame.Graphics
             BitmapData bitmapData = bitmap.LockBits(new Rectangle(0, 0, bitmap.Width, bitmap.Height),
                 ImageLockMode.ReadOnly, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
 
-            id = GL.GenTexture();
+            Id = GL.GenTexture();
             height = bitmapData.Height;
             width = bitmapData.Width;
 
@@ -71,7 +71,7 @@ namespace SharpGame.Graphics
         public void Bind(TextureUnit unit)
         {
             GL.ActiveTexture(unit);
-            GL.BindTexture(TextureTarget.Texture2D, id);
+            GL.BindTexture(TextureTarget.Texture2D, Id);
         }
 
         public void Unbind()
@@ -81,7 +81,7 @@ namespace SharpGame.Graphics
 
         ~Texture()
         {
-            GL.DeleteTexture(id);
+            GL.DeleteTexture(Id);
         }
     }
 }
