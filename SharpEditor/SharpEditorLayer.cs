@@ -83,6 +83,10 @@ namespace SharpEditor
             actor.AddComponent(new MeshComponent(Mesh.FromOBJ("terrain"),
                 new Material(Shader.Unlit, new Texture("grass20"))));
             m_Actors.SelectedActor = actor;
+
+            Actor buffalo = m_EditorScene.CreateActor("Buffalo");
+            buffalo.AddComponent(new MeshComponent(Mesh.FromOBJ("buffalo"),
+                new Material(Shader.Unlit, new Texture("buffalo"))));
         }
 
         private void TextInput(OpenTK.Windowing.Common.TextInputEventArgs obj)

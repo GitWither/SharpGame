@@ -29,6 +29,10 @@ namespace SharpEditor.Panels
                     m_CurrentDirectory = Directory.GetParent(m_CurrentDirectory).FullName;
                 }
 
+                ImGui.SameLine();
+
+                ImGui.Text(m_CurrentDirectory);
+
                 //ImGui.DragFloat("Thumb Size", ref thumbnailSize);
                 //ImGui.DragFloat("Padding", ref padding);
                 
@@ -41,8 +45,11 @@ namespace SharpEditor.Panels
 
                     bool isDirectory = Directory.Exists(path);
 
-                    ImGui.ImageButton(new IntPtr(isDirectory ? m_FolderIcon.Id : m_FileIcon.Id),
-                        new Vector2(thumbnailSize), new Vector2(0, 0), new Vector2(1, 1));
+                    using (new ScopedColor(ImGuiCol.Button, 0x00000000))
+                    {
+                        ImGui.ImageButton(new IntPtr(isDirectory ? m_FolderIcon.Id : m_FileIcon.Id),
+                            new Vector2(thumbnailSize), new Vector2(0, 0), new Vector2(1, 1));
+                    }
 
                     if (isDirectory && ImGui.IsItemHovered() && ImGui.IsMouseDoubleClicked(ImGuiMouseButton.Left))
                     {

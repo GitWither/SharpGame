@@ -55,7 +55,7 @@ namespace SharpEditor
             IntPtr context = ImGui.CreateContext();
             ImGui.SetCurrentContext(context);
             var io = ImGui.GetIO();
-            io.Fonts.AddFontDefault();
+            io.Fonts.AddFontFromFileTTF("Fonts/Roboto-Regular.ttf", 15);
 
             io.BackendFlags |= ImGuiBackendFlags.RendererHasVtxOffset;
             io.ConfigFlags |= ImGuiConfigFlags.DockingEnable | ImGuiConfigFlags.ViewportsEnable | ImGuiConfigFlags.NavEnableKeyboard;
