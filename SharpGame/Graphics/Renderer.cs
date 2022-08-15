@@ -6,12 +6,13 @@ using System.Numerics;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
+
 using OpenTK.Graphics.OpenGL4;
 using OpenTK.Mathematics;
+
 using SharpGame.Graphics.Meshes;
 using SharpGame.Graphics.Vaos;
 using SharpGame.Objects.Components;
-using SharpGame.Objects.Components.Transform;
 using SharpGame.Util;
 
 namespace SharpGame.Graphics
@@ -70,6 +71,7 @@ namespace SharpGame.Graphics
 
         public void DrawMesh(Material material, Mesh mesh, TransformComponent transform)
         {
+            if (mesh == null || material == null) return;
             if (m_Meshes.TryGetValue(material, out List<RawMesh> list))
             {
                 list.Add(new RawMesh(mesh.VertexArray, MathUtil.CreateTransformationMatrix(transform)));

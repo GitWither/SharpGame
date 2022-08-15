@@ -18,7 +18,6 @@ using SharpGame.Util;
 using SharpGame.Physics;
 using System.Runtime.InteropServices;
 using OpenTK.Mathematics;
-using SharpGame.Objects.Components.Transform;
 
 namespace SharpGameTest
 {
@@ -49,7 +48,7 @@ namespace SharpGameTest
 
             Material rocks = new Material(Shader.Unlit, new Texture("rock"), new Texture("rock_normals"), null, 0.5f);
             Material unlit = new Material(Shader.Unlit, buffaloTxt);
-
+            /*
             Actor field = scene.CreateActor();
             TransformComponent transform = new TransformComponent
             {
@@ -91,7 +90,7 @@ namespace SharpGameTest
 
             Actor particles = scene.CreateActor();
             particles.AddComponent(new ParticleEmitterComponent(15, 0.1f, 150, new Material(Shader.Particle, missing)));
-
+            */
 
             window.Run();
         }

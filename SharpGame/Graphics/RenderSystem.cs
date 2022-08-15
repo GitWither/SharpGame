@@ -15,11 +15,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using SharpActors;
-using SharpGame.Objects.Components.Transform;
 
 namespace SharpGame.Graphics
 {
-	internal class RenderSystem : ActorSystem
+    internal class RenderSystem : ActorSystem
     {
         public void OnRender(ActorRegistry actorRegistry, Renderer renderer)
 		{

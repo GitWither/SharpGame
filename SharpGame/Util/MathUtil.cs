@@ -11,7 +11,7 @@ using System.Linq;
 using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
-using SharpGame.Objects.Components.Transform;
+
 using Quaternion = OpenTK.Mathematics.Quaternion;
 using Vector2 = OpenTK.Mathematics.Vector2;
 using Vector3 = OpenTK.Mathematics.Vector3;

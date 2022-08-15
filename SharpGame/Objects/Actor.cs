@@ -14,10 +14,10 @@ using System.Threading.Tasks;
 
 namespace SharpGame.Objects
 {
-    public class Actor
+    public readonly struct Actor
     {
-        private Scene m_RootScene;
-        private int m_Id;
+        private readonly Scene m_RootScene;
+        private readonly int m_Id;
 
 
         public Actor(int id, Scene scene)
@@ -69,5 +69,27 @@ namespace SharpGame.Objects
 
         public static implicit operator int(Actor actor) => actor.m_Id;
 
+        public static bool operator ==(Actor actor1, Actor actor2)
+        {
+            return actor1.m_Id == actor2.m_Id;
+        }
+
+        public static bool operator !=(Actor a, Actor b)
+        {
+            return a.m_Id != b.m_Id;
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (obj == null) return false;
+            if (obj is Actor actor) return m_Id == actor.m_Id;
+
+            return false;
+        }
+
+        public override int GetHashCode()
+        {
+            return m_Id;
+        }
     }
 }

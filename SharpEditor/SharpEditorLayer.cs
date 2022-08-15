@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using ImGuiNET;
@@ -15,7 +17,6 @@ using SharpGame.Graphics;
 using SharpGame.Graphics.Meshes;
 using SharpGame.Objects;
 using SharpGame.Objects.Components;
-using SharpGame.Objects.Components.Transform;
 using SharpGame.Util;
 using Vector2 = System.Numerics.Vector2;
 using Vector4 = System.Numerics.Vector4;
@@ -62,10 +63,9 @@ namespace SharpEditor
             m_EditorScene = new Scene();
             m_ActiveScene = m_EditorScene;
 
-            Actor actor = m_EditorScene.CreateActor();
+            Actor actor = m_EditorScene.CreateActor("Terrain");
             actor.AddComponent(new MeshComponent(Mesh.FromOBJ("terrain"),
                 new Material(Shader.Unlit, new Texture("grass20"))));
-            actor.AddComponent(new TransformComponent(new Vector3(0, 0, 0), Vector3.Zero, Vector3.One * 0.1f));
             m_SelectedActor = actor;
         }
 
@@ -161,36 +161,82 @@ namespace SharpEditor
 
             using (new ScopedMenu("Actors"))
             {
-                if (ImGui.BeginPopupContextWindow("ActorPopup"))
+                if (ImGui.Button("Create Actor"))
                 {
-                    if (ImGui.MenuItem("Create Actor"))
+                    Actor actor = m_EditorScene.CreateActor("New Actor");
+                    m_SelectedActor = actor;
+                }
+                ImGui.SameLine();
+                ImGui.Button("Delete All Actors");
+
+                ImGui.Separator();
+
+                foreach (int actor in m_ActiveScene.EnumarateActors())
+                {
+                    Actor actorObj = new Actor(actor, m_ActiveScene);
+
+                    ref NameComponent name = ref actorObj.GetComponent<NameComponent>();
+
+                    bool isActorRemoved = false;
+
+                    if (ImGui.TreeNodeEx(new IntPtr(actor),  (m_SelectedActor == actorObj ? ImGuiTreeNodeFlags.Selected : 0), name.Name))
                     {
-                        Actor actor = m_EditorScene.CreateActor();
-                        m_SelectedActor = actor;
+                        if (ImGui.IsItemClicked())
+                        {
+                            m_SelectedActor = actorObj;
+                        }
+
+                        if (ImGui.BeginPopupContextWindow("ActorSettings"))
+                        {
+                            if (ImGui.MenuItem("Delete Actor"))
+                            {
+                                isActorRemoved = true;
+                            }
+
+                            ImGui.EndPopup();
+                        }
+
+                        ImGui.TreePop();
                     }
 
-                    ImGui.EndPopup();
+                    if (isActorRemoved)
+                    {
+                        m_ActiveScene.RemoveActor(actorObj);
+                    }
                 }
             }
 
 
             using (new ScopedMenu("Inspector"))
             {
-                ref TransformComponent transform = ref m_SelectedActor.GetComponent<TransformComponent>();
-                System.Numerics.Vector3 vector = new System.Numerics.Vector3(transform.Position.X, transform.Position.Y,
-                    transform.Position.Z);
-                ImGui.DragFloat3("Pos", ref vector, 0.05f);
-                transform.Position = new Vector3(vector.X, vector.Y, vector.Z);
+                ref NameComponent actorName = ref m_SelectedActor.GetComponent<NameComponent>();
+                IntPtr namePtr = Marshal.StringToHGlobalAnsi(actorName.Name);
+                ImGui.InputText("Actor Name", namePtr, 256);
+                actorName.Name = Marshal.PtrToStringAnsi(namePtr, 256);
+                Marshal.FreeHGlobal(namePtr);
 
-                System.Numerics.Vector3 vector2 = new System.Numerics.Vector3(transform.Rotation.X, transform.Rotation.Y,
-                    transform.Rotation.Z);
-                ImGui.DragFloat3("Rot", ref vector2, 0.05f);
-                transform.Rotation = new Vector3(vector2.X, vector2.Y, vector2.Z);
+                if (ImGui.Button("Add Component"))
+                {
+                    ImGui.OpenPopup("AddComponent");
+                }
 
-                System.Numerics.Vector3 vector3 = new System.Numerics.Vector3(transform.Scale.X, transform.Scale.Y,
-                    transform.Scale.Z);
-                ImGui.DragFloat3("Scale", ref vector3, 0.05f);
-                transform.Scale = new Vector3(vector3.X, vector3.Y, vector3.Z);
+                if (ImGui.BeginPopup("AddComponent"))
+                {
+                    RenderAddComponent<MeshComponent>("Mesh Component");
+                    RenderAddComponent<CameraComponent>("Camera Component");
+                    RenderAddComponent<PointLightComponent>("Point Light Component");
+                    ImGui.EndPopup();
+                }
+
+                if (m_SelectedActor.HasComponent<TransformComponent>())
+                {
+                    //ImGui.DragFloat3("Position");
+                }
+
+                if (m_SelectedActor.HasComponent<MeshComponent>())
+                {
+                    ImGui.Text("Mesh Component");
+                }
             }
 
             using (new ScopedMenu("Assets"))
@@ -225,6 +271,8 @@ namespace SharpEditor
                 Vector4 colorRef = new Vector4(m_BackgroundColor.R, m_BackgroundColor.G, m_BackgroundColor.B,m_BackgroundColor.A);
                 ImGui.ColorEdit4("Background Color", ref colorRef);
                 m_BackgroundColor = new Color4(colorRef.X, colorRef.Y, colorRef.Z, colorRef.W);
+
+                ImGui.Text($"Selected Actor: {m_SelectedActor.GetComponent<NameComponent>().Name}");
             }
 
             ImGui.End();
@@ -254,6 +302,17 @@ namespace SharpEditor
             //GL.Viewport(0, 0, this.);
 
             OnImGuiRender();
+        }
+
+        private void RenderAddComponent<T>(string name) where T : struct
+        {
+            if (!m_SelectedActor.HasComponent<T>())
+            {
+                if (ImGui.Button(name))
+                {
+                    m_SelectedActor.AddComponent(new T());
+                }
+            }
         }
     }
 }
