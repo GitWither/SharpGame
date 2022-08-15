@@ -28,13 +28,12 @@ using OpenTK.Mathematics;
 using OpenTK.Windowing.GraphicsLibraryFramework;
 using System.Diagnostics;
 using SharpGame.Core;
-using Timer = SharpGame.Util.Timer;
 
 namespace SharpGame
 {
     public class SharpGameWindow : GameWindow
     {
-        private Stack<ILayer> m_Layers;
+        private readonly Stack<ILayer> m_Layers;
         public static SharpGameWindow Instance { get; private set; } = null;
 
         public SharpGameWindow(int width, int height, string title) : base(
@@ -70,12 +69,6 @@ namespace SharpGame
                 layer.OnDetach();
             }
         }
-
-        protected override void OnResize(ResizeEventArgs e)
-        {
-            base.OnResize(e);
-        }
-
 
         protected override void OnRenderFrame(FrameEventArgs e)
         {
