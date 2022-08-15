@@ -43,7 +43,8 @@ namespace SharpGame
             {
                 Size = new Vector2i(width, height),
                 Title = title,
-                NumberOfSamples = 3
+                NumberOfSamples = 3,
+                APIVersion = new Version(4, 6)
             })
         {
             Thread.CurrentThread.Name = SharedConstants.RenderThreadName;

@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing.Drawing2D;
 using System.Linq;
+using System.Numerics;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using OpenTK.Graphics.OpenGL4;
@@ -15,13 +18,16 @@ namespace SharpGame.Graphics
 {
     public class Renderer
     {
-        private Matrix4 m_ViewProjection;
+        public Matrix4 m_ViewProjection;
+
+        private UniformBuffer m_CameraUniformBuffer;
 
 
         private Dictionary<Material, List<RawMesh>> m_Meshes;
 
         public void Initialize()
-        {
+        { ;
+            m_CameraUniformBuffer = new UniformBuffer(Unsafe.SizeOf<Matrix4x4>(), 0);
             m_Meshes = new Dictionary<Material, List<RawMesh>>();
 
             GL.Enable(EnableCap.Blend);
@@ -30,15 +36,9 @@ namespace SharpGame.Graphics
 
             GL.Enable(EnableCap.DebugOutput);
             GL.Enable(EnableCap.DebugOutputSynchronous);
-            GL.DebugMessageCallback((DebugSource source,
-                    DebugType type,
-                    int id,
-                    DebugSeverity severity,
-                    int length,
-                    IntPtr message,
-                    IntPtr userParam) =>
+            GL.DebugMessageCallback((source, type, id, severity, length, message, userParam) =>
             {
-                string msg = System.Runtime.InteropServices.Marshal.PtrToStringAnsi(message);
+                string msg = System.Runtime.InteropServices.Marshal.PtrToStringAnsi(message, length);
                     switch (severity)
                     {
                         case DebugSeverity.DebugSeverityHigh:
@@ -65,6 +65,7 @@ namespace SharpGame.Graphics
         public void Begin(Camera camera)
         {
             m_ViewProjection = camera.View * camera.Projection;
+            m_CameraUniformBuffer.UploadData(ref m_ViewProjection, Unsafe.SizeOf<Matrix4x4>(), 0);
         }
 
         public void DrawMesh(Material material, Mesh mesh, TransformComponent transform)
@@ -92,7 +93,6 @@ namespace SharpGame.Graphics
                 Shader shader = material.Key.Shader;
                 shader.Bind();
                 material.Key.BaseMap.Bind(TextureUnit.Texture0);
-                shader.UploadMatrix4(SharedConstants.UniformViewProjection, ref m_ViewProjection);
 
                 foreach (RawMesh mesh in material.Value)
                 {
