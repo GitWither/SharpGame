@@ -19,6 +19,7 @@ using SharpGame.Objects;
 using SharpGame.Objects.Components;
 using SharpGame.Util;
 using Vector2 = System.Numerics.Vector2;
+using Vector3 = System.Numerics.Vector3;
 using Vector4 = System.Numerics.Vector4;
 
 namespace SharpEditor
@@ -228,15 +229,42 @@ namespace SharpEditor
                     ImGui.EndPopup();
                 }
 
-                if (m_SelectedActor.HasComponent<TransformComponent>())
+                RenderComponent("Transform Component", (ref TransformComponent transform) =>
                 {
-                    //ImGui.DragFloat3("Position");
-                }
+                    Vector3 convertedPosVec = new Vector3(transform.Position.X, transform.Position.Y, transform.Position.Z);
+                    ImGui.DragFloat3("Position", ref convertedPosVec, 0.05f);
+                    transform.Position = new OpenTK.Mathematics.Vector3(convertedPosVec.X, convertedPosVec.Y, convertedPosVec.Z);
 
-                if (m_SelectedActor.HasComponent<MeshComponent>())
+                    Vector3 convertedRotVec = new Vector3(transform.Rotation.X, transform.Rotation.Y, transform.Rotation.Z);
+                    ImGui.DragFloat3("Rotation", ref convertedRotVec, 0.05f);
+                    transform.Rotation = new OpenTK.Mathematics.Vector3(convertedRotVec.X, convertedRotVec.Y, convertedRotVec.Z);
+
+                    Vector3 convertedScaleVec = new Vector3(transform.Scale.X, transform.Scale.Y, transform.Scale.Z);
+                    ImGui.DragFloat3("Scale", ref convertedScaleVec, 0.05f);
+                    transform.Scale = new OpenTK.Mathematics.Vector3(convertedScaleVec.X, convertedScaleVec.Y, convertedScaleVec.Z);
+                });
+
+                RenderComponent("Mesh Component", (ref MeshComponent mesh) =>
                 {
-                    ImGui.Text("Mesh Component");
-                }
+                });
+
+                RenderComponent("Camera Component", (ref CameraComponent camera) =>
+                {
+                    float fov = camera.FieldOfView;
+                    ImGui.DragFloat("FOV", ref fov);
+                    camera.FieldOfView = fov;
+                });
+
+                RenderComponent("Point Light Component", (ref PointLightComponent pointLight) =>
+                {
+                    Vector3 convertedColorVec = new Vector3(pointLight.Color.X, pointLight.Color.Y, pointLight.Color.Z);
+                    ImGui.ColorEdit3("Light Color", ref convertedColorVec);
+                    pointLight.Color = new OpenTK.Mathematics.Vector3(convertedColorVec.X, convertedColorVec.Y, convertedColorVec.Z);
+
+                    float maxDistance = pointLight.MaxDistance;
+                    ImGui.DragFloat("Distance", ref maxDistance);
+                    pointLight.MaxDistance = maxDistance;
+                });
             }
 
             using (new ScopedMenu("Assets"))
@@ -314,5 +342,28 @@ namespace SharpEditor
                 }
             }
         }
+
+        private void RenderComponent<T>(string name, RenderComponentAction<T> renderAction) where T : struct
+        {
+            if (!m_SelectedActor.HasComponent<T>()) return;
+
+            bool componentTreeOpen = ImGui.TreeNodeEx(name);
+            ImGui.SameLine();
+            if (ImGui.Button("Remove"))
+            {
+                m_SelectedActor.RemoveComponent<T>();
+                return;
+            }
+
+            if (componentTreeOpen)
+            {
+                ref T component = ref m_SelectedActor.GetComponent<T>();
+                renderAction.Invoke(ref component);
+
+                ImGui.TreePop();
+            }
+        }
+
+        delegate void RenderComponentAction<T>(ref T component);
     }
 }
