@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -17,6 +18,7 @@ using SharpGame.Objects.Components;
 using SharpGame.Objects.Components.Transform;
 using SharpGame.Util;
 using Vector2 = System.Numerics.Vector2;
+using Vector4 = System.Numerics.Vector4;
 
 namespace SharpEditor
 {
@@ -34,6 +36,10 @@ namespace SharpEditor
         private Framebuffer m_SceneBuffer;
 
         private Vector2 m_Viewport;
+        private bool m_OnViewport;
+
+        private Color4 m_BackgroundColor;
+        private string m_CurrentDirectorty = Directory.GetCurrentDirectory();
         public void OnDetach()
         {
             m_ImGuiController.Dispose();
@@ -45,20 +51,27 @@ namespace SharpEditor
 
             m_SceneBuffer = new Framebuffer(1280, 720, 1);
 
-            m_EditorCamera = new EditorCamera(30, 16/ 9f, 0.01f, 1000f);
+            m_EditorCamera = new EditorCamera(30.0f, 16/ 9f, 0.01f, 1000f, 1280, 720);
 
             SharpGameWindow.Instance.MouseWheel += this.MouseScrolledEvent;
             SharpGameWindow.Instance.Resize += this.Resize;
-            SharpGameWindow.Instance.Maximized += this.Maximize; 
+            SharpGameWindow.Instance.Maximized += this.Maximize;
+            SharpGameWindow.Instance.TextInput += this.TextInput;
+            
 
             m_EditorScene = new Scene();
             m_ActiveScene = m_EditorScene;
 
             Actor actor = m_EditorScene.CreateActor();
-            actor.AddComponent(new MeshComponent(Mesh.FromOBJ("buffalo"),
-                new Material(Shader.Unlit, new Texture("buffalo"))));
-            actor.AddComponent(new TransformComponent(new Vector3(0, 0, 0), Vector3.Zero, Vector3.One * 5));
+            actor.AddComponent(new MeshComponent(Mesh.FromOBJ("terrain"),
+                new Material(Shader.Unlit, new Texture("grass20"))));
+            actor.AddComponent(new TransformComponent(new Vector3(0, 0, 0), Vector3.Zero, Vector3.One * 0.1f));
             m_SelectedActor = actor;
+        }
+
+        private void TextInput(OpenTK.Windowing.Common.TextInputEventArgs obj)
+        {
+            m_ImGuiController.PressChar((char)obj.Unicode);
         }
 
         private void Maximize(OpenTK.Windowing.Common.MaximizedEventArgs obj)
@@ -68,7 +81,6 @@ namespace SharpEditor
 
         private void Resize(OpenTK.Windowing.Common.ResizeEventArgs obj)
         {
-            GL.Viewport(0, 0, obj.Width, obj.Height);
             m_ImGuiController.WindowResized(obj.Width, obj.Height);
         }
 
@@ -80,7 +92,11 @@ namespace SharpEditor
 
         public void OnUpdate(float deltaTime)
         {
-            m_EditorCamera.OnUpdate(deltaTime);
+            if (m_OnViewport)
+            {
+                m_EditorCamera.OnUpdate(deltaTime);
+            }
+
             m_ImGuiController.Update(SharpGameWindow.Instance, deltaTime);
         }
 
@@ -133,15 +149,17 @@ namespace SharpEditor
 
             using (new ScopedStyle(ImGuiStyleVar.WindowPadding, Vector2.Zero))
             {
-                using (new ScopedMenu("Viewport"))
+                using (new ScopedMenu("Game View"))
                 {
+                    m_OnViewport = ImGui.IsWindowFocused() || ImGui.IsWindowHovered();
+
                     Vector2 sizeAvail = ImGui.GetContentRegionAvail();
                     m_Viewport = new Vector2(sizeAvail.X, sizeAvail.Y);
                     ImGui.Image((IntPtr)m_SceneBuffer.ColorAttachment, m_Viewport, new Vector2(0, 1), new Vector2(1, 0));
                 }
             }
 
-            using (new ScopedMenu("Hierarchy"))
+            using (new ScopedMenu("Actors"))
             {
                 if (ImGui.BeginPopupContextWindow("ActorPopup"))
                 {
@@ -161,16 +179,40 @@ namespace SharpEditor
                 ref TransformComponent transform = ref m_SelectedActor.GetComponent<TransformComponent>();
                 System.Numerics.Vector3 vector = new System.Numerics.Vector3(transform.Position.X, transform.Position.Y,
                     transform.Position.Z);
-                ImGui.DragFloat3("Pos", ref vector);
+                ImGui.DragFloat3("Pos", ref vector, 0.05f);
                 transform.Position = new Vector3(vector.X, vector.Y, vector.Z);
+
+                System.Numerics.Vector3 vector2 = new System.Numerics.Vector3(transform.Rotation.X, transform.Rotation.Y,
+                    transform.Rotation.Z);
+                ImGui.DragFloat3("Rot", ref vector2, 0.05f);
+                transform.Rotation = new Vector3(vector2.X, vector2.Y, vector2.Z);
+
+                System.Numerics.Vector3 vector3 = new System.Numerics.Vector3(transform.Scale.X, transform.Scale.Y,
+                    transform.Scale.Z);
+                ImGui.DragFloat3("Scale", ref vector3, 0.05f);
+                transform.Scale = new Vector3(vector3.X, vector3.Y, vector3.Z);
             }
 
             using (new ScopedMenu("Assets"))
             {
-                ImGui.Columns(5, "cool");
-                foreach (string path in Directory.EnumerateFileSystemEntries("."))
+                if (ImGui.Button("<"))
                 {
-                    ImGui.Button(path);
+                    m_CurrentDirectorty = Directory.GetParent(m_CurrentDirectorty).FullName;
+                }
+                ImGui.Columns(5, "cool");
+                foreach (string path in Directory.EnumerateFileSystemEntries(m_CurrentDirectorty))
+                {
+                    if (Directory.Exists(path))
+                    {
+                        if (ImGui.Button(Path.GetFileNameWithoutExtension(path)))
+                        {
+                            m_CurrentDirectorty = Path.Combine(m_CurrentDirectorty, path);
+                        }
+                    }
+                    else
+                    {
+                        ImGui.Text(Path.GetFileName(path));
+                    }
 
                     ImGui.NextColumn();
                 }
@@ -179,12 +221,11 @@ namespace SharpEditor
             using (new ScopedMenu("Information"))
             {
                 ImGui.Text($"Actors: {m_EditorScene.ActorCount}");
-                m_EditorCamera.Orientation.ToEulerAngles(out Vector3 angles);
-                ImGui.Text($"Camera Pos: {angles}");
-                ImGui.Text($"Buffalo Pos: {m_SelectedActor.GetComponent<TransformComponent>().Position}");
-            }
 
-            ImGui.ShowDemoWindow();
+                Vector4 colorRef = new Vector4(m_BackgroundColor.R, m_BackgroundColor.G, m_BackgroundColor.B,m_BackgroundColor.A);
+                ImGui.ColorEdit4("Background Color", ref colorRef);
+                m_BackgroundColor = new Color4(colorRef.X, colorRef.Y, colorRef.Z, colorRef.W);
+            }
 
             ImGui.End();
 
@@ -201,7 +242,7 @@ namespace SharpEditor
             }
 
             m_SceneBuffer.Bind();
-            GL.ClearColor(Color4.DarkSalmon);
+            GL.ClearColor(m_BackgroundColor);
             GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit | ClearBufferMask.StencilBufferBit);
             //GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit | ClearBufferMask.StencilBufferBit);
             GL.Disable(EnableCap.CullFace);
@@ -209,6 +250,8 @@ namespace SharpEditor
             m_EditorScene.OnRender(m_EditorCamera);
             
             m_SceneBuffer.Unbind();
+
+            //GL.Viewport(0, 0, this.);
 
             OnImGuiRender();
         }
