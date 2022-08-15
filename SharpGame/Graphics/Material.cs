@@ -48,9 +48,6 @@ namespace SharpGame.Graphics
         public void Dispose()
         {
             Shader?.Dispose();
-            BaseMap?.Dispose();
-            NormalMap?.Dispose();
-            EmissionMap?.Dispose();
         }
     }
 }
