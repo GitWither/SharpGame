@@ -18,6 +18,7 @@ using SharpGame.Graphics;
 using SharpGame.Graphics.Meshes;
 using SharpGame.Objects;
 using SharpGame.Objects.Components;
+using SharpGame.Serialization;
 using SharpGame.Util;
 using Vector2 = System.Numerics.Vector2;
 using Vector3 = System.Numerics.Vector3;
@@ -65,6 +66,8 @@ namespace SharpEditor
             m_Inspector = new InspectorPanel(m_Actors);
             m_Assets = new AssetsPanel();
 
+            m_Actors.SelectedActor = Actor.Null;
+
 
             m_EditorCamera = new EditorCamera(30.0f, 16/ 9f, 0.01f, 1000f, 1280, 720);
 
@@ -79,6 +82,7 @@ namespace SharpEditor
 
             m_Actors.Scene = m_EditorScene;
 
+            /*
             Actor actor = m_EditorScene.CreateActor("Terrain");
             actor.AddComponent(new MeshComponent(Mesh.FromOBJ("terrain"),
                 new Material(Shader.Unlit, new Texture("grass20"))));
@@ -87,6 +91,10 @@ namespace SharpEditor
             Actor buffalo = m_EditorScene.CreateActor("Buffalo");
             buffalo.AddComponent(new MeshComponent(Mesh.FromOBJ("buffalo"),
                 new Material(Shader.Unlit, new Texture("buffalo"))));
+            */
+
+            //SceneSerializer.Serialize(m_EditorScene, "coolScene.json");
+            SceneSerializer.Deseriealize("coolScene.json", ref m_EditorScene);
         }
 
         private void TextInput(OpenTK.Windowing.Common.TextInputEventArgs obj)
@@ -106,7 +114,10 @@ namespace SharpEditor
 
         private void MouseScrolledEvent(OpenTK.Windowing.Common.MouseWheelEventArgs obj)
         {
-            m_EditorCamera.OnMouseScroll(obj.OffsetY);
+            if (m_OnViewport)
+            {
+                m_EditorCamera.OnMouseScroll(obj.OffsetY);
+            }
             m_ImGuiController.MouseScroll(obj.Offset);
         }
 

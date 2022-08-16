@@ -81,7 +81,7 @@ namespace SharpGame.Graphics
 
         ~Texture()
         {
-            GL.DeleteTexture(Id);
+            //GL.DeleteTexture(Id);
         }
     }
 }
