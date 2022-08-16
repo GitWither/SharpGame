@@ -16,6 +16,9 @@ namespace SharpGame.Objects
 {
     public readonly struct Actor
     {
+        public static readonly Actor Null = new Actor(-1, null);
+
+
         private readonly Scene m_RootScene;
         private readonly int m_Id;
 

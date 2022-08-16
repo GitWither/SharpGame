@@ -193,7 +193,10 @@ namespace SharpEditor
                 ImGui.ColorEdit4("Background Color", ref colorRef);
                 m_BackgroundColor = new Color4(colorRef.X, colorRef.Y, colorRef.Z, colorRef.W);
 
-                ImGui.Text($"Selected Actor: {m_Actors.SelectedActor.GetComponent<NameComponent>().Name}");
+                if (m_Actors.SelectedActor != Actor.Null)
+                {
+                    ImGui.Text($"Selected Actor: {m_Actors.SelectedActor.GetComponent<NameComponent>().Name}");
+                }
             }
 
             ImGui.End();

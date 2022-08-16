@@ -25,6 +25,8 @@ namespace SharpEditor.Panels
         {
             using (new ScopedMenu("Inspector"))
             {
+                if (m_Actors.SelectedActor == Actor.Null) return;
+
                 ref NameComponent actorName = ref m_Actors.SelectedActor.GetComponent<NameComponent>();
                 IntPtr namePtr = Marshal.StringToHGlobalAnsi(actorName.Name);
                 ImGui.InputText("Actor Name", namePtr, 256);

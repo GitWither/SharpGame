@@ -59,6 +59,7 @@ namespace SharpEditor.Panels
                     if (isActorRemoved)
                     {
                         Scene.RemoveActor(actorObj);
+                        SelectedActor = Actor.Null;
                     }
                 }
             }

@@ -12,7 +12,7 @@ namespace SharpEditor.Panels
 {
     public class AssetsPanel : IPanel
     {
-        private string m_CurrentDirectory = ".";
+        private string m_CurrentDirectory = Directory.GetCurrentDirectory();
 
         private float thumbnailSize = 80f;
         private float padding = 18f;
