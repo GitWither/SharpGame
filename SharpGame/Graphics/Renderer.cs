@@ -26,6 +26,10 @@ namespace SharpGame.Graphics
 
         private Dictionary<Material, List<RawMesh>> m_Meshes;
 
+        public int DrawCalls { get; private set; }
+        public int Vertices { get; private set; }
+        public int Indices { get; private set; }
+
         public void Initialize()
         { ;
             m_CameraUniformBuffer = new UniformBuffer(Unsafe.SizeOf<Matrix4x4>(), 0);
@@ -65,8 +69,13 @@ namespace SharpGame.Graphics
 
         public void Begin(Camera camera)
         {
+            Vertices = 0;
+            DrawCalls = 0;
+            Indices = 0;
             m_ViewProjection = camera.View * camera.Projection;
             m_CameraUniformBuffer.UploadData(ref m_ViewProjection, Unsafe.SizeOf<Matrix4x4>(), 0);
+
+            RenderCommand.Clear();
         }
 
         public void DrawMesh(Material material, Mesh mesh, TransformComponent transform)
@@ -80,8 +89,10 @@ namespace SharpGame.Graphics
             {
                 m_Meshes.Add(material, new List<RawMesh> { new(mesh.VertexArray, MathUtil.CreateTransformationMatrix(transform)) });
             }
-        }
 
+            Vertices += mesh.VertexArray.VertexCount;
+            Indices += mesh.VertexArray.IndexCount;
+        }
 
         public void End()
         {
@@ -102,6 +113,7 @@ namespace SharpGame.Graphics
                     shader.UploadMatrix4(SharedConstants.UniformModel, ref transform);
 
                     RenderCommand.DrawIndexed(mesh.VertexArray);
+                    DrawCalls++;
                 }
             }
             m_Meshes.Clear();

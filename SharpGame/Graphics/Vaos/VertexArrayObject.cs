@@ -22,6 +22,7 @@ namespace SharpGame.Graphics.Vaos
         protected readonly int[] bufferIds = new int[4];
 
         public int IndexCount { get; }
+        public int VertexCount { get; } 
 
         public VertexArrayObject(Vector3[] vertexBuffer, Vector2[] uvBuffer, Vector3[] normalsBuffer, int[] indexBuffer)
         {
@@ -35,6 +36,7 @@ namespace SharpGame.Graphics.Vaos
             BindVectorArrayToBuffer(bufferIds[2], 2, normalsBuffer, false);
 
             this.IndexCount = indexBuffer.Length;
+            this.VertexCount = vertexBuffer.Length;
 
             BindIndices(indexBuffer);
         }

@@ -30,7 +30,7 @@ namespace SharpGame.Objects
 
 
         private RenderSystem m_RenderSystem;
-        private Renderer Renderer { get; set; }
+        public Renderer Renderer { get; set; }
 
 
         public Scene()

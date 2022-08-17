@@ -41,9 +41,7 @@ namespace SharpEditor
         private Vector2 m_Viewport;
         private bool m_OnViewport;
 
-        private Color4 m_BackgroundColor;
-        private string m_CurrentDirectorty = Directory.GetCurrentDirectory();
-
+        private Vector3 m_BackgroundColor;
 
         private InspectorPanel m_Inspector;
         private ActorsPanel m_Actors;
@@ -207,14 +205,19 @@ namespace SharpEditor
             {
                 ImGui.Text($"Actors: {m_EditorScene.ActorCount}");
 
-                Vector4 colorRef = new Vector4(m_BackgroundColor.R, m_BackgroundColor.G, m_BackgroundColor.B,m_BackgroundColor.A);
-                ImGui.ColorEdit4("Background Color", ref colorRef);
-                m_BackgroundColor = new Color4(colorRef.X, colorRef.Y, colorRef.Z, colorRef.W);
+                ImGui.ColorEdit3("Background Color", ref m_BackgroundColor);
 
                 if (m_Actors.SelectedActor != Actor.Null)
                 {
                     ImGui.Text($"Selected Actor: {m_Actors.SelectedActor.GetComponent<NameComponent>().Name}");
                 }
+            }
+
+            using (new ScopedMenu("Renderer"))
+            {
+                ImGui.Text($"Draw Calls: {m_ActiveScene.Renderer.DrawCalls}");
+                ImGui.Text($"Vertices: {m_ActiveScene.Renderer.Vertices}");
+                ImGui.Text($"Indices: {m_ActiveScene.Renderer.Indices}");
             }
 
             ImGui.End();
@@ -232,15 +235,13 @@ namespace SharpEditor
             }
 
             m_SceneBuffer.Bind();
-            GL.ClearColor(m_BackgroundColor);
-            GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit | ClearBufferMask.StencilBufferBit);
-            //GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit | ClearBufferMask.StencilBufferBit);
+
+            RenderCommand.SetColor(m_BackgroundColor);
 
             m_EditorScene.OnRender(m_EditorCamera);
             
             m_SceneBuffer.Unbind();
 
-            //GL.Viewport(0, 0, this.);
 
             OnImGuiRender();
         }
