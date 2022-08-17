@@ -87,7 +87,7 @@ namespace SharpGame.Objects
             Renderer.End();
         }
 
-        public IEnumerable<int> EnumarateActors()
+        public IEnumerable<int> EnumerateActors()
         {
             foreach (int actor in m_Actors)
             {

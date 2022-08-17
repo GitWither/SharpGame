@@ -28,7 +28,7 @@ namespace SharpEditor.Panels
 
                 ImGui.Separator();
 
-                foreach (int actor in Scene.EnumarateActors())
+                foreach (int actor in Scene.EnumerateActors())
                 {
                     Actor actorObj = new Actor(actor, Scene);
 

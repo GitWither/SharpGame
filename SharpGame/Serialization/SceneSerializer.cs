@@ -8,6 +8,10 @@ using System.Threading.Tasks;
 using System.Xml;
 using System.Xml.Serialization;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using OpenTK.Mathematics;
+using SharpGame.Graphics;
+using SharpGame.Graphics.Meshes;
 using SharpGame.Objects;
 using SharpGame.Objects.Components;
 using SharpGame.Util;
@@ -26,7 +30,7 @@ namespace SharpGame.Serialization
 
             writer.WritePropertyName("actors");
             writer.WriteStartArray();
-            foreach (int actor in scene.EnumarateActors())
+            foreach (int actor in scene.EnumerateActors())
             {
                 Actor actorObj = new Actor(actor, scene);
 
@@ -97,52 +101,100 @@ namespace SharpGame.Serialization
             }
         }
 
-        public static void Deseriealize(string path, ref Scene scene)
+        public static void Deserialize(string path, ref Scene scene)
         {
             using TextReader textReader = new StreamReader(path);
-            using JsonReader reader = new JsonTextReader(textReader);
+            using JsonTextReader reader = new JsonTextReader(textReader);
+            JsonSerializer serializer = new JsonSerializer();
 
+            string lastPropertyName = string.Empty;
+            string currentObjectName = string.Empty;
             bool readingActors = false;
             Actor currentActor = Actor.Null;
-            string currentProperty = "root";
-            Stack<string> properties = new Stack<string>();
-            Stack<string> arrays = new Stack<string>();
+
+
+            if (reader.Read() && reader.TokenType != JsonToken.StartObject)
+            {
+                Logger.Error($"Scene files must be JSON objects, found: {reader.TokenType}");
+                return;
+            }
 
             while (reader.Read())
             {
-                Logger.Info($"TokenType: {reader.TokenType} Value: {reader.Value}");
-
-                if (reader.TokenType == JsonToken.PropertyName)
-                {
-                    currentProperty = (string)reader.Value;
-                    continue;
-                }
-
                 if (reader.TokenType == JsonToken.StartObject)
                 {
-                    properties.Push(currentProperty);
-                }
-
-                if (reader.TokenType == JsonToken.StartArray)
-                {
-                    arrays.Push(currentProperty);
-                    currentProperty = "arrayItem";
+                    currentObjectName = lastPropertyName;
                 }
 
                 if (reader.TokenType == JsonToken.EndObject)
                 {
-                    properties.Pop();
+                    currentObjectName = string.Empty;
                 }
 
-                if (reader.TokenType == JsonToken.EndArray)
+                if (reader.TokenType != JsonToken.PropertyName) continue;
+
+
+                if ((string)reader.Value == "actors")
                 {
-                    arrays.Pop();
+                    readingActors = true;
                 }
 
-                if (arrays.Peek() == "actors")
+                if (readingActors)
                 {
+                    if ((string)reader.Value == "id")
+                    {
+                        int id = reader.ReadAsInt32().GetValueOrDefault(-1);
+                        currentActor = scene.CreateActor("actor");
+                        continue;
+                    }
 
+                    switch (currentObjectName)
+                    {
+                        case "NameComponent" when (string)reader.Value == "name":
+                        {
+                            ref NameComponent name = ref currentActor.GetComponent<NameComponent>();
+                            name.Name = reader.ReadAsString();
+                            break;
+                        }
+                        case "TransformComponent":
+                        {
+                            string currentPropName = (string)reader.Value;
+                            ref TransformComponent transform = ref currentActor.GetComponent<TransformComponent>();
+                            reader.Read();
+                            float[] values = serializer.Deserialize<float[]>(reader);
+
+                            switch (currentPropName)
+                            {
+                                case "position":
+                                    transform.Position = new Vector3(values[0], values[1], values[2]);
+                                    continue;
+                                case "rotation":
+                                    transform.Rotation = new Vector3(values[0], values[1], values[2]);
+                                    continue;
+                                case "scale":
+                                    transform.Scale = new Vector3(values[0], values[1], values[2]);
+                                    continue;
+                            }
+
+                            reader.Read();
+
+                            break;
+                        }
+                        case "MeshComponent":
+                        {
+                            if (currentActor.HasComponent<MeshComponent>()) continue;
+
+                            currentActor.AddComponent(new MeshComponent(Mesh.SkyBox,
+                                new Material(Shader.Unlit, new Texture("buffalo"))));
+                            //string mesh = reader.ReadAsString();
+                            Logger.Info($"Mesh: {(int)currentActor}");
+                            break;
+                        }
+                    }
                 }
+
+                lastPropertyName = (string)reader.Value;
+
             }
         }
     }

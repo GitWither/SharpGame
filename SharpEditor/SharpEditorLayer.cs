@@ -94,7 +94,7 @@ namespace SharpEditor
             */
 
             //SceneSerializer.Serialize(m_EditorScene, "coolScene.json");
-            SceneSerializer.Deseriealize("coolScene.json", ref m_EditorScene);
+            SceneSerializer.Deserialize("coolScene.json", ref m_EditorScene);
         }
 
         private void TextInput(OpenTK.Windowing.Common.TextInputEventArgs obj)
