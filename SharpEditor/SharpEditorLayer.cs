@@ -20,6 +20,7 @@ using SharpGame.Objects;
 using SharpGame.Objects.Components;
 using SharpGame.Serialization;
 using SharpGame.Util;
+using TinyDialogsNet;
 using Vector2 = System.Numerics.Vector2;
 using Vector3 = System.Numerics.Vector3;
 using Vector4 = System.Numerics.Vector4;
@@ -166,9 +167,15 @@ namespace SharpEditor
             {
                 if (ImGui.BeginMenu("File"))
                 {
+                    if (ImGui.MenuItem("Open"))
+                    {
+                        string[] files = (string[])Dialogs.OpenFileDialog("Select Scene", Directory.GetCurrentDirectory(), new[] { "*.json" }, "SharpGame Scene", false);
+                        SceneSerializer.Deserialize(files[0], ref m_ActiveScene);
+                    }
                     if (ImGui.MenuItem("Save"))
                     {
-                        Logger.Info("hello");
+                        string file = Dialogs.SaveFileDialog("Save SharpGame Scene", Directory.GetCurrentDirectory(), "*.json", "SharpGame Scene (*.json)");
+                        SceneSerializer.Serialize(m_ActiveScene, file);
                     }
                     ImGui.EndMenu();
                 }
@@ -180,6 +187,8 @@ namespace SharpEditor
             {
                 using (new ScopedMenu("Game View"))
                 {
+                    ImGui.Button("Play");
+
                     m_OnViewport = ImGui.IsWindowFocused() || ImGui.IsWindowHovered();
 
                     Vector2 sizeAvail = ImGui.GetContentRegionAvail();

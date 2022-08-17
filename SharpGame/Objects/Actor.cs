@@ -84,7 +84,6 @@ namespace SharpGame.Objects
 
         public override bool Equals(object obj)
         {
-            if (obj == null) return false;
             if (obj is Actor actor) return m_Id == actor.m_Id;
 
             return false;

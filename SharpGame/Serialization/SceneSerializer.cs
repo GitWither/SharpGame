@@ -185,7 +185,7 @@ namespace SharpGame.Serialization
                             if (currentActor.HasComponent<MeshComponent>()) continue;
 
                             currentActor.AddComponent(new MeshComponent(Mesh.SkyBox,
-                                new Material(Shader.Unlit, new Texture("buffalo"))));
+                                new Material(Shader.Unlit, new Texture("grass20"))));
                             //string mesh = reader.ReadAsString();
                             Logger.Info($"Mesh: {(int)currentActor}");
                             break;
