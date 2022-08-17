@@ -35,8 +35,6 @@ namespace SharpEditor
         private Scene m_EditorScene;
         private Scene m_ActiveScene;
 
-        private Actor m_SelectedActor;
-
         private Framebuffer m_SceneBuffer;
 
         private Vector2 m_Viewport;
