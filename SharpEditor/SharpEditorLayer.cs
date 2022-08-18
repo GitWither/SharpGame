@@ -46,6 +46,8 @@ namespace SharpEditor
         private InspectorPanel m_Inspector;
         private ActorsPanel m_Actors;
         private AssetsPanel m_Assets;
+        private int m_HoveredActor;
+        private readonly Vector2[] m_ViewportBounds = new Vector2[2];
 
         public void OnDetach()
         {
@@ -56,7 +58,16 @@ namespace SharpEditor
         {
             m_ImGuiController = new ImGuiController(1280, 720);
 
-            m_SceneBuffer = new Framebuffer(1280, 720, 1);
+
+            FramebufferInfo info = new FramebufferInfo
+            {
+                Width = 1280,
+                Height = 720,
+                Samples = 1,
+                ColorAttachments = new FramebufferAttachmentInfo[] { FramebufferTextureFormat.Rgba8},
+                DepthAttachment = FramebufferTextureFormat.Depth24Stencil8
+            };
+            m_SceneBuffer = new Framebuffer(info);
 
 
             m_Actors = new ActorsPanel();
@@ -191,7 +202,14 @@ namespace SharpEditor
 
                     Vector2 sizeAvail = ImGui.GetContentRegionAvail();
                     m_Viewport = new Vector2(sizeAvail.X, sizeAvail.Y);
-                    ImGui.Image((IntPtr)m_SceneBuffer.ColorAttachment, m_Viewport, new Vector2(0, 1), new Vector2(1, 0));
+                    ImGui.Image((IntPtr)m_SceneBuffer.GetColorAttachment(), m_Viewport, new Vector2(0, 1), new Vector2(1, 0));
+
+                    Vector2 gameViewMinRegion = ImGui.GetWindowContentRegionMin();
+                    Vector2 gameViewMaxRegion = ImGui.GetWindowContentRegionMax();
+                    Vector2 gameViewOffset = ImGui.GetWindowPos();
+
+                    m_ViewportBounds[0] = new Vector2(gameViewMinRegion.X + gameViewOffset.X, gameViewMinRegion.Y + gameViewOffset.Y);
+                    m_ViewportBounds[1] = new Vector2(gameViewMaxRegion.X + gameViewOffset.X, gameViewMaxRegion.Y + gameViewOffset.Y);
                 }
             }
 
@@ -204,6 +222,8 @@ namespace SharpEditor
             using (new ScopedMenu("Information"))
             {
                 ImGui.Text($"Actors: {m_EditorScene.ActorCount}");
+
+                ImGui.Text($"Hovered Actor: {m_HoveredActor}");
 
                 ImGui.ColorEdit3("Background Color", ref m_BackgroundColor);
 
@@ -239,7 +259,7 @@ namespace SharpEditor
             RenderCommand.SetColor(m_BackgroundColor);
 
             m_EditorScene.OnRender(m_EditorCamera);
-            
+
             m_SceneBuffer.Unbind();
 
 
