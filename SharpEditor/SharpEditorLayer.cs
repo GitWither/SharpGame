@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
@@ -49,8 +50,17 @@ namespace SharpEditor
         private int m_HoveredActor;
         private readonly Vector2[] m_ViewportBounds = new Vector2[2];
 
+        private Project m_CurrentProject;
+
+        private bool m_ProjectModalOpen = false;
+
+        private readonly IntPtr m_CurrentProjectName = Marshal.StringToHGlobalAnsi(string.Empty);
+        private readonly IntPtr m_CurrentProjectPath = Marshal.StringToHGlobalAnsi(string.Empty);
+
         public void OnDetach()
         {
+            Marshal.FreeHGlobal(m_CurrentProjectPath);
+            Marshal.FreeHGlobal(m_CurrentProjectName);
             m_ImGuiController.Dispose();
         }
 
@@ -172,10 +182,40 @@ namespace SharpEditor
 
             ImGui.PopStyleVar(3);
 
+            if (ImGui.BeginPopupModal("Project Config"))
+            {
+                ImGui.InputText("Project Name", m_CurrentProjectName, 24);
+                string project = Marshal.PtrToStringAnsi(m_CurrentProjectName, 24);
+
+                ImGui.InputText("Path", m_CurrentProjectPath, 256);
+                string projectPath = Marshal.PtrToStringAnsi(m_CurrentProjectPath, 256);
+
+                ImGui.Button("yo");
+
+                ImGui.EndPopup();
+            }
+
+            if (m_ProjectModalOpen)
+            {
+                ImGui.OpenPopup("Project Config");
+                m_ProjectModalOpen = false;
+            }
+
             if (ImGui.BeginMenuBar())
             {
                 if (ImGui.BeginMenu("File"))
                 {
+                    if (ImGui.MenuItem("New Project"))
+                    {
+                        m_ProjectModalOpen = true;
+                    }
+
+                    if (ImGui.MenuItem("Open Project"))
+                    {
+
+                    }
+
+                    ImGui.Separator();
                     if (ImGui.MenuItem("Open"))
                     {
                         string[] files = (string[])Dialogs.OpenFileDialog("Select Scene", Directory.GetCurrentDirectory(), new[] { "*.json" }, "SharpGame Scene", false);
@@ -240,10 +280,16 @@ namespace SharpEditor
                 ImGui.Text($"Indices: {m_ActiveScene.Renderer.Indices}");
             }
 
+
             ImGui.End();
 
 
             m_ImGuiController.Render();
+        }
+
+        private void CreateNewProject(string path)
+        {
+
         }
 
         public void OnRender()
