@@ -28,12 +28,14 @@ using OpenTK.Mathematics;
 using OpenTK.Windowing.GraphicsLibraryFramework;
 using System.Diagnostics;
 using SharpGame.Core;
+using SharpGame.Scripting;
 
 namespace SharpGame
 {
     public class SharpGameWindow : GameWindow
     {
         private readonly Stack<ILayer> m_Layers;
+        private readonly BehaviorManager m_BehaviorManager;
         public static SharpGameWindow Instance { get; private set; } = null;
 
         public SharpGameWindow(int width, int height, string title) : base(
@@ -47,6 +49,7 @@ namespace SharpGame
             })
         {
             Thread.CurrentThread.Name = SharedConstants.RenderThreadName;
+            m_BehaviorManager = new BehaviorManager();
             this.m_Layers = new Stack<ILayer>();
             Instance = this;
         }
@@ -54,6 +57,7 @@ namespace SharpGame
         protected override void OnLoad()
         {
             InputSystem.Init(this.KeyboardState, this.MouseState);
+            m_BehaviorManager.Initialize();
 
             ALBase.RegisterOpenALResolver();
             AL.DistanceModel(ALDistanceModel.LinearDistance);

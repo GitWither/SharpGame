@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+<Project>
+  <PropertyGroup>
+    <BaseIntermediateOutputPath>..\obj</BaseIntermediateOutputPath>
+    <IntermediateOutputPath>$(BaseIntermediateOutputPath)\$(Configuration)</IntermediateOutputPath>
+  </PropertyGroup>
+</Project>

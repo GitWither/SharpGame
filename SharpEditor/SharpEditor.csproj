@@ -16,4 +16,8 @@
     <ProjectReference Include="..\SharpGame\SharpGame.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="PlaygroundProject\" />
+  </ItemGroup>
+
 </Project>
