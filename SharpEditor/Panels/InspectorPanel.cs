@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using System.Numerics;
 using ImGuiNET;
 using SharpEditor.Util;
+using SharpGame;
 using SharpGame.Objects;
 using SharpGame.Objects.Components;
 
@@ -43,6 +44,7 @@ namespace SharpEditor.Panels
                     RenderAddComponent<MeshComponent>("Mesh Component");
                     RenderAddComponent<CameraComponent>("Camera Component");
                     RenderAddComponent<PointLightComponent>("Point Light Component");
+                    RenderAddComponent<BehaviorComponent>("Behavior Component");
                     ImGui.EndPopup();
                 }
 
@@ -81,6 +83,20 @@ namespace SharpEditor.Panels
                     float maxDistance = pointLight.MaxDistance;
                     ImGui.DragFloat("Distance", ref maxDistance);
                     pointLight.MaxDistance = maxDistance;
+                });
+
+                RenderComponent("Behavior Component", (ref BehaviorComponent behaviorComponent) =>
+                {
+                    if (ImGui.BeginCombo("Script", behaviorComponent.BehaviorClass?.Name ?? "Null"))
+                    {
+                        foreach (Type type in SharpGameWindow.Instance.BehaviorManager.EnumerateBehaviorClasses())
+                        {
+                            if (ImGui.Selectable(type.Name))
+                            {
+                                behaviorComponent.BehaviorClass = type;
+                            }
+                        }
+                    }
                 });
             }
         }

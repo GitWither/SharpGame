@@ -10,6 +10,7 @@ using SharpGame.Util;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using SharpActors;
 using SharpGame.Input;
 
@@ -37,7 +38,7 @@ namespace SharpGame.Objects
         {
             Running = false;
             this.m_ActorRegistry = new ActorRegistry(SharedConstants.MaxActors);
-
+            
             this.m_ActorRegistry.RegisterComponent<MeshComponent>();
             this.m_ActorRegistry.RegisterComponent<TransformComponent>();
             this.m_ActorRegistry.RegisterComponent<GuiTextComponent>();
@@ -46,6 +47,7 @@ namespace SharpGame.Objects
             this.m_ActorRegistry.RegisterComponent<PointLightComponent>();
             this.m_ActorRegistry.RegisterComponent<PlayerControlledComponent>();
             this.m_ActorRegistry.RegisterComponent<NameComponent>();
+            this.m_ActorRegistry.RegisterComponent<BehaviorComponent>();
 
 
             m_RenderSystem = m_ActorRegistry.RegisterSystem<RenderSystem, TransformComponent, MeshComponent>();
@@ -54,8 +56,9 @@ namespace SharpGame.Objects
             Renderer.Initialize();
         }
 
-        internal void OnAwake()
+        public void OnAwake()
         {
+            SharpGameWindow.Instance.BehaviorManager.OnStart(this);
         }
 
 

@@ -35,7 +35,7 @@ namespace SharpGame
     public class SharpGameWindow : GameWindow
     {
         private readonly Stack<ILayer> m_Layers;
-        private readonly BehaviorManager m_BehaviorManager;
+        public BehaviorManager BehaviorManager { get; }
         public static SharpGameWindow Instance { get; private set; } = null;
 
         public SharpGameWindow(int width, int height, string title) : base(
@@ -49,15 +49,16 @@ namespace SharpGame
             })
         {
             Thread.CurrentThread.Name = SharedConstants.RenderThreadName;
-            m_BehaviorManager = new BehaviorManager();
+            BehaviorManager = new BehaviorManager();
             this.m_Layers = new Stack<ILayer>();
             Instance = this;
+
+            BehaviorManager.Initialize();
         }
 
         protected override void OnLoad()
         {
             InputSystem.Init(this.KeyboardState, this.MouseState);
-            m_BehaviorManager.Initialize();
 
             ALBase.RegisterOpenALResolver();
             AL.DistanceModel(ALDistanceModel.LinearDistance);
