@@ -242,14 +242,20 @@ namespace SharpEditor
 
                         if (m_SceneStatus == SceneStatus.Playing)
                         {
-                            m_ActiveScene = Scene.CreateCopyOf(m_EditorScene);
+                            m_ActiveScene = new Scene();
+                            m_ActiveScene.CopyContentFrom(m_EditorScene);
+
                             m_Actors.Scene = m_ActiveScene;
+
                             m_ActiveScene.OnAwake();
+
+                            Logger.Info("scene started");
                         }
                         else
                         {
+                            Logger.Info("scene stopped");
                             m_ActiveScene = m_EditorScene;
-                            m_Actors.Scene = m_EditorScene;
+                            m_Actors.Scene = m_ActiveScene;
                         }
                     }
 

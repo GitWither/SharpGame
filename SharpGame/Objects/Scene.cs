@@ -13,6 +13,7 @@ using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using SharpActors;
 using SharpGame.Input;
+using System.Numerics;
 
 namespace SharpGame.Objects
 {
@@ -56,16 +57,34 @@ namespace SharpGame.Objects
             Renderer.Initialize();
         }
 
-        public static Scene CreateCopyOf(Scene scene)
+        public void CopyContentFrom(Scene scene)
         {
-            Scene copiedScene = new Scene();
+            void CopyComponent<T>(int actor) where T : struct
+            {
+                if (scene.m_ActorRegistry.HasComponent<T>(actor))
+                {
+                    m_ActorRegistry.AddComponent(actor, scene.m_ActorRegistry.GetComponent<T>(actor));
+                }
+            }
 
-            copiedScene.m_ActorRegistry = scene.m_ActorRegistry;
-            copiedScene.m_RenderSystem = scene.m_RenderSystem;
-            copiedScene.m_Actors = scene.m_Actors;
+            foreach (int actor in scene.EnumerateActors())
+            {
+                m_ActorRegistry.CreateActor();
 
-            return copiedScene;
+                CopyComponent<MeshComponent>(actor);
+                CopyComponent<TransformComponent>(actor);
+                CopyComponent<GuiTextComponent>(actor);
+                CopyComponent<ParticleEmitterComponent>(actor);
+                CopyComponent<CameraComponent>(actor);
+                CopyComponent<PointLightComponent>(actor);
+                CopyComponent<PlayerControlledComponent>(actor);
+                CopyComponent<NameComponent>(actor);
+                CopyComponent<BehaviorComponent>(actor);
+
+                m_Actors.Add(actor);
+            }
         }
+
 
         public void OnAwake()
         {
