@@ -57,6 +57,8 @@ namespace SharpEditor
         private readonly IntPtr m_CurrentProjectName = Marshal.StringToHGlobalAnsi(string.Empty);
         private readonly IntPtr m_CurrentProjectPath = Marshal.StringToHGlobalAnsi(string.Empty);
 
+        private SceneStatus m_SceneStatus = SceneStatus.Editor;
+
         public void OnDetach()
         {
             Marshal.FreeHGlobal(m_CurrentProjectPath);
@@ -190,8 +192,6 @@ namespace SharpEditor
                 ImGui.InputText("Path", m_CurrentProjectPath, 256);
                 string projectPath = Marshal.PtrToStringAnsi(m_CurrentProjectPath, 256);
 
-                ImGui.Button("yo");
-
                 ImGui.EndPopup();
             }
 
@@ -219,12 +219,12 @@ namespace SharpEditor
                     if (ImGui.MenuItem("Open"))
                     {
                         string[] files = (string[])Dialogs.OpenFileDialog("Select Scene", Directory.GetCurrentDirectory(), new[] { "*.json" }, "SharpGame Scene", false);
-                        SceneSerializer.Deserialize(files[0], ref m_ActiveScene);
+                        SceneSerializer.Deserialize(files[0], ref m_EditorScene);
                     }
                     if (ImGui.MenuItem("Save"))
                     {
                         string file = Dialogs.SaveFileDialog("Save SharpGame Scene", Directory.GetCurrentDirectory(), "*.json", "SharpGame Scene (*.json)");
-                        SceneSerializer.Serialize(m_ActiveScene, file);
+                        SceneSerializer.Serialize(m_EditorScene, file);
                     }
                     ImGui.EndMenu();
                 }
@@ -236,7 +236,22 @@ namespace SharpEditor
             {
                 using (new ScopedMenu("Game View"))
                 {
-                    ImGui.Button("Play");
+                    if (ImGui.Button(m_SceneStatus == SceneStatus.Editor ? "Play" : "Stop"))
+                    {
+                        m_SceneStatus = m_SceneStatus == SceneStatus.Playing ? SceneStatus.Editor : SceneStatus.Playing;
+
+                        if (m_SceneStatus == SceneStatus.Playing)
+                        {
+                            m_ActiveScene = Scene.CreateCopyOf(m_EditorScene);
+                            m_Actors.Scene = m_ActiveScene;
+                            m_ActiveScene.OnAwake();
+                        }
+                        else
+                        {
+                            m_ActiveScene = m_EditorScene;
+                            m_Actors.Scene = m_EditorScene;
+                        }
+                    }
 
                     m_OnViewport = ImGui.IsWindowFocused() || ImGui.IsWindowHovered();
 
@@ -261,7 +276,7 @@ namespace SharpEditor
 
             using (new ScopedMenu("Information"))
             {
-                ImGui.Text($"Actors: {m_EditorScene.ActorCount}");
+                ImGui.Text($"Actors: {m_ActiveScene.ActorCount}");
 
                 ImGui.Text($"Hovered Actor: {m_HoveredActor}");
 
@@ -304,7 +319,7 @@ namespace SharpEditor
 
             RenderCommand.SetColor(m_BackgroundColor);
 
-            m_EditorScene.OnRender(m_EditorCamera);
+            m_ActiveScene.OnRender(m_EditorCamera);
 
             m_SceneBuffer.Unbind();
 

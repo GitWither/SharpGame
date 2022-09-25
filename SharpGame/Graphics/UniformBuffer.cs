@@ -23,7 +23,7 @@ namespace SharpGame.Graphics
 
         ~UniformBuffer()
         {
-            GL.DeleteBuffer(m_Id);
+            //GL.DeleteBuffer(m_Id);
         }
 
         public void UploadData<T>(ref T data, int size, int offset) where T : struct

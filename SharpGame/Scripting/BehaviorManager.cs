@@ -51,8 +51,6 @@ namespace SharpGame.Scripting
 
         public void OnStart(Scene scene)
         {
-            Logger.Info("Loaded classes: " + m_BehaviorTypes.Count);
-
             foreach (BehaviorType type in m_BehaviorTypes)
             {
                 ActorBehavior behavior = type.CreateInstance();

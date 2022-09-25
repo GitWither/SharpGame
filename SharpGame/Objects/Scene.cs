@@ -18,7 +18,7 @@ namespace SharpGame.Objects
 {
     public class Scene
     {
-        private readonly ActorRegistry m_ActorRegistry;
+        private ActorRegistry m_ActorRegistry;
 
         internal ActorRegistry ActorRegistry => m_ActorRegistry;
 
@@ -54,6 +54,17 @@ namespace SharpGame.Objects
 
             Renderer = new Renderer();
             Renderer.Initialize();
+        }
+
+        public static Scene CreateCopyOf(Scene scene)
+        {
+            Scene copiedScene = new Scene();
+
+            copiedScene.m_ActorRegistry = scene.m_ActorRegistry;
+            copiedScene.m_RenderSystem = scene.m_RenderSystem;
+            copiedScene.m_Actors = scene.m_Actors;
+
+            return copiedScene;
         }
 
         public void OnAwake()
