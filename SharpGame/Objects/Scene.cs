@@ -32,7 +32,6 @@ namespace SharpGame.Objects
 
 
         private RenderSystem m_RenderSystem;
-        public Renderer Renderer { get; set; }
 
 
         public Scene()
@@ -52,9 +51,6 @@ namespace SharpGame.Objects
 
 
             m_RenderSystem = m_ActorRegistry.RegisterSystem<RenderSystem, TransformComponent, MeshComponent>();
-
-            Renderer = new Renderer();
-            Renderer.Initialize();
         }
 
         public void CopyContentFrom(Scene scene)
@@ -113,11 +109,11 @@ namespace SharpGame.Objects
 
         public void OnRender(Camera camera)
         {
-            Renderer.Begin(camera);
+            SharpGameWindow.Instance.Renderer.Begin(camera);
 
-            m_RenderSystem.OnRender(m_ActorRegistry, Renderer);
+            m_RenderSystem.OnRender(m_ActorRegistry, SharpGameWindow.Instance.Renderer);
 
-            Renderer.End();
+            SharpGameWindow.Instance.Renderer.End();
         }
 
         public IEnumerable<int> EnumerateActors()

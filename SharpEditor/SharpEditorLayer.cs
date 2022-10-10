@@ -296,9 +296,9 @@ namespace SharpEditor
 
             using (new ScopedMenu("Renderer"))
             {
-                ImGui.Text($"Draw Calls: {m_ActiveScene.Renderer.DrawCalls}");
-                ImGui.Text($"Vertices: {m_ActiveScene.Renderer.Vertices}");
-                ImGui.Text($"Indices: {m_ActiveScene.Renderer.Indices}");
+                ImGui.Text($"Draw Calls: {SharpGameWindow.Instance.Renderer.DrawCalls}");
+                ImGui.Text($"Vertices: {SharpGameWindow.Instance.Renderer.Vertices}");
+                ImGui.Text($"Indices: {SharpGameWindow.Instance.Renderer.Indices}");
             }
 
 

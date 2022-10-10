@@ -7,12 +7,23 @@ using ImGuiNET;
 using SharpEditor.Util;
 using SharpGame.Objects;
 using SharpGame.Objects.Components;
+using SharpGame.Util;
 
 namespace SharpEditor.Panels
 {
     public class ActorsPanel : IPanel
     {
-        public Scene Scene { get; set; }
+        private Scene m_ContextScene = null;
+
+        public Scene Scene
+        {
+            get => m_ContextScene;
+            set
+            {
+                m_ContextScene = value;
+                this.SelectedActor = Actor.Null;
+            }
+        }
         public Actor SelectedActor { get; set; }
         public void OnImGuiRender()
         {
