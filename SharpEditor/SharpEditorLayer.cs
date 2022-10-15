@@ -11,6 +11,7 @@ using System.Threading.Tasks;
 using ImGuiNET;
 using OpenTK.Graphics.OpenGL4;
 using OpenTK.Mathematics;
+using OpenTK.Windowing.Common;
 using SharpEditor.Panels;
 using SharpEditor.Util;
 using SharpGame;
@@ -95,6 +96,7 @@ namespace SharpEditor
             SharpGameWindow.Instance.Resize += this.Resize;
             SharpGameWindow.Instance.Maximized += this.Maximize;
             SharpGameWindow.Instance.TextInput += this.TextInput;
+            SharpGameWindow.Instance.FileDrop += this.FileDrop;
             
 
             m_EditorScene = new Scene();
@@ -115,6 +117,14 @@ namespace SharpEditor
 
             //SceneSerializer.Serialize(m_EditorScene, "coolScene.json");
             SceneSerializer.Deserialize("coolScene.json", ref m_EditorScene);
+        }
+
+        private void FileDrop(FileDropEventArgs obj)
+        {
+            foreach (string file in obj.FileNames)
+            {
+                SharpGameWindow.Instance.AssetStorage.ImportAsset(file);
+            }
         }
 
         private void TextInput(OpenTK.Windowing.Common.TextInputEventArgs obj)
@@ -313,6 +323,19 @@ namespace SharpEditor
                 ImGui.Text($"Draw Calls: {SharpGameWindow.Instance.Renderer.DrawCalls}");
                 ImGui.Text($"Vertices: {SharpGameWindow.Instance.Renderer.Vertices}");
                 ImGui.Text($"Indices: {SharpGameWindow.Instance.Renderer.Indices}");
+            }
+
+            using (new ScopedMenu("Asset Storage"))
+            {
+                ImGui.Columns(2);
+
+                foreach (var idAssetPair in SharpGameWindow.Instance.AssetStorage.EnumerateAssets())
+                {
+                    ImGui.Text(idAssetPair.Key.ToString());
+                    ImGui.NextColumn();
+                    ImGui.Text(idAssetPair.Value.Path);
+                    ImGui.NextColumn();
+                }
             }
 
 

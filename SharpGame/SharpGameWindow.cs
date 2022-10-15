@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Drawing.Drawing2D;
 using System.Linq;
 using System.Text;
@@ -27,6 +28,7 @@ using SharpGame.Events;
 using OpenTK.Mathematics;
 using OpenTK.Windowing.GraphicsLibraryFramework;
 using System.Diagnostics;
+using SharpGame.Assets;
 using SharpGame.Core;
 using SharpGame.Scripting;
 
@@ -37,6 +39,7 @@ namespace SharpGame
         private readonly Stack<ILayer> m_Layers;
         public BehaviorManager BehaviorManager { get; }
         public Renderer Renderer { get; }
+        public AssetStorage AssetStorage { get; }
         public static SharpGameWindow Instance { get; private set; } = null;
 
         public SharpGameWindow(int width, int height, string title) : base(
@@ -51,12 +54,14 @@ namespace SharpGame
         {
             Thread.CurrentThread.Name = SharedConstants.RenderThreadName;
 
+            AssetStorage = new AssetStorage();
             BehaviorManager = new BehaviorManager();
             Renderer = new Renderer();
 
             this.m_Layers = new Stack<ILayer>();
             Instance = this;
 
+            AssetStorage.Initialize();
             BehaviorManager.Initialize();
             Renderer.Initialize();
         }
@@ -70,6 +75,11 @@ namespace SharpGame
 
             //this.VSync = VSyncMode.On;
             base.OnLoad();
+        }
+
+        protected override void OnClosing(CancelEventArgs e)
+        {
+            AssetStorage.Shutdown();
         }
 
         protected override void OnClosed()

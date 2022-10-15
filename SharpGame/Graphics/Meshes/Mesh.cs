@@ -9,11 +9,12 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using SharpGame.Assets;
 using SharpGame.Graphics.Vaos;
 
 namespace SharpGame.Graphics.Meshes
 {
-    public class Mesh
+    public class Mesh : Asset
     {
         public static Mesh GuiQuad = new Mesh(
             new Vector3[] {
@@ -76,7 +77,7 @@ namespace SharpGame.Graphics.Meshes
             List<int> uvIndices = new List<int>();
             List<int> normalIndices = new List<int>();
 
-            using (StreamReader sr = new StreamReader(SharedConstants.MeshFolder + file + SharedConstants.MeshExtension))
+            using (StreamReader sr = new StreamReader(file))
             {
                 while (sr.Peek() >= 0)
                 {

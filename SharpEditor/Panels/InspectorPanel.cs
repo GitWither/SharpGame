@@ -65,6 +65,7 @@ namespace SharpEditor.Panels
 
                 RenderComponent("Mesh Component", (ref MeshComponent mesh) =>
                 {
+                    ImGui.Text(mesh.MeshAsset.ToString());
                 });
 
                 RenderComponent("Camera Component", (ref CameraComponent camera) =>

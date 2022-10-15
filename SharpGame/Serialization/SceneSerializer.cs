@@ -72,7 +72,7 @@ namespace SharpGame.Serialization
                 SerializeComponent(actorObj, writer, (MeshComponent mesh) =>
                 {
                     writer.WritePropertyName("mesh");
-                    writer.WriteValue("nope");
+                    writer.WriteValue(mesh.MeshAsset);
 
                     writer.WritePropertyName("material");
                     writer.WriteValue("nope");
@@ -190,10 +190,16 @@ namespace SharpGame.Serialization
                         {
                             if (currentActor.HasComponent<MeshComponent>()) continue;
 
-                            currentActor.AddComponent(new MeshComponent(Mesh.FromOBJ("buffalo"),
-                                new Material(Shader.Unlit, new Texture("grass20"))));
-                            //string mesh = reader.ReadAsString();
+                            int mesh = reader.ReadAsInt32() ?? -1;
+
+                            reader.Read();
+
+                            string material = reader.ReadAsString();
+
+                            currentActor.AddComponent(new MeshComponent(mesh, new Material(Shader.Unlit, new Texture("grass20"))));
+
                             Logger.Info($"Mesh: {(int)currentActor}");
+                            Logger.Info(mesh);
                             break;
                         }
                         case "BehaviorComponent":

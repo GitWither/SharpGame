@@ -27,7 +27,8 @@ namespace SharpGame.Graphics
                 ref MeshComponent mesh = ref actorRegistry.GetComponent<MeshComponent>(actor);
                 ref TransformComponent transform = ref actorRegistry.GetComponent<TransformComponent>(actor);
 
-                renderer.DrawMesh(mesh.Material, mesh.Mesh, transform);
+                Mesh meshAsset = SharpGameWindow.Instance.AssetStorage.GetAsset<Mesh>(mesh.MeshAsset);
+                renderer.DrawMesh(mesh.Material, meshAsset, transform);
             }
         }
 

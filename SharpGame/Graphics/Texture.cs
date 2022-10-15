@@ -10,11 +10,12 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using SharpGame.Assets;
 
 
 namespace SharpGame.Graphics
 {
-    public class Texture
+    public class Texture : Asset
     {
         public int Id { get; }
 
