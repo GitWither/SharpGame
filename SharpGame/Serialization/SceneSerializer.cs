@@ -78,6 +78,12 @@ namespace SharpGame.Serialization
                     writer.WriteValue("nope");
                 });
 
+                SerializeComponent(actorObj, writer, (BehaviorComponent behavior) =>
+                {
+                    writer.WritePropertyName("behavior");
+                    writer.WriteValue(behavior.BehaviorClass.FullName);
+                });
+
 
 
                 writer.WriteEndObject();
@@ -184,10 +190,24 @@ namespace SharpGame.Serialization
                         {
                             if (currentActor.HasComponent<MeshComponent>()) continue;
 
-                            currentActor.AddComponent(new MeshComponent(Mesh.SkyBox,
+                            currentActor.AddComponent(new MeshComponent(Mesh.FromOBJ("buffalo"),
                                 new Material(Shader.Unlit, new Texture("grass20"))));
                             //string mesh = reader.ReadAsString();
                             Logger.Info($"Mesh: {(int)currentActor}");
+                            break;
+                        }
+                        case "BehaviorComponent":
+                        {
+                            if (currentActor.HasComponent<BehaviorComponent>()) continue;
+
+                            string rawTypeName = reader.ReadAsString();
+                            Type storedType = SharpGameWindow.Instance.BehaviorManager.GetTypeFromName(rawTypeName);
+
+                            if (storedType != null)
+                            {
+                                currentActor.AddComponent(new BehaviorComponent(storedType));
+                            }
+
                             break;
                         }
                     }

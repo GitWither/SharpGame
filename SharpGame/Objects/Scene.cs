@@ -14,6 +14,7 @@ using System.Runtime.CompilerServices;
 using SharpActors;
 using SharpGame.Input;
 using System.Numerics;
+using SharpGame.Scripting;
 
 namespace SharpGame.Objects
 {
@@ -32,6 +33,7 @@ namespace SharpGame.Objects
 
 
         private RenderSystem m_RenderSystem;
+        private BehaviorSystem m_BehaviorSystem;
 
 
         public Scene()
@@ -51,6 +53,7 @@ namespace SharpGame.Objects
 
 
             m_RenderSystem = m_ActorRegistry.RegisterSystem<RenderSystem, TransformComponent, MeshComponent>();
+            m_BehaviorSystem = m_ActorRegistry.RegisterSystem<BehaviorSystem, BehaviorComponent>();
         }
 
         public void CopyContentFrom(Scene scene)
@@ -85,6 +88,15 @@ namespace SharpGame.Objects
         public void OnAwake()
         {
             SharpGameWindow.Instance.BehaviorManager.OnStart(this);
+
+            ActorView behaviorActors = ActorRegistry.CreateView<BehaviorComponent>();
+            foreach (int actor in behaviorActors)
+            {
+                ref BehaviorComponent behaviorComponent = ref ActorRegistry.GetComponent<BehaviorComponent>(actor);
+                SharpGameWindow.Instance.BehaviorManager.OnActorCreate(actor, behaviorComponent.BehaviorClass);
+            }
+
+            this.Running = true;
         }
 
 
@@ -98,6 +110,7 @@ namespace SharpGame.Objects
             ActorRegistry.AddComponent(id, new TransformComponent());
             ActorRegistry.AddComponent(id, new NameComponent(name));
             m_Actors.Add(id);
+
             return new Actor(id, this);
         }
 
@@ -124,13 +137,17 @@ namespace SharpGame.Objects
             }
         }
 
-        internal void OnUpdate(float deltaTime)
+        public void OnUpdate(float deltaTime)
         {
+            if (this.Running)
+                this.m_BehaviorSystem.OnUpdate();
         }
 
-        internal void OnShutdown()
+        public void OnSleep()
         {
             this.Running = false;
+
+            SharpGameWindow.Instance.BehaviorManager.OnStop();
         }
     }
 }

@@ -14,21 +14,32 @@ namespace SharpGame.Scripting
 {
     public class BehaviorManager
     {
+        private AssemblyLoadContext m_AssemblyLoadContext;
+        private Assembly m_Assembly;
+
         private readonly HashSet<BehaviorType> m_BehaviorTypes = new();
         private readonly Dictionary<int, ActorBehavior> m_ActorIdToBehavior = new();
+        private readonly Dictionary<Type, BehaviorType> m_TypeToBehavior = new();
+
+        private Scene m_ContextScene;
+
+        public int BehaviorInstances => m_ActorIdToBehavior.Count;
 
         public void Initialize()
         {
-            AssemblyLoadContext behaviorAssemblyContext = new AssemblyLoadContext("BehaviorAssemblyContext", true);
-            Assembly behaviorAssembly = behaviorAssemblyContext.LoadFromAssemblyPath(Path.GetFullPath("PlaygroundProject.dll"));
+            m_AssemblyLoadContext = new AssemblyLoadContext("BehaviorAssemblyContext", true);
+            m_AssemblyLoadContext.Unloading += AssemblyContextUnloaded;
+            m_Assembly = LoadAssembly();
 
-            Type[] availableTypes = behaviorAssembly.GetTypes();
+            Type[] availableTypes = m_Assembly.GetTypes();
 
             foreach (Type type in availableTypes)
             {
                 if (!type.IsAssignableTo(typeof(ActorBehavior))) continue;
 
-                m_BehaviorTypes.Add(new BehaviorType(type));
+                BehaviorType behaviorType = new BehaviorType(type);
+                m_TypeToBehavior.Add(type, behaviorType);
+                m_BehaviorTypes.Add(behaviorType);
 
                 FieldInfo[] fields = type.GetFields();
                 foreach (FieldInfo field in fields)
@@ -41,6 +52,11 @@ namespace SharpGame.Scripting
 
         }
 
+        private void AssemblyContextUnloaded(AssemblyLoadContext obj)
+        {
+            m_Assembly = LoadAssembly();
+        }
+
         public IEnumerable<Type> EnumerateBehaviorClasses()
         {
             foreach (BehaviorType type in m_BehaviorTypes)
@@ -49,18 +65,51 @@ namespace SharpGame.Scripting
             }
         }
 
+        public Type GetTypeFromName(string name)
+        {
+            return m_Assembly.GetType(name);
+        }
+
         public void OnStart(Scene scene)
         {
-            foreach (BehaviorType type in m_BehaviorTypes)
-            {
-                ActorBehavior behavior = type.CreateInstance();
-                type.OnAwakeMethod.Invoke(behavior, null);
-            }
+            m_ContextScene = scene;
         }
 
         public void OnStop()
         {
+            foreach (ActorBehavior behavior in m_ActorIdToBehavior.Values)
+            {
+                behavior.OnSleep();
+            }
+            m_ActorIdToBehavior.Clear();
+        }
 
+        private Assembly LoadAssembly()
+        {
+            using FileStream fs = File.OpenRead("PlaygroundProject.dll");
+            return m_AssemblyLoadContext.LoadFromStream(fs);
+        }
+
+        public void ReloadAssembly()
+        {
+            m_AssemblyLoadContext.Unload();
+        }
+
+        public void OnUpdate(int actor)
+        {
+            m_ActorIdToBehavior[actor].OnUpdate();
+        }
+
+        public void OnActorCreate(int actor, Type type)
+        {
+            BehaviorType behaviorType = m_TypeToBehavior[type];
+            ActorBehavior behavior = behaviorType.CreateInstance();
+
+            behavior.SetContext(actor, m_ContextScene);
+
+            m_ActorIdToBehavior.Add(actor, behavior);
+
+            behavior.OnAwake();
         }
     }
 }

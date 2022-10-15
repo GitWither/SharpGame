@@ -9,5 +9,10 @@ namespace SharpGame.Objects.Components
 {
     public struct BehaviorComponent {
         public Type BehaviorClass { get; set; }
+
+        public BehaviorComponent(Type type)
+        {
+            this.BehaviorClass = type;
+        }
     }
 }

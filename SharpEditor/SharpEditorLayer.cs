@@ -149,6 +149,8 @@ namespace SharpEditor
             }
 
             m_ImGuiController.Update(SharpGameWindow.Instance, deltaTime);
+
+            m_ActiveScene.OnUpdate(deltaTime);
         }
 
         private void OnImGuiRender()
@@ -226,6 +228,15 @@ namespace SharpEditor
                         string file = Dialogs.SaveFileDialog("Save SharpGame Scene", Directory.GetCurrentDirectory(), "*.json", "SharpGame Scene (*.json)");
                         SceneSerializer.Serialize(m_EditorScene, file);
                     }
+
+                    ImGui.Separator();
+
+                    if (ImGui.MenuItem("Reload Behavior Assembly"))
+                    {
+                        SharpGameWindow.Instance.BehaviorManager.ReloadAssembly();
+                    }
+
+
                     ImGui.EndMenu();
                 }
 
@@ -254,6 +265,7 @@ namespace SharpEditor
                         else
                         {
                             Logger.Info("scene stopped");
+                            m_ActiveScene.OnSleep();
                             m_ActiveScene = m_EditorScene;
                             m_Actors.Scene = m_ActiveScene;
                         }
@@ -285,6 +297,8 @@ namespace SharpEditor
                 ImGui.Text($"Actors: {m_ActiveScene.ActorCount}");
 
                 ImGui.Text($"Hovered Actor: {m_HoveredActor}");
+
+                ImGui.Text($"Behavior Instances: {SharpGameWindow.Instance.BehaviorManager.BehaviorInstances}");
 
                 ImGui.ColorEdit3("Background Color", ref m_BackgroundColor);
 
