@@ -8,6 +8,6 @@ namespace SharpEditor.Panels
 {
     public interface IPanel
     {
-        void OnImGuiRender();
+        void OnImGuiRender(ref bool open);
     }
 }

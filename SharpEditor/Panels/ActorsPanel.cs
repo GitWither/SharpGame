@@ -25,7 +25,7 @@ namespace SharpEditor.Panels
             }
         }
         public Actor SelectedActor { get; set; }
-        public void OnImGuiRender()
+        public void OnImGuiRender(ref bool open)
         {
             using (new ScopedMenu("Actors"))
             {

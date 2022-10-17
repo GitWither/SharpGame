@@ -15,6 +15,7 @@ using OpenTK.Windowing.Common;
 using SharpEditor.Panels;
 using SharpEditor.Util;
 using SharpGame;
+using SharpGame.Assets;
 using SharpGame.Core;
 using SharpGame.Graphics;
 using SharpGame.Graphics.Meshes;
@@ -23,6 +24,7 @@ using SharpGame.Objects.Components;
 using SharpGame.Serialization;
 using SharpGame.Util;
 using TinyDialogsNet;
+using Boolean = System.Boolean;
 using Vector2 = System.Numerics.Vector2;
 using Vector3 = System.Numerics.Vector3;
 using Vector4 = System.Numerics.Vector4;
@@ -48,12 +50,15 @@ namespace SharpEditor
         private InspectorPanel m_Inspector;
         private ActorsPanel m_Actors;
         private AssetsPanel m_Assets;
+        private MaterialPanel m_MaterialEditor;
+
         private int m_HoveredActor;
         private readonly Vector2[] m_ViewportBounds = new Vector2[2];
 
         private Project m_CurrentProject;
 
         private bool m_ProjectModalOpen = false;
+        private bool m_MaterialWindowOpen = false;
 
         private readonly IntPtr m_CurrentProjectName = Marshal.StringToHGlobalAnsi(string.Empty);
         private readonly IntPtr m_CurrentProjectPath = Marshal.StringToHGlobalAnsi(string.Empty);
@@ -86,6 +91,7 @@ namespace SharpEditor
             m_Actors = new ActorsPanel();
             m_Inspector = new InspectorPanel(m_Actors);
             m_Assets = new AssetsPanel();
+            m_MaterialEditor = new MaterialPanel();
 
             m_Actors.SelectedActor = Actor.Null;
 
@@ -250,6 +256,16 @@ namespace SharpEditor
                     ImGui.EndMenu();
                 }
 
+                if (ImGui.BeginMenu("Window"))
+                {
+                    if (ImGui.MenuItem("Material Editor", "", m_MaterialWindowOpen))
+                    {
+                        m_MaterialWindowOpen = !m_MaterialWindowOpen;
+                    }
+
+                    ImGui.EndMenu();
+                }
+
                 ImGui.EndMenuBar();
             }
 
@@ -296,10 +312,11 @@ namespace SharpEditor
                 }
             }
 
-
-            m_Inspector.OnImGuiRender();
-            m_Actors.OnImGuiRender();
-            m_Assets.OnImGuiRender();
+            //TODO: Make this customizable probably
+            bool shouldShow = true;
+            m_Inspector.OnImGuiRender(ref shouldShow);
+            m_Actors.OnImGuiRender(ref shouldShow);
+            m_Assets.OnImGuiRender(ref shouldShow);
 
 
             using (new ScopedMenu("Information"))
@@ -327,17 +344,40 @@ namespace SharpEditor
 
             using (new ScopedMenu("Asset Storage"))
             {
-                ImGui.Columns(2);
 
                 foreach (var idAssetPair in SharpGameWindow.Instance.AssetStorage.EnumerateAssets())
                 {
+                    ImGui.Text("Id:");
+                    ImGui.SameLine();
                     ImGui.Text(idAssetPair.Key.ToString());
-                    ImGui.NextColumn();
+
+                    ImGui.Text("Type:");
+                    ImGui.SameLine();
+                    ImGui.Text(idAssetPair.Value.Type.ToString());
+
+                    ImGui.Text("Path:");
+                    ImGui.SameLine();
                     ImGui.Text(Path.GetFileName(idAssetPair.Value.Path));
-                    ImGui.NextColumn();
+
+                    if (idAssetPair.Value.Type == AssetType.Material)
+                    {
+                        using ScopedId id = new ScopedId(idAssetPair.Key.ToString());
+
+                        if (ImGui.Button("Select"))
+                        {
+                            m_MaterialEditor.ContextMaterial =
+                                SharpGameWindow.Instance.AssetStorage.GetAsset<Material>(idAssetPair.Key);
+                        }
+                    }
+
+                    ImGui.Separator();
                 }
             }
 
+            if (m_MaterialWindowOpen)
+            {
+                m_MaterialEditor.OnImGuiRender(ref m_MaterialWindowOpen);
+            }
 
             ImGui.End();
 

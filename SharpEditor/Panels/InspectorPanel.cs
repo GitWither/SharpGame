@@ -8,6 +8,7 @@ using System.Numerics;
 using ImGuiNET;
 using SharpEditor.Util;
 using SharpGame;
+using SharpGame.Assets;
 using SharpGame.Objects;
 using SharpGame.Objects.Components;
 
@@ -22,7 +23,7 @@ namespace SharpEditor.Panels
             this.m_Actors = actors;
         }
 
-        public void OnImGuiRender()
+        public void OnImGuiRender(ref bool open)
         {
             using (new ScopedMenu("Inspector"))
             {
@@ -69,22 +70,30 @@ namespace SharpEditor.Panels
                     {
                         foreach (var idAssetPair in SharpGameWindow.Instance.AssetStorage.EnumerateAssets())
                         {
+                            if (idAssetPair.Value.Type != AssetType.Mesh) continue;
+                            
                             if (ImGui.Selectable(Path.GetFileName(idAssetPair.Value.Path)))
                             {
                                 mesh.MeshAsset = idAssetPair.Key;
                             }
                         }
+
+                        ImGui.EndCombo();
                     }
 
                     if (ImGui.BeginCombo("Material", mesh.MaterialAsset.ToString()))
                     {
                         foreach (var idAssetPair in SharpGameWindow.Instance.AssetStorage.EnumerateAssets())
                         {
+                            if (idAssetPair.Value.Type != AssetType.Material) continue;
+
                             if (ImGui.Selectable(Path.GetFileName(idAssetPair.Value.Path)))
                             {
                                 mesh.MaterialAsset = idAssetPair.Key;
                             }
                         }
+
+                        ImGui.EndCombo();
                     }
                 });
 

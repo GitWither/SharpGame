@@ -94,17 +94,16 @@ namespace SharpGame.Serialization
 
         private static void SerializeComponent<T>(Actor actor, JsonWriter writer, Action<T> serializeAction) where T : struct
         {
-            if (actor.HasComponent<T>())
-            {
-                T component = actor.GetComponent<T>();
+            if (!actor.HasComponent<T>()) return;
+            
+            T component = actor.GetComponent<T>();
 
-                writer.WritePropertyName(typeof(T).Name);
-                writer.WriteStartObject();
+            writer.WritePropertyName(typeof(T).Name);
+            writer.WriteStartObject();
 
-                serializeAction.Invoke(component);
+            serializeAction.Invoke(component);
 
-                writer.WriteEndObject();
-            }
+            writer.WriteEndObject();
         }
 
         public static void Deserialize(string path, ref Scene scene)
@@ -201,6 +200,8 @@ namespace SharpGame.Serialization
                             reader.Read();
 
                             currentActor.AddComponent(new MeshComponent(mesh, material));
+
+                            reader.Read();
 
                             Logger.Info($"Mesh: {(int)currentActor}");
                             Logger.Info(mesh);

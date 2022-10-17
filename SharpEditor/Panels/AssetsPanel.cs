@@ -28,7 +28,7 @@ namespace SharpEditor.Panels
             this.NavigateToPath(m_CurrentDirectory);
         }
 
-        public void OnImGuiRender()
+        public void OnImGuiRender(ref bool open)
         {
             ImGui.ShowDemoWindow();
             using (new ScopedMenu("Assets"))

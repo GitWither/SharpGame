@@ -15,6 +15,16 @@ namespace SharpEditor.Util
             ImGui.Begin(name);
         }
 
+        public ScopedMenu(string name, ref bool open)
+        {
+            ImGui.Begin(name, ref open);
+        }
+
+        public ScopedMenu(string name, ref bool open, ImGuiWindowFlags windowFlags)
+        {
+            ImGui.Begin(name, ref open, windowFlags);
+        }
+
         public ScopedMenu(string name, ImGuiWindowFlags windowFlags)
         {
             ImGui.Begin(name, windowFlags);
