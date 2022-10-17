@@ -23,20 +23,8 @@ namespace SharpGame.Graphics
         private readonly int width;
 
         public Texture(string file) : this(
-            (Bitmap)Image.FromFile(SharedConstants.TextureFolder + file + SharedConstants.TextureExtension))
+            (Bitmap)Image.FromFile(file))
         {
-            Bitmap bitmap;
-            try
-            {
-                bitmap = (Bitmap)Image.FromFile(SharedConstants.TextureFolder + file +
-                                                SharedConstants.TextureExtension);
-            }
-            catch (IOException e)
-            {
-                Logger.Exception(e);
-                return;
-            }
-
             Logger.Info("Successfully loaded texture " + file);
         }
 
@@ -80,9 +68,9 @@ namespace SharpGame.Graphics
             GL.BindTexture(TextureTarget.Texture2D, 0);
         }
 
-        ~Texture()
+        public override void Dispose()
         {
-            //GL.DeleteTexture(Id);
+            GL.DeleteTexture(Id);
         }
     }
 }

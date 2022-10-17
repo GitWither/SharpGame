@@ -333,7 +333,7 @@ namespace SharpEditor
                 {
                     ImGui.Text(idAssetPair.Key.ToString());
                     ImGui.NextColumn();
-                    ImGui.Text(idAssetPair.Value.Path);
+                    ImGui.Text(Path.GetFileName(idAssetPair.Value.Path));
                     ImGui.NextColumn();
                 }
             }

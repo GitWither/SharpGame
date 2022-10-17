@@ -33,14 +33,23 @@ namespace SharpGame.Assets
             return Id != -1 && Path != "null";
         }
     }
+
     public class AssetStorage
     {
-        private Random m_Random = new Random();
+        private readonly Random m_Random = new Random();
 
-        private Dictionary<long, Asset> m_Assets = new Dictionary<long, Asset>();
-        private Dictionary<long, AssetData> m_AssetRegistry = new Dictionary<long, AssetData>();
+        private readonly Dictionary<long, Asset> m_Assets = new();
+        private readonly Dictionary<Asset, long> m_AssetIds = new();
+        private readonly Dictionary<long, AssetData> m_AssetRegistry = new();
 
-        public void Initialize()
+        private readonly Dictionary<AssetType, IAssetSerializer> m_TypeToSerializer = new()
+            {
+                { AssetType.Material, new MaterialSerializer() },
+                { AssetType.Mesh, new MeshSerializer()},
+                { AssetType.Texture, new TextureSerializer()}
+            };
+
+    public void Initialize()
         {
             if (!File.Exists("AssetStorage.txt")) return;
 
@@ -54,12 +63,14 @@ namespace SharpGame.Assets
                 if (string.IsNullOrEmpty(line)) continue;
 
 
-                string[] parts = line.Split(":");
+                string[] parts = line.Split(":", 2);
 
 
                 if (!long.TryParse(parts[0], out long assetId)) continue;
 
                 string path = parts[1];
+
+                if (!File.Exists(path)) continue;
 
                 m_AssetRegistry.Add(assetId, new AssetData(assetId, path, GetAssetTypeOfPath(path)));
 
@@ -75,8 +86,16 @@ namespace SharpGame.Assets
             {
                 writer.Write(idAssetPair.Key);
                 writer.Write(":");
-                writer.Write(idAssetPair.Value);
+                writer.Write(idAssetPair.Value.Path);
                 writer.WriteLine();
+            }
+
+            foreach (KeyValuePair<long, Asset> idAssetPair in m_Assets)
+            {
+                if (m_AssetRegistry[idAssetPair.Key].HasLoaded)
+                {
+                    idAssetPair.Value.Dispose();
+                }
             }
         }
 
@@ -94,6 +113,11 @@ namespace SharpGame.Assets
             return data.Id;
         }
 
+        public long GetAssetId(Asset asset)
+        {
+            return m_AssetIds[asset];
+        }
+
         public T GetAsset<T>(long id) where T : Asset
         {
             if (!m_AssetRegistry.ContainsKey(id)) return null;
@@ -102,13 +126,14 @@ namespace SharpGame.Assets
 
             if (!data.HasLoaded)
             {
-                Asset asset = Asset.Load(data);
+                Asset asset = m_TypeToSerializer[data.Type].Deserialize(data);
                 if (asset == null) return null;
 
                 data.HasLoaded = true;
                 m_AssetRegistry[id] = data;
 
                 m_Assets.Add(id, asset);
+                m_AssetIds.Add(asset, id);
                 return (T)asset;
             }
 
@@ -131,6 +156,8 @@ namespace SharpGame.Assets
 
             switch (ext)
             {
+                case ".sgmat":
+                    return AssetType.Material;
                 case ".obj":
                     return AssetType.Mesh;
                 case ".png":

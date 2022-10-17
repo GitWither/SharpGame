@@ -27,6 +27,8 @@ namespace SharpGame.Graphics
 
         private readonly int programId;
 
+        public string Name { get; }
+
         static Shader()
         {
             Unlit = new Shader("unlit");
@@ -46,6 +48,7 @@ namespace SharpGame.Graphics
         public Shader(string name, string fragmentSource, string vertexSource)
         {
             programId = GL.CreateProgram();
+            Name = name;
 
             AttachShader(ShaderType.VertexShader, vertexSource);
             AttachShader(ShaderType.FragmentShader, fragmentSource);

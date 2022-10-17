@@ -18,8 +18,8 @@ namespace SharpEditor.Panels
         private float thumbnailSize = 80f;
         private float padding = 18f;
 
-        private Texture m_FolderIcon = new Texture("EditorAssets/Folder");
-        private Texture m_FileIcon = new Texture("EditorAssets/File");
+        private Texture m_FolderIcon = new Texture("Textures/EditorAssets/Folder.png");
+        private Texture m_FileIcon = new Texture("Textures/EditorAssets/File.png");
 
         private string[] m_ParentPaths = Array.Empty<string>();
 

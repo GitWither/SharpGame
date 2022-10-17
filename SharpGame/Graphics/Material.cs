@@ -5,18 +5,21 @@ using System.Text;
 using System.Threading.Tasks;
 using OpenTK.Graphics.OpenGL4;
 using OpenTK.Mathematics;
+using SharpGame.Assets;
 using SharpGame.Graphics.Vaos;
 using SharpGame.Util;
 
 namespace SharpGame.Graphics
 {
-    public class Material : IDisposable
+    public class Material : Asset
     {
         public Shader Shader { get; set; }
         public Texture BaseMap { get; set; }
         public Texture NormalMap { get; set; }
         public Texture EmissionMap { get; set; }
-        public float Specularity { get; set; }
+        public Vector3 AmbientColor { get; set; }
+        public Vector3 DiffuseColor { get; set; }
+
 
         public Material(Shader shader, Texture baseMap) : this(shader, baseMap, null, null, 0.0f)
         {
@@ -41,11 +44,10 @@ namespace SharpGame.Graphics
             this.BaseMap = baseMap;
             this.NormalMap = normalMap;
             this.EmissionMap = emissionMap;
-            this.Specularity = specularity;
         }
 
 
-        public void Dispose()
+        public override void Dispose()
         {
             Shader?.Dispose();
         }

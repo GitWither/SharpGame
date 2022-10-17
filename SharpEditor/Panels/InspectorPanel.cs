@@ -65,7 +65,27 @@ namespace SharpEditor.Panels
 
                 RenderComponent("Mesh Component", (ref MeshComponent mesh) =>
                 {
-                    ImGui.Text(mesh.MeshAsset.ToString());
+                    if (ImGui.BeginCombo("Mesh", mesh.MeshAsset.ToString()))
+                    {
+                        foreach (var idAssetPair in SharpGameWindow.Instance.AssetStorage.EnumerateAssets())
+                        {
+                            if (ImGui.Selectable(Path.GetFileName(idAssetPair.Value.Path)))
+                            {
+                                mesh.MeshAsset = idAssetPair.Key;
+                            }
+                        }
+                    }
+
+                    if (ImGui.BeginCombo("Material", mesh.MaterialAsset.ToString()))
+                    {
+                        foreach (var idAssetPair in SharpGameWindow.Instance.AssetStorage.EnumerateAssets())
+                        {
+                            if (ImGui.Selectable(Path.GetFileName(idAssetPair.Value.Path)))
+                            {
+                                mesh.MaterialAsset = idAssetPair.Key;
+                            }
+                        }
+                    }
                 });
 
                 RenderComponent("Camera Component", (ref CameraComponent camera) =>

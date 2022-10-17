@@ -250,5 +250,10 @@ namespace SharpGame.Graphics.Meshes
 
             return new Mesh(vertices.ToArray(), null, uvs.ToArray(), indices.ToArray());
         }
+
+        public override void Dispose()
+        {
+            this.VertexArray.Dispose();
+        }
     }
 }

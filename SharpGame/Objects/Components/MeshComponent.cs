@@ -16,12 +16,12 @@ namespace SharpGame.Objects.Components
     public struct MeshComponent
     {
         public long MeshAsset { get; set; }
-        public Material Material { get; set; }
+        public long MaterialAsset { get; set; }
 
-        public MeshComponent(long meshAsset, Material material)
+        public MeshComponent(long meshAsset, long materialAsset)
         {
             this.MeshAsset = meshAsset;
-            this.Material = material;
+            this.MaterialAsset = materialAsset;
         }
     }
 }

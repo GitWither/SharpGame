@@ -8,21 +8,8 @@ using SharpGame.Graphics.Meshes;
 
 namespace SharpGame.Assets
 {
-    public abstract class Asset
+    public abstract class Asset : IDisposable
     {
-        public static Asset Load(AssetData data)
-        {
-            //change this
-
-            switch (data.Type)
-            {
-                case AssetType.Mesh:
-                    return Mesh.FromOBJ(data.Path);
-                case AssetType.Texture:
-                    return new Texture(data.Path);
-            }
-
-            return null;
-        }
+        public abstract void Dispose();
     }
 }
