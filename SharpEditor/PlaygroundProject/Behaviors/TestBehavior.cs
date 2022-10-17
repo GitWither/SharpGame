@@ -28,22 +28,46 @@ namespace PlaygroundProject.Behaviors
         public override void OnUpdate()
         {
 
-            ref TransformComponent transform = ref this.GetComponent<TransformComponent>();
+            ref TransformComponent transform = ref GetPosition();
+
+            if (InputSystem.GetKey(KeyCode.RightArrow))
+            {
+                transform.Rotation = Vector3.Add(transform.Rotation, Vector3.UnitY * 0.05f);
+            }
+            if (InputSystem.GetKey(KeyCode.LeftArrow))
+            {
+                transform.Rotation = Vector3.Add(transform.Rotation, -Vector3.UnitY * 0.05f);
+            }
+
+            Vector3 forward = Forward;
+            Vector3 right = Vector3.Cross(forward, Vector3.UnitY);
+
+
             if (InputSystem.GetKey(KeyCode.W))
             {
-                transform.Position = Vector3.Add(transform.Position, Vector3.UnitZ);
+                transform.Position = Vector3.Add(transform.Position, -forward);
             }
             if (InputSystem.GetKey(KeyCode.S))
             {
-                transform.Position = Vector3.Add(transform.Position, -Vector3.UnitZ);
+                transform.Position = Vector3.Add(transform.Position, forward);
             }
             if (InputSystem.GetKey(KeyCode.A))
             {
-                transform.Position = Vector3.Add(transform.Position, Vector3.UnitX);
+                transform.Position = Vector3.Add(transform.Position, right);
             }
             if (InputSystem.GetKey(KeyCode.D))
             {
-                transform.Position = Vector3.Add(transform.Position, -Vector3.UnitX);
+                transform.Position = Vector3.Add(transform.Position, -right);
+            }
+
+            if (InputSystem.GetKey(KeyCode.Space))
+            {
+                transform.Position = Vector3.Add(transform.Position, Vector3.UnitY);
+            }
+
+            if (InputSystem.GetKey(KeyCode.LeftShift))
+            {
+                transform.Position = Vector3.Add(transform.Position, -Vector3.UnitY);
             }
         }
 

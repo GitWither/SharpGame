@@ -17,7 +17,12 @@ namespace SharpGame.Input
         D = 68,
         C = 67,
         Space = 32,
-        LeftShift = 340
+        LeftShift = 340,
+
+        UpArrow = 265,
+        DownArrow = 264,
+        LeftArrow = 263,
+        RightArrow = 262,
     }
 
     public enum MouseCode
